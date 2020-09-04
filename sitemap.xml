@@ -9,14 +9,14 @@
   </url>
   
   <url>
-    <loc>https://blog.wayoka.top/contact/index.html</loc>
+    <loc>https://blog.wayoka.top/categories/index.html</loc>
     
     <lastmod>2020-09-04T04:13:59.716Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://blog.wayoka.top/categories/index.html</loc>
+    <loc>https://blog.wayoka.top/contact/index.html</loc>
     
     <lastmod>2020-09-04T04:13:59.716Z</lastmod>
     
@@ -30,13 +30,6 @@
   </url>
   
   <url>
-    <loc>https://blog.wayoka.top/about/index.html</loc>
-    
-    <lastmod>2020-09-04T04:13:59.715Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://blog.wayoka.top/archives/index.html</loc>
     
     <lastmod>2020-09-04T04:13:59.715Z</lastmod>
@@ -44,14 +37,21 @@
   </url>
   
   <url>
-    <loc>https://blog.wayoka.top/2020/09/04/hello-world/</loc>
+    <loc>https://blog.wayoka.top/about/index.html</loc>
+    
+    <lastmod>2020-09-04T04:13:59.715Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.wayoka.top/2020/09/01/test/</loc>
     
     <lastmod>2020-09-04T04:13:59.714Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://blog.wayoka.top/2020/09/01/test/</loc>
+    <loc>https://blog.wayoka.top/2020/09/04/hello-world/</loc>
     
     <lastmod>2020-09-04T04:13:59.714Z</lastmod>
     
