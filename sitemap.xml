@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.wayoka.top/2020/07/15/dui-hua-apt-zheng-li/</loc>
+    
+    <lastmod>2020-09-17T04:12:58.039Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://blog.wayoka.top/2019/09/15/gong-ji-shi-jian-fen-xi-mo-xing-gai-shu/</loc>
     
-    <lastmod>2020-09-15T04:51:55.638Z</lastmod>
+    <lastmod>2020-09-17T04:01:41.858Z</lastmod>
     
   </url>
   
@@ -16,14 +23,14 @@
   </url>
   
   <url>
-    <loc>https://blog.wayoka.top/contact/index.html</loc>
+    <loc>https://blog.wayoka.top/categories/index.html</loc>
     
     <lastmod>2020-09-04T04:13:59.716Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://blog.wayoka.top/categories/index.html</loc>
+    <loc>https://blog.wayoka.top/contact/index.html</loc>
     
     <lastmod>2020-09-04T04:13:59.716Z</lastmod>
     
@@ -37,14 +44,14 @@
   </url>
   
   <url>
-    <loc>https://blog.wayoka.top/about/index.html</loc>
+    <loc>https://blog.wayoka.top/archives/index.html</loc>
     
     <lastmod>2020-09-04T04:13:59.715Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://blog.wayoka.top/archives/index.html</loc>
+    <loc>https://blog.wayoka.top/about/index.html</loc>
     
     <lastmod>2020-09-04T04:13:59.715Z</lastmod>
     
