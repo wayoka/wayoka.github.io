@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.wayoka.top/2019/05/22/chang-yong-xia-zai-zhi-ling-linux-pian/</loc>
+    
+    <lastmod>2020-09-22T01:43:32.013Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.wayoka.top/2019/05/22/chang-yong-xia-zai-zhi-ling-windows-pian/</loc>
+    
+    <lastmod>2020-09-22T01:43:22.851Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.wayoka.top/2019/09/15/gong-ji-shi-jian-fen-xi-mo-xing-gai-shu/</loc>
+    
+    <lastmod>2020-09-21T03:26:38.016Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://blog.wayoka.top/2019/07/21/fan-diao-shi-zhi-jing-tai-fan-diao-shi/</loc>
     
     <lastmod>2020-09-21T01:38:54.992Z</lastmod>
@@ -12,13 +33,6 @@
     <loc>https://blog.wayoka.top/2020/07/15/dui-hua-apt-zheng-li/</loc>
     
     <lastmod>2020-09-17T04:12:58.039Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://blog.wayoka.top/2019/09/15/gong-ji-shi-jian-fen-xi-mo-xing-gai-shu/</loc>
-    
-    <lastmod>2020-09-17T04:01:41.858Z</lastmod>
     
   </url>
   
@@ -37,13 +51,6 @@
   </url>
   
   <url>
-    <loc>https://blog.wayoka.top/contact/index.html</loc>
-    
-    <lastmod>2020-09-04T04:13:59.716Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://blog.wayoka.top/friends/index.html</loc>
     
     <lastmod>2020-09-04T04:13:59.716Z</lastmod>
@@ -51,14 +58,21 @@
   </url>
   
   <url>
-    <loc>https://blog.wayoka.top/archives/index.html</loc>
+    <loc>https://blog.wayoka.top/contact/index.html</loc>
+    
+    <lastmod>2020-09-04T04:13:59.716Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.wayoka.top/about/index.html</loc>
     
     <lastmod>2020-09-04T04:13:59.715Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://blog.wayoka.top/about/index.html</loc>
+    <loc>https://blog.wayoka.top/archives/index.html</loc>
     
     <lastmod>2020-09-04T04:13:59.715Z</lastmod>
     
