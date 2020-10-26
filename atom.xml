@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://blog.wayoka.top/"/>
-  <updated>2020-09-17T04:12:58.039Z</updated>
+  <updated>2020-10-26T02:43:43.493Z</updated>
   <id>https://blog.wayoka.top/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>海莲花样本分析（一）</title>
+    <link href="https://blog.wayoka.top/2020/07/20/hai-lian-hua-yang-ben-fen-xi-yi/"/>
+    <id>https://blog.wayoka.top/2020/07/20/hai-lian-hua-yang-ben-fen-xi-yi/</id>
+    <published>2020-07-20T02:35:39.000Z</published>
+    <updated>2020-10-26T02:43:43.493Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;1-综述&quot;&gt;&lt;a href=&quot;#1-综述&quot; class=&quot;headerlink&quot; title=&quot;1.综述&quot;&gt;&lt;/a&gt;1.综述&lt;/h1&gt;&lt;p&gt;本次分析的样本文件一共有两个，一个为带有微软标签的exe文件，经分析为微软的Microsoft®.NET
+        
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>对华APT整理</title>
