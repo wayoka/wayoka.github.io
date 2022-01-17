@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>攻击模型概述 | Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="威胁情报攻击检测模型" />
+  
+  
+  
+  
+  <meta name="description" content="0. 威胁情报 0.1 威胁情报的意义 传统的防御机制根据以往的“经验”构建防御策略、部署安全产品，难以应对未知攻击；即使是基于机器学习的检测算法也是在过往“经验”（训练集）的基础寻找最佳的一般表达式，以求覆盖所有可能的情况，实现对未知攻击的检测。  但是过往经验无法完整的表达现在和未来的安全状况，而且攻击手法变化多样，防御技术的发展速度本质上落后与攻击技术的发展速度。  所以需要一种能够根据过去">
+<meta property="og:type" content="article">
+<meta property="og:title" content="攻击模型概述">
+<meta property="og:url" content="http://wayoka.github.io/2020/08/21/%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="0. 威胁情报 0.1 威胁情报的意义 传统的防御机制根据以往的“经验”构建防御策略、部署安全产品，难以应对未知攻击；即使是基于机器学习的检测算法也是在过往“经验”（训练集）的基础寻找最佳的一般表达式，以求覆盖所有可能的情况，实现对未知攻击的检测。  但是过往经验无法完整的表达现在和未来的安全状况，而且攻击手法变化多样，防御技术的发展速度本质上落后与攻击技术的发展速度。  所以需要一种能够根据过去">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://wayoka.github.io/2020/08/21/%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/%E9%87%91%E5%AD%97%E5%A1%94%E6%A8%A1%E5%9E%8B.png">
+<meta property="og:image" content="http://wayoka.github.io/2020/08/21/%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/kill-chain%E6%A8%A1%E5%9E%8B.jpg">
+<meta property="og:image" content="http://wayoka.github.io/2020/08/21/%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/%E9%92%BB%E7%9F%B3%E6%A8%A1%E5%9E%8B.jpg">
+<meta property="og:image" content="http://wayoka.github.io/2020/08/21/%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/%E6%B3%B3%E9%81%93%E5%9B%BE.jpg">
+<meta property="og:image" content="http://wayoka.github.io/2020/08/21/%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/%E5%AE%89%E5%85%A8%E9%98%B2%E6%8A%A4%E7%9F%A9%E9%98%B5.jpg">
+<meta property="article:published_time" content="2020-08-21T03:13:03.000Z">
+<meta property="article:modified_time" content="2021-10-29T09:13:21.333Z">
+<meta property="article:author" content="Wayoka">
+<meta property="article:tag" content="威胁情报">
+<meta property="article:tag" content="攻击检测模型">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://wayoka.github.io/2020/08/21/%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/%E9%87%91%E5%AD%97%E5%A1%94%E6%A8%A1%E5%9E%8B.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Blog" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt; src:url("/css/fonts/FuturaPTBold.otf") format("woff");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt-light; src:url("/css/fonts/FuturaPTBook.otf") format("woff");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt-italic; src:url("/css/fonts/FuturaPTBookOblique.otf") format("woff");font-weight:400;font-style:italic;}
+}
+
+  </style>
+  
+<link rel="stylesheet" href="../../../../css/style.css">
+
+
+  
+<script src="../../../../js/jquery-3.1.1.min.js"></script>
+
+  
+<script src="../../../../js/bootstrap.js"></script>
+
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css" >
+
+  
+    
+<link rel="stylesheet" href="../../../../css/dialog.css">
+
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/css/header-post.css" >
+  
+
+  
+  
+  
+    <link rel="stylesheet" href="/css/vdonate.css" >
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="80px" height="80px" alt="Hike News" src="/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="../../../../index.html">首页</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../archives">归档</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../categories">分类</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../tags">标签</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../about">关于</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '../../../../content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="../../../../js/insight.js"></script>
+
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-攻击模型概述" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      攻击模型概述
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="" class="article-date">
+	  <time datetime="2020-08-21T03:13:03.000Z" itemprop="datePublished">2020-08-21</time>
+	</a>
+
+      
+    <a class="article-category-link" href="../../../../categories/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/">威胁情报</a><a class="article-category-link" href="../../../../categories/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9E%8B/">攻击模型</a>
+
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		阅读量<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+      
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="0-威胁情报"><a href="#0-威胁情报" class="headerlink" title="0. 威胁情报"></a>0. 威胁情报</h1><h2 id="0-1-威胁情报的意义"><a href="#0-1-威胁情报的意义" class="headerlink" title="0.1 威胁情报的意义"></a>0.1 威胁情报的意义</h2><p>&emsp;传统的防御机制根据以往的“经验”构建防御策略、部署安全产品，难以应对未知攻击；即使是基于机器学习的检测算法也是在过往“经验”（训练集）的基础寻找最佳的一般表达式，以求覆盖所有可能的情况，实现对未知攻击的检测。</p>
+<p>&emsp;但是过往经验无法完整的表达现在和未来的安全状况，而且攻击手法变化多样，防御技术的发展速度本质上落后与攻击技术的发展速度。</p>
+<p>&emsp;所以需要一种能够根据过去和当前网络安全状况动态调整防御策略的手段，威胁情报应运而生。</p>
+<p>&emsp;<strong>通过对威胁情报的收集、处理可以直接将相应的结果分发到安全人员（认读）和安全设备（机读），实现精准的动态防御，达到“未攻先防”的效果。</strong></p>
+<h2 id="0-2-威胁情报分类-传统分类"><a href="#0-2-威胁情报分类-传统分类" class="headerlink" title="0.2 威胁情报分类(传统分类)"></a>0.2 威胁情报分类(传统分类)</h2><blockquote>
+<p><strong>1. 战术级情报：</strong></p>
+<p>&emsp;战术情报的作用主要是发现威胁事件以及对报警确认或优先级排序。常见的失陷检测情报（CnC 情报，即攻击者控制被害主机所使用的远程命令与控制服务器情报）、IP情报就属于这个范畴，它们都是可机读的情报，可以直接被设备使用，自动化的完成上述的安全工作。</p>
+</blockquote>
+<blockquote>
+<p><strong>2. 运营级情报：</strong></p>
+<p>&emsp;运营级情报是给安全分析师或者说安全事件响应人员使用的，目的是对已知的重要安全事件做分析（报警确认、攻击影响范围、攻击链以及攻击目的、技战术方法等）或者利用已知的攻击者技战术手法主动的查找攻击相关线索。</p>
+</blockquote>
+<blockquote>
+<p><strong>3. 战略级情报：</strong></p>
+<p>&emsp;战略层面的威胁情报是给组织的安全管理者使用的，比如CSO。它能够帮助决策者把握当前的安全态势，在安全决策上更加有理有据。包括了什么样的组织会进行攻击，攻击可能造成的危害有哪些，攻击者的战术能力和掌控的资源情况等，当然也会包括具体的攻击实例。</p>
+</blockquote>
+<h2 id="0-3-威胁情报用于事件分析"><a href="#0-3-威胁情报用于事件分析" class="headerlink" title="0.3 威胁情报用于事件分析"></a>0.3 威胁情报用于事件分析</h2><p>&emsp;威胁情报数据并<strong>不能帮助甲方来预测攻击</strong>，威胁情报在安全运营体系中的定位是——<strong>辅助发现潜在的或正在发起的恶意行为或操作</strong>，重点在于<strong>辅助</strong>两个字，威胁情报严格意义上来说只能<strong>有限地感知潜在的威胁</strong>，换句话说：如果有人现在瞄准的目标全部都是能源类客户，那么威胁情报就可以提醒没有被攻击的客户可能会遭受到该攻击者的攻击，这个叫做<strong>有限的感知潜在的威胁</strong>。</p>
+<p>&emsp;威胁情报既然是个辅助手段，那么肯定有一个主要手段，这个主要的手段其实就是<strong>针对事件的分析</strong>，两个经常在事件分析中使用的模型——<strong>钻石模型</strong>和<strong>Kill-Chain模型(即 攻击链模型)</strong> 将在后续讲到，这两个模型在分析的时候往往需要结合起来使用，尤其是比较大型的针对性的攻击，诸如APT或黑产团伙攻击。</p>
+<h2 id="0-4-注意"><a href="#0-4-注意" class="headerlink" title="0.4 注意"></a>0.4 注意</h2><p>这里要提醒一点，但凡基于威胁情报做分析的时候一定要牢记以下<code>4</code>点：</p>
+<blockquote>
+<ol>
+<li>威胁情报分析出来的结果一般不能作为电子证据确定嫌疑人有计算机犯罪行为</li>
+</ol>
+</blockquote>
+<blockquote>
+<ol start="2">
+<li>威胁情报分析结果须带有严格的置信度</li>
+</ol>
+</blockquote>
+<blockquote>
+<ol start="3">
+<li>威胁情报数据由于技术原因限制不可以做到实时性</li>
+</ol>
+</blockquote>
+<blockquote>
+<ol start="4">
+<li>要在相关机构的监管下进行分析</li>
+</ol>
+</blockquote>
+<h1 id="1-金字塔模型"><a href="#1-金字塔模型" class="headerlink" title="1. 金字塔模型"></a>1. 金字塔模型</h1><h2 id="1-1-金字塔模型起源"><a href="#1-1-金字塔模型起源" class="headerlink" title="1.1 金字塔模型起源"></a>1.1 金字塔模型起源</h2><p>&emsp;金字塔模型源于David J. Bianco在《The Pyramid of Pain》一文中提出的威胁情报相关指标（单一的信息或数据一般算不上威胁情报，经过分析处理过的有价值的信息才称得上威胁情报）的金字塔模型。</p>
+<h2 id="1-2-金字塔模型分级"><a href="#1-2-金字塔模型分级" class="headerlink" title="1.2 金字塔模型分级"></a>1.2 金字塔模型分级</h2><p>&emsp;金字塔模型分为 <code>6</code> 层，从下到上分别是 <strong>HASH值</strong>、<strong>IP地址</strong>、<strong>域名</strong>、<strong>网络或主机特征</strong>、<strong>TTPs（Tactics、Techniques &amp; Procedures）</strong></p>
+<p>&emsp;下图左侧是能够利用的情报，右侧是这些情报给攻击者造成的困难程度。一般来说情报中价值最低的是Hash值、IP地址和域名（也就是常说的信誉库），其次是网络/主机特征、攻击工具特征，对攻击者影响最大的是TTPs（战术、技术和行为模式）类型的威胁情报。</p>
+<p><img src="/2020/08/21/%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/%E9%87%91%E5%AD%97%E5%A1%94%E6%A8%A1%E5%9E%8B.png" alt="img"></p>
+<p>这里分别做个简单介绍：</p>
+<blockquote>
+<p><strong>HASH值：</strong></p>
+<p>&emsp;一般指样本、文件的HASH值，比如MD5和SHA系列。由于HASH函数的雪崩效应，文件任何微弱地改变，都会导致产生一个完全不同也不相关的哈希值。这使得在很多情况下，它变得不值得跟踪，所以它带来的防御效果也是最低的。</p>
+</blockquote>
+<blockquote>
+<p><strong>IP地址：</strong></p>
+<p>&emsp;常见的指标之一，通过IP的访问控制可以抵御很多常见的攻击，但是又因为IP数量太大，任何攻击者均可以尝试更改IP地址，以绕过访问控制。</p>
+</blockquote>
+<blockquote>
+<p><strong>域名：</strong></p>
+<p>&emsp;有些攻击类型或攻击手法也或者出于隐藏的目的，攻击者会通过域名连接外部服务器进行间接通信，由于域名需要购买、注册、与服务器绑定等操作使得它的成本相对IP是比较高的，对域名的把控产生的防御效果也是较好的。但是对于高级APT攻击或大规模的团伙攻击，往往会准备大量备用域名，所以它的限制作用也是有限。</p>
+</blockquote>
+<blockquote>
+<p><strong>网络或主机特征：</strong></p>
+<p>&emsp;这里指的特征可以是很多方面，比如攻击者浏览器的User-Agent、登录的用户名、访问的频率等，这些特征就是一种对攻击者的描述，这些情报数据可以很好的将攻击流量从其他的流量中提取出来，就会产生一种较好的防御效果。</p>
+</blockquote>
+<blockquote>
+<p><strong>攻击工具：</strong></p>
+<p>&emsp;这里是指获取或检测到了攻击者使用的工具，这种基于工具的情报数据能够使得一批攻击失效，攻击者不得不进行免杀或重写工具，这就达到了增加攻击成本的目的。</p>
+</blockquote>
+<blockquote>
+<p><strong>TTPs</strong> (即 Tactics、Techniques &amp; Procedures 的缩写)：</p>
+<p>&emsp;这里是指攻击者所使用的攻击策略、手法等，掌握了些信息就能明白攻击者所利用的具体漏洞，就能够针对性的布防，使得攻击者不得不寻找新的漏洞，所以这也是价值最高的情报数据。</p>
+</blockquote>
+<h1 id="2-针对性攻击事件的分析与防御"><a href="#2-针对性攻击事件的分析与防御" class="headerlink" title="2. 针对性攻击事件的分析与防御"></a>2. 针对性攻击事件的分析与防御</h1><p>&emsp;针对性攻击事件的分析主要借助于单个事件分析的<strong>Kill-Chain 模型(即 攻击链模型)<strong>和</strong>钻石模型</strong>。</p>
+<h2 id="2-1-Kill-Chain-模型-即-攻击链模型"><a href="#2-1-Kill-Chain-模型-即-攻击链模型" class="headerlink" title="2.1 Kill-Chain 模型(即 攻击链模型)"></a>2.1 Kill-Chain 模型(即 攻击链模型)</h2><p>&emsp;<strong>攻击链模型</strong>从<code>侦察阶段</code>开始，到<code>后渗透阶段</code>共包含<code>7</code>个阶段，主要记录一次完整的攻击行为。</p>
+<p>&emsp;Kill-Chain模型分为<code>7</code>个部分，<strong>侦查阶段（Reconnaissance）</strong>、<strong>武器化阶段（Weaponization）</strong>、<strong>部署阶段（Delivery）</strong>、<strong>攻击阶段（Exploitation）</strong>、<strong>后门植入阶段（Installation）</strong>、<strong>远程控制阶段（C&amp;C）</strong>、<strong>后渗透阶段（Actives on Objects）</strong>，也就是下面这个样子：</p>
+<p><img src="/2020/08/21/%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/kill-chain%E6%A8%A1%E5%9E%8B.jpg" alt="Kill-Chain模型"></p>
+<blockquote>
+<p><strong>侦查阶段：</strong></p>
+<p>扫描目标IT资产和<strong>信息收集</strong>。</p>
+</blockquote>
+<blockquote>
+<p><strong>武器化阶段：</strong></p>
+<p>将前一阶段发现和扫描到漏洞的信息整合到一起并<strong>制作针对性的武器</strong>。</p>
+</blockquote>
+<blockquote>
+<p><strong>部署阶段：</strong></p>
+<p>将这些武器或者是远控RAT<strong>部署</strong>到对应的Compromised Servers上。</p>
+</blockquote>
+<blockquote>
+<p><strong>攻击阶段：</strong></p>
+<p>使用这些Compromised Servers和之前做好的武器化工具<strong>对目标发起攻击</strong>。</p>
+</blockquote>
+<blockquote>
+<p><strong>后门种植阶段：</strong></p>
+<p><strong>安装远程控制</strong>的服务和进程。</p>
+</blockquote>
+<blockquote>
+<p><strong>远控阶段：</strong></p>
+<p>让目标<strong>和C&amp;C通信</strong>。</p>
+</blockquote>
+<blockquote>
+<p><strong>后渗透阶段：</strong></p>
+<p>收割、继续<strong>横向渗透入侵</strong>。</p>
+</blockquote>
+<h2 id="2-2-钻石模型"><a href="#2-2-钻石模型" class="headerlink" title="2.2 钻石模型"></a>2.2 钻石模型</h2><p>&emsp;<strong>钻石模型</strong> 主要从<code>4</code>个维度衡量一次攻击事件，是针对<strong>单个事件分析</strong>的模型。</p>
+<p>&emsp;之前说过了<strong>一次完整的攻击行为的参考就是上面说到的Kill-Chain</strong>，也就是用来描述的攻击者攻击的路线和进行的进度。但是Kill-Chain只能说明攻击的进程和路线，并不能很好地<strong>说明其造成的影响和目的</strong>，钻石模型就很好的针对性的补充了这点。</p>
+<p>&emsp;钻石模型是一个针对<strong>单个事件</strong>分析的模型，核心就是用来描述攻击者的技战术和目的，具体的钻石模型如下图所示：</p>
+<p><img src="/2020/08/21/%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/%E9%92%BB%E7%9F%B3%E6%A8%A1%E5%9E%8B.jpg" alt="钻石模型"></p>
+<p>&emsp;<strong>总结一下这幅图就是说明：</strong></p>
+<blockquote>
+<p><strong>攻击者因为什么原因，利用哪些基础设施，并通哪些手段攻击了怎么样的一个目标</strong></p>
+</blockquote>
+<p>具体一点的关于图中信息的解释如下：</p>
+<blockquote>
+<p><strong>社会政治影响：</strong></p>
+<p>处于钻石模型上下两个顶点，上顶点表示攻击者，下顶点表示受害者也就是目标。攻击者和受害者之间的某种利益冲突或者是社会地位对立则会产生攻击的意图和发起攻击的原因，纵切面表示的就是社会政治影响。说大白话就是根据这俩人去发现攻击的意图。</p>
+</blockquote>
+<blockquote>
+<p><strong>技战术组合：</strong></p>
+<p>技战术组合位于整个钻石模型的横切面，横切面的两个顶点分别为基础设施和技术能力，这里的基础设施和技术能力其实都是相对于攻击者而言的。</p>
+</blockquote>
+<blockquote>
+<p><strong>元数据：</strong></p>
+<p>这个其实就是左边列出来的，<strong>攻击时间、攻击阶段、攻击结果、攻击方向、攻击手段、攻击资源利用</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>置信度：</strong></p>
+<p>也就是以上你分析出结果的可信程度。</p>
+</blockquote>
+<h2 id="2-3-攻击链与钻石模型的组合分析"><a href="#2-3-攻击链与钻石模型的组合分析" class="headerlink" title="2.3 攻击链与钻石模型的组合分析"></a>2.3 攻击链与钻石模型的组合分析</h2><p>&emsp;复杂的攻击往往都是有一系列的攻击事件组成的，不同的攻击事件指向的目标和达到的目的可以表示出攻击的进程，那么OK，我们如果把事件按照Kill-Chain进行分类同时使用泳道图进行表示，同时把不同的攻击路线分为不同的攻击线程，那么我们就可以得到一个这样的泳道图。</p>
+<p><img src="/2020/08/21/%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/%E6%B3%B3%E9%81%93%E5%9B%BE.jpg"></p>
+<blockquote>
+<p><strong>其实这张图描述的是这么一个事件：</strong></p>
+</blockquote>
+<blockquote>
+<blockquote>
+<ol>
+<li>攻击者先对目标进行了Google Hacking操作，获得了他们域名解析记录等一些基础的It信息；</li>
+<li>攻击者找到了一个目标新注册的域名，然后用搜索引擎搜索他们的网络管理员的电子邮件信息；</li>
+<li>攻击者使用鱼叉邮件方式对目标的网络管理员发送一封带有木马的邮件；</li>
+<li>目标的网管（我们叫他网管一号）打开了这封邮件的附件然后不幸中枪；</li>
+<li>网管一号的主机因为中了病毒，所以攻击者利用网管一号这台主机发送了一个HTTP Post请求到域控节点，然后域控节点返回了一个HTTP Response；</li>
+<li>我们通过对鱼叉邮件中附件进行逆向分析发现里面有两个IP地址，第二个IP地址作为备份，防止第一个失效；</li>
+<li>通过C&amp;C请求到网管一号的主机，我们的恶意程序打开了一个TCP代理服务；</li>
+<li>通过网管一号主机上的代理服务，攻击者继续去Google上搜索其他的目标；</li>
+<li>攻击者检查网管一号邮件的通信录列表去寻找是否拥有目标二号的通讯方式，结果发现了目标二号的首席科学家的联系方式；</li>
+<li>攻击者使用攻陷的网管一号的邮箱对目标二号的首席科学家的邮箱发起鱼叉邮件攻击，工具使用和之前一样的；</li>
+<li>此时又来了一个攻击者，我们称他为攻击者二号，攻击者一号扫描了目标三号的web服务器；</li>
+<li>使用同样的漏洞利用工具攻击发现目标三号主机上的相同的漏洞；</li>
+<li>被攻陷的目标三号主机返回一个shell会话给攻击者三号；</li>
+<li>目标三号的所有数据被攻击者三号窃取</li>
+</ol>
+</blockquote>
+</blockquote>
+<p>&emsp;这样的话使用Kill-Chain和钻石模型分析可以同时get到攻击者的点和想要攻击的目标，同时还知道了他的攻击路径，也就是说这时候我们对攻击者了如指掌了。</p>
+<h2 id="2-4-基于攻击链的安全防护矩阵"><a href="#2-4-基于攻击链的安全防护矩阵" class="headerlink" title="2.4 基于攻击链的安全防护矩阵"></a>2.4 基于攻击链的安全防护矩阵</h2><p><img src="/2020/08/21/%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/%E5%AE%89%E5%85%A8%E9%98%B2%E6%8A%A4%E7%9F%A9%E9%98%B5.jpg"></p>
+<h1 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h1><p>&emsp;本文来自K0rz3n的博客 <a href="%5Bhttps://www.k0rz3n.com/2019/03/19/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5%E6%A6%82%E5%BF%B5%E4%B8%8EAPT%E4%BA%8B%E4%BB%B6%E5%88%86%E6%9E%90%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/%5D(https://www.k0rz3n.com/2019/03/19/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5%E6%A6%82%E5%BF%B5%E4%B8%8EAPT%E4%BA%8B%E4%BB%B6%E5%88%86%E6%9E%90%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/)">威胁情报概念与APT事件分析模型概述</a>，大部分为其所写，这里对文章中的相关知识进行学习，收藏；如有侵权，立即删除。</p>
+<h1 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/fly_hps/article/details/82744104">浅析威胁情报</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/30105006">使用威胁情报追踪攻击者——Part 1 威胁情报的另类分类</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/30160133">使用威胁情报追踪攻击者——Part 2 高级威胁事件分析与防御矩阵</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/30197024">使用威胁情报追踪攻击者——Part 3 使用威胁情报调查攻击者</a><br><a target="_blank" rel="noopener" href="https://www.xmanblog.net/threat-intelligence/">浅析威胁情报</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div id="donation_div"></div>
+
+
+<script src="../../../../js/vdonate.js"></script>
+
+<script>
+var a = new Donate({
+  title: '如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作!', // 可选参数，打赏标题
+  btnText: '打赏支持', // 可选参数，打赏按钮文字
+  el: document.getElementById('donation_div'),
+  wechatImage: 'https://raw.githubusercontent.com/iTimeTraveler/iTimeTraveler.github.io/site/source/about/donate/images/WeChanQR.png',
+  alipayImage: 'https://raw.githubusercontent.com/iTimeTraveler/iTimeTraveler.github.io/site/source/about/donate/images/AliPayQR.jpg'
+});
+</script>
+      
+      
+      <div>
+        <ul class="post-copyright">
+          <li class="post-copyright-author">
+          <strong>本文作者:  </strong>Wayoka</a>
+          </li>
+          <li class="post-copyright-link">
+          <strong>本文链接:  </strong>
+          <a href="/2020/08/21/攻击模型概述/" target="_blank" title="攻击模型概述">http://wayoka.github.io/2020/08/21/攻击模型概述/</a>
+          </li>
+          <li class="post-copyright-license">
+            <strong>版权声明:   </strong>
+            本博客所有文章除特别声明外，均采用 <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">CC BY-NC-ND 4.0</a>
+            许可协议。转载请注明出处
+          </li>
+         
+        </ul>
+<div>
+
+      
+      
+        
+	<div id="comment">
+		<!-- 来必力City版安装代码 -->
+		<div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ4MS82MDQ5">
+		<script type="text/javascript">
+		   (function(d, s) {
+		       var j, e = d.getElementsByTagName(s)[0];
+
+		       if (typeof LivereTower === 'function') { return; }
+
+		       j = d.createElement(s);
+		       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+		       j.async = true;
+
+		       e.parentNode.insertBefore(j, e);
+		   })(document, 'script');
+		</script>
+		<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+		</div>
+		<!-- City版安装代码已完成 -->
+	</div>
+
+
+
+      
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" rel="tag">威胁情报</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/%E6%94%BB%E5%87%BB%E6%A3%80%E6%B5%8B%E6%A8%A1%E5%9E%8B/" rel="tag">攻击检测模型</a></li></ul>
+
+      
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="../../../10/27/%E5%AF%B9%E5%8D%8EAPT%E6%95%B4%E7%90%86/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">
+        
+          对华APT组织整理
+        
+      </div>
+    </a>
+  
+  
+    <a href="../../../04/25/%E5%8F%8D%E8%B0%83%E8%AF%95%E4%B9%8B%E6%A0%87%E5%BF%97%E4%BD%8D%E5%8F%8D%E8%B0%83%E8%AF%95/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">反调试手段（一）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0-%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5"><span class="nav-number">1.</span> <span class="nav-text">0. 威胁情报</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-1-%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5%E7%9A%84%E6%84%8F%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text">0.1 威胁情报的意义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0-2-%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5%E5%88%86%E7%B1%BB-%E4%BC%A0%E7%BB%9F%E5%88%86%E7%B1%BB"><span class="nav-number">1.2.</span> <span class="nav-text">0.2 威胁情报分类(传统分类)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0-3-%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5%E7%94%A8%E4%BA%8E%E4%BA%8B%E4%BB%B6%E5%88%86%E6%9E%90"><span class="nav-number">1.3.</span> <span class="nav-text">0.3 威胁情报用于事件分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0-4-%E6%B3%A8%E6%84%8F"><span class="nav-number">1.4.</span> <span class="nav-text">0.4 注意</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E9%87%91%E5%AD%97%E5%A1%94%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">1. 金字塔模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E9%87%91%E5%AD%97%E5%A1%94%E6%A8%A1%E5%9E%8B%E8%B5%B7%E6%BA%90"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 金字塔模型起源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E9%87%91%E5%AD%97%E5%A1%94%E6%A8%A1%E5%9E%8B%E5%88%86%E7%BA%A7"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 金字塔模型分级</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E9%92%88%E5%AF%B9%E6%80%A7%E6%94%BB%E5%87%BB%E4%BA%8B%E4%BB%B6%E7%9A%84%E5%88%86%E6%9E%90%E4%B8%8E%E9%98%B2%E5%BE%A1"><span class="nav-number">3.</span> <span class="nav-text">2. 针对性攻击事件的分析与防御</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Kill-Chain-%E6%A8%A1%E5%9E%8B-%E5%8D%B3-%E6%94%BB%E5%87%BB%E9%93%BE%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.1.</span> <span class="nav-text">2.1 Kill-Chain 模型(即 攻击链模型)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E9%92%BB%E7%9F%B3%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.2.</span> <span class="nav-text">2.2 钻石模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-%E6%94%BB%E5%87%BB%E9%93%BE%E4%B8%8E%E9%92%BB%E7%9F%B3%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%BB%84%E5%90%88%E5%88%86%E6%9E%90"><span class="nav-number">3.3.</span> <span class="nav-text">2.3 攻击链与钻石模型的组合分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-%E5%9F%BA%E4%BA%8E%E6%94%BB%E5%87%BB%E9%93%BE%E7%9A%84%E5%AE%89%E5%85%A8%E9%98%B2%E6%8A%A4%E7%9F%A9%E9%98%B5"><span class="nav-number">3.4.</span> <span class="nav-text">2.4 基于攻击链的安全防护矩阵</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">3. 总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">参考链接：</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2022 Blog All Rights Reserved.</p>
+	      
+	      
+    		<p class="busuanzi_uv">
+				访客数 : <span id="busuanzi_value_site_uv"></span> |  
+				访问量 : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="../../../../index.html" class="mobile-nav-link">Home</a>
+  
+    <a href="../../../../archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="../../../../categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="../../../../tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="../../../../about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  
+<link rel="stylesheet" href="../../../../fancybox/jquery.fancybox.css">
+
+  
+<script src="../../../../fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="../../../../js/scripts.js"></script>
+
+
+
+
+
+  
+<script src="../../../../js/dialog.js"></script>
+
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            Blog
+          </div>
+          <div class="panel-body">
+            Copyright © 2022 Wayoka All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>

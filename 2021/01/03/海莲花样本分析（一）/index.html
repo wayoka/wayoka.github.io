@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>常用下载命令整理-linux篇 | Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="逆向APT组织海莲花组织Windows病毒分析" />
+  
+  
+  
+  
+  <meta name="description" content="1.综述 本次分析的样本文件一共有两个，一个为带有微软标签的exe文件，经分析为微软的Microsoft®.NET Framework相关进程，为白文件；另一个是dll文件(黑文件)，该文件被上述exe文件加载后填充执行无意义代码，修改文件执行逻辑，填充shellcode调用Loadlibrary函数重新加载自身；加载资源段shellcode，创建线程执行资源段释放的shellcode，计算并比较">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常用下载命令整理-Linux篇">
+<meta property="og:url" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="1.综述 本次分析的样本文件一共有两个，一个为带有微软标签的exe文件，经分析为微软的Microsoft®.NET Framework相关进程，为白文件；另一个是dll文件(黑文件)，该文件被上述exe文件加载后填充执行无意义代码，修改文件执行逻辑，填充shellcode调用Loadlibrary函数重新加载自身；加载资源段shellcode，创建线程执行资源段释放的shellcode，计算并比较">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps1.png">
+<meta property="og:image" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps2.png">
+<meta property="og:image" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps3.png">
+<meta property="og:image" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps4.png">
+<meta property="og:image" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps5.png">
+<meta property="og:image" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps6.png">
+<meta property="og:image" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps7.png">
+<meta property="og:image" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps8.png">
+<meta property="og:image" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps9.png">
+<meta property="og:image" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps10.png">
+<meta property="og:image" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps11.png">
+<meta property="og:image" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps12.png">
+<meta property="og:image" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps13.png">
+<meta property="og:image" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps14.png">
+<meta property="og:image" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps15.png">
+<meta property="article:published_time" content="2021-01-03T01:36:51.000Z">
+<meta property="article:modified_time" content="2021-10-29T09:23:41.787Z">
+<meta property="article:author" content="Wayoka">
+<meta property="article:tag" content="逆向">
+<meta property="article:tag" content="APT组织">
+<meta property="article:tag" content="海莲花组织">
+<meta property="article:tag" content="Windows病毒分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://wayoka.github.io/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Blog" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt; src:url("/css/fonts/FuturaPTBold.otf") format("woff");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt-light; src:url("/css/fonts/FuturaPTBook.otf") format("woff");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt-italic; src:url("/css/fonts/FuturaPTBookOblique.otf") format("woff");font-weight:400;font-style:italic;}
+}
+
+  </style>
+  
+<link rel="stylesheet" href="../../../../css/style.css">
+
+
+  
+<script src="../../../../js/jquery-3.1.1.min.js"></script>
+
+  
+<script src="../../../../js/bootstrap.js"></script>
+
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css" >
+
+  
+    
+<link rel="stylesheet" href="../../../../css/dialog.css">
+
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/css/header-post.css" >
+  
+
+  
+  
+  
+    <link rel="stylesheet" href="/css/vdonate.css" >
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="80px" height="80px" alt="Hike News" src="/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="../../../../index.html">首页</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../archives">归档</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../categories">分类</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../tags">标签</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../about">关于</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '../../../../content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="../../../../js/insight.js"></script>
+
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-海莲花样本分析（一）" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      常用下载命令整理-Linux篇
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="" class="article-date">
+	  <time datetime="2021-01-03T01:36:51.000Z" itemprop="datePublished">2021-01-03</time>
+	</a>
+
+      
+    <a class="article-category-link" href="../../../../categories/APT%E7%BB%84%E7%BB%87/">APT组织</a><a class="article-category-link" href="../../../../categories/APT%E7%BB%84%E7%BB%87/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E7%BB%84%E7%BB%87/">海莲花组织</a><a class="article-category-link" href="../../../../categories/APT%E7%BB%84%E7%BB%87/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E7%BB%84%E7%BB%87/%E9%80%86%E5%90%91/">逆向</a>
+
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		阅读量<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+      
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-综述"><a href="#1-综述" class="headerlink" title="1.综述"></a>1.综述</h1><p>本次分析的样本文件一共有两个，一个为带有微软标签的exe文件，经分析为微软的Microsoft®.NET Framework相关进程，为白文件；另一个是dll文件(黑文件)，该文件被上述exe文件加载后填充执行无意义代码，修改文件执行逻辑，填充shellcode调用Loadlibrary函数重新加载自身；加载资源段shellcode，创建线程执行资源段释放的shellcode，计算并比较调用dll文件的进程名称的hash是否为“fnplicensingservice.exe”的hash，用以反调试；获取计算机名称，根据计算机名称hash解密后续代码。</p>
+<p><img src="/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps1.png" alt="样本执行流程"></p>
+<h1 id="2-样本概述"><a href="#2-样本概述" class="headerlink" title="2.样本概述"></a>2.样本概述</h1><h3 id="2-1-FNPLicensingService-exe-文件概述"><a href="#2-1-FNPLicensingService-exe-文件概述" class="headerlink" title="2.1 FNPLicensingService.exe 文件概述"></a>2.1 FNPLicensingService.exe 文件概述</h3><p>本次分析样本包含exe和dll两个pe文件，样本通过白文件(exe文件)调用黑文件(dll文件)执行恶意功能。白文件带有微软的数字签名，原始文件名为“applaunch.exe”，经分析该文件是微软的Microsoft®.NET Framework相关进程，版本为2.0.50727.5420。</p>
+<table>
+<thead>
+<tr>
+<th>白文件名称</th>
+<th>FNPLicensingService.exe</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MD5</td>
+<td>0F01571A3E4C71EB4313175AAE86488E</td>
+</tr>
+<tr>
+<td>sha256</td>
+<td>8cc51c4c2efc8c6a401aa83a0aeced0925d5d9d2a43192f35561893cdf704022</td>
+</tr>
+<tr>
+<td>文件版本</td>
+<td>2.0.50727.5420 (Win7SP1.050727-5400)</td>
+</tr>
+<tr>
+<td>文件大小</td>
+<td>54.33 KB (55632 bytes)</td>
+</tr>
+</tbody></table>
+<p><img src="/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps2.png" alt="白文件信息"> </p>
+<h2 id="2-2-mscoree-dll文件概述"><a href="#2-2-mscoree-dll文件概述" class="headerlink" title="2.2 mscoree.dll文件概述"></a>2.2 mscoree.dll文件概述</h2><p>Windows下的“mscoree.dll”(32位)是“applaunch.exe”在运行时必须加载的模块之一，该文件位于Windows目录的SysWOW64路径下，文件带有微软的版权等相关信息。</p>
+<p><img src="/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps3.png" alt="恶意DLL信息"> </p>
+<p>本次分析的黑样本dll文件名称伪装为“mscoree.dll”(32位)，文件大小伪装为相似的大小，但是并无文件版本、版权等相关信息。</p>
+<table>
+<thead>
+<tr>
+<th>黑dll文件名称</th>
+<th>mscoree.dll</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MD5</td>
+<td>B5DFF8111D72DE616B3C0074CB510AC9</td>
+</tr>
+<tr>
+<td>SHA1</td>
+<td>C7FCC2611F6F91CDA8B5DD10B0BEFF57DBA3BF2F</td>
+</tr>
+<tr>
+<td>文件大小</td>
+<td>313856 字节</td>
+</tr>
+</tbody></table>
+<p><img src="/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps4.png" alt="恶意DLL信息"> </p>
+<h1 id="2-黑文件-mscoree-dll-分析"><a href="#2-黑文件-mscoree-dll-分析" class="headerlink" title="2.黑文件 mscoree.dll 分析"></a>2.黑文件 mscoree.dll 分析</h1><h2 id="2-1-黑文件-mscoree-dll-静态分析"><a href="#2-1-黑文件-mscoree-dll-静态分析" class="headerlink" title="2.1 黑文件 mscoree.dll 静态分析"></a>2.1 黑文件 mscoree.dll 静态分析</h2><p>在“mscoree.dll”文件资源段中包含了一个名为274的文件夹，文件夹中包含文件名为 365 的资源文件，文件大小为 246 KB (252,595 字节)。</p>
+<p><img src="/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps5.png" alt="解压出的资源文件"> </p>
+<p><img src="/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps6.png" alt="资源文件内容"> </p>
+<h2 id="2-2-黑文件-mscoree-dll-逆向分析"><a href="#2-2-黑文件-mscoree-dll-逆向分析" class="headerlink" title="2.2 黑文件 mscoree.dll 逆向分析"></a>2.2 黑文件 mscoree.dll 逆向分析</h2><p>Dll文件共有6个导出函数，除dll入口函数“DllEntryPoint”外，其余都为空函数。</p>
+<p><img src="/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps7.png" alt="导出函数"> </p>
+<p>样本执行函数在dll入口函数“DllEntryPoint”中，文件创建互斥体，将shellcode赋值给局部变量。</p>
+<p><img src="/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps8.png" alt="创建互斥体"> </p>
+<p>解密文件部分可执行代码，填充部分执行代码为无用代码。</p>
+<p><img src="/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps9.png" alt="解密数据"> </p>
+<p>修改执行代码逻辑，使实际执行的地址指向函数开始加载的shellcode的位置，此部分功能为通过自定义算法比较文件名称是否为0x195B7195或0xED8FC4C4，动态获取LoadlibraryW地址，重新加载mscoree.dll模块。</p>
+<p><img src="/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps10.png" alt="修改代码运行逻辑"></p>
+<p>样本加载资源段，资源段中的内容实际为shellcode代码，加载资源后放入申请的内存空间，创建线程指向内存空间起始地址，执行资源段释放的代码。</p>
+<p><img src="/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps11.png" alt="释放代码"> </p>
+<p>资源段释放的代码执行内容如下：</p>
+<p>使用自定义算法比较函数签名，加载此阶段所需的函数。程序需要的部分自定义函数签名和对应的函数API如下：</p>
+<table>
+<thead>
+<tr>
+<th>函数签名</th>
+<th>对应函数名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0xCF4448F7</td>
+<td>advapi32.CryptAcquireContextW</td>
+</tr>
+<tr>
+<td>0xDC15ED5E</td>
+<td>advapi32.CryptHashData</td>
+</tr>
+<tr>
+<td>0x839430e4</td>
+<td>advapi32.CryptGetHashParm</td>
+</tr>
+<tr>
+<td>0xEDF612B2</td>
+<td>advapi32.CryptDestroyHash</td>
+</tr>
+<tr>
+<td>0x736CA443</td>
+<td>advapi32.CryptReleaseContext</td>
+</tr>
+<tr>
+<td>0x79b07498</td>
+<td>ntdll_12.RtlCompareMemory</td>
+</tr>
+</tbody></table>
+<p>调用API，计算“fnplicensingservice.exe”的hash，和调用此dll的进程名称hash比较是否相等，如果不相等会直接退出程序。比较的hash值为：422C9F1DFB3894415012C6DD1F2D0E21</p>
+<p><img src="/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps12.png" alt="计算文件HASH"> </p>
+<p>获取用户计算机名称，将计算机名称中的大写字母转换为小写字母，并计算计算机名的hash</p>
+<p><img src="/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps13.png" alt="获取计算机名称"> </p>
+<p><img src="/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps14.png" alt="根据计算机名称生成HASH"> </p>
+<p>根据计算机名称计算出的hash作为key解密代码。</p>
+<p><img src="/2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/wps15.png" alt="解密代码"> </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div id="donation_div"></div>
+
+
+<script src="../../../../js/vdonate.js"></script>
+
+<script>
+var a = new Donate({
+  title: '如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作!', // 可选参数，打赏标题
+  btnText: '打赏支持', // 可选参数，打赏按钮文字
+  el: document.getElementById('donation_div'),
+  wechatImage: 'https://raw.githubusercontent.com/iTimeTraveler/iTimeTraveler.github.io/site/source/about/donate/images/WeChanQR.png',
+  alipayImage: 'https://raw.githubusercontent.com/iTimeTraveler/iTimeTraveler.github.io/site/source/about/donate/images/AliPayQR.jpg'
+});
+</script>
+      
+      
+      <div>
+        <ul class="post-copyright">
+          <li class="post-copyright-author">
+          <strong>本文作者:  </strong>Wayoka</a>
+          </li>
+          <li class="post-copyright-link">
+          <strong>本文链接:  </strong>
+          <a href="/2021/01/03/海莲花样本分析（一）/" target="_blank" title="常用下载命令整理-Linux篇">http://wayoka.github.io/2021/01/03/海莲花样本分析（一）/</a>
+          </li>
+          <li class="post-copyright-license">
+            <strong>版权声明:   </strong>
+            本博客所有文章除特别声明外，均采用 <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">CC BY-NC-ND 4.0</a>
+            许可协议。转载请注明出处
+          </li>
+         
+        </ul>
+<div>
+
+      
+      
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/APT%E7%BB%84%E7%BB%87/" rel="tag">APT组织</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/Windows%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90/" rel="tag">Windows病毒分析</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E7%BB%84%E7%BB%87/" rel="tag">海莲花组织</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/%E9%80%86%E5%90%91/" rel="tag">逆向</a></li></ul>
+
+      
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="../../../04/13/%E4%B8%93%E4%B8%9A%E8%81%8C%E4%BD%8D%E8%A7%A3%E9%87%8A/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">
+        
+          安全行业职位介绍
+        
+      </div>
+    </a>
+  
+  
+    <a href="../../../../2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">宏病毒分析技巧整理</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E7%BB%BC%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">1.综述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E6%A0%B7%E6%9C%AC%E6%A6%82%E8%BF%B0"><span class="nav-number">2.</span> <span class="nav-text">2.样本概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-FNPLicensingService-exe-%E6%96%87%E4%BB%B6%E6%A6%82%E8%BF%B0"><span class="nav-number">2.0.1.</span> <span class="nav-text">2.1 FNPLicensingService.exe 文件概述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-mscoree-dll%E6%96%87%E4%BB%B6%E6%A6%82%E8%BF%B0"><span class="nav-number">2.1.</span> <span class="nav-text">2.2 mscoree.dll文件概述</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E9%BB%91%E6%96%87%E4%BB%B6-mscoree-dll-%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">2.黑文件 mscoree.dll 分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E9%BB%91%E6%96%87%E4%BB%B6-mscoree-dll-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90"><span class="nav-number">3.1.</span> <span class="nav-text">2.1 黑文件 mscoree.dll 静态分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E9%BB%91%E6%96%87%E4%BB%B6-mscoree-dll-%E9%80%86%E5%90%91%E5%88%86%E6%9E%90"><span class="nav-number">3.2.</span> <span class="nav-text">2.2 黑文件 mscoree.dll 逆向分析</span></a></li></ol></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2022 Blog All Rights Reserved.</p>
+	      
+	      
+    		<p class="busuanzi_uv">
+				访客数 : <span id="busuanzi_value_site_uv"></span> |  
+				访问量 : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="../../../../index.html" class="mobile-nav-link">Home</a>
+  
+    <a href="../../../../archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="../../../../categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="../../../../tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="../../../../about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  
+<link rel="stylesheet" href="../../../../fancybox/jquery.fancybox.css">
+
+  
+<script src="../../../../fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="../../../../js/scripts.js"></script>
+
+
+
+
+
+  
+<script src="../../../../js/dialog.js"></script>
+
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            Blog
+          </div>
+          <div class="panel-body">
+            Copyright © 2022 Wayoka All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>

@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>反调试手段（一） | Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="逆向反调试" />
+  
+  
+  
+  
+  <meta name="description" content="1. 静态反调试 静态反调试技术主要使用系统表中的特殊标志位（驻留在进程内存中以及由操作系统设置），其可以用来指示进程正在调试。可以通过使用特定的API函数或检查内存中的系统表来验证这些标志的状态。  这些技术是恶意软件最常用的技术。  本文简单介绍了基于windows API和标志位的10种反调试手段，更详细的Windows反调试知识请到本文最后参考链接的相关文章中查看。  2. IsDebug">
+<meta property="og:type" content="article">
+<meta property="og:title" content="反调试手段（一）">
+<meta property="og:url" content="http://wayoka.github.io/2020/04/25/%E5%8F%8D%E8%B0%83%E8%AF%95%E4%B9%8B%E6%A0%87%E5%BF%97%E4%BD%8D%E5%8F%8D%E8%B0%83%E8%AF%95/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="1. 静态反调试 静态反调试技术主要使用系统表中的特殊标志位（驻留在进程内存中以及由操作系统设置），其可以用来指示进程正在调试。可以通过使用特定的API函数或检查内存中的系统表来验证这些标志的状态。  这些技术是恶意软件最常用的技术。  本文简单介绍了基于windows API和标志位的10种反调试手段，更详细的Windows反调试知识请到本文最后参考链接的相关文章中查看。  2. IsDebug">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-25T07:23:25.000Z">
+<meta property="article:modified_time" content="2021-10-29T09:08:30.717Z">
+<meta property="article:author" content="Wayoka">
+<meta property="article:tag" content="逆向">
+<meta property="article:tag" content="反调试">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Blog" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt; src:url("/css/fonts/FuturaPTBold.otf") format("woff");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt-light; src:url("/css/fonts/FuturaPTBook.otf") format("woff");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt-italic; src:url("/css/fonts/FuturaPTBookOblique.otf") format("woff");font-weight:400;font-style:italic;}
+}
+
+  </style>
+  
+<link rel="stylesheet" href="../../../../css/style.css">
+
+
+  
+<script src="../../../../js/jquery-3.1.1.min.js"></script>
+
+  
+<script src="../../../../js/bootstrap.js"></script>
+
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css" >
+
+  
+    
+<link rel="stylesheet" href="../../../../css/dialog.css">
+
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/css/header-post.css" >
+  
+
+  
+  
+  
+    <link rel="stylesheet" href="/css/vdonate.css" >
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="80px" height="80px" alt="Hike News" src="/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="../../../../index.html">首页</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../archives">归档</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../categories">分类</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../tags">标签</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../about">关于</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '../../../../content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="../../../../js/insight.js"></script>
+
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-反调试之标志位反调试" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      反调试手段（一）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="" class="article-date">
+	  <time datetime="2020-04-25T07:23:25.000Z" itemprop="datePublished">2020-04-25</time>
+	</a>
+
+      
+    <a class="article-category-link" href="../../../../categories/%E9%80%86%E5%90%91/">逆向</a><a class="article-category-link" href="../../../../categories/%E9%80%86%E5%90%91/%E5%8F%8D%E8%B0%83%E8%AF%95/">反调试</a>
+
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		阅读量<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+      
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-静态反调试"><a href="#1-静态反调试" class="headerlink" title="1. 静态反调试"></a>1. 静态反调试</h1><p>&emsp;静态反调试技术主要使用系统表中的特殊标志位（驻留在进程内存中以及由操作系统设置），其可以用来指示进程正在调试。可以通过使用特定的API函数或检查内存中的系统表来验证这些标志的状态。</p>
+<p>&emsp;这些技术是恶意软件最常用的技术。</p>
+<p>&emsp;本文简单介绍了基于windows API和标志位的10种反调试手段，更详细的Windows反调试知识请到本文最后<a href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5">参考链接</a>的相关文章中查看。</p>
+<h1 id="2-IsDebuggerPresent（）"><a href="#2-IsDebuggerPresent（）" class="headerlink" title="2. IsDebuggerPresent（）"></a>2. IsDebuggerPresent（）</h1><h2 id="2-1-IsDebuggerPresent-介绍"><a href="#2-1-IsDebuggerPresent-介绍" class="headerlink" title="2.1 IsDebuggerPresent() 介绍"></a>2.1 IsDebuggerPresent() 介绍</h2><p>&emsp;函数<code>IsDebuggerPresent()</code>确定当前进程是否正在被调试器调试(例如 OllyDbg或x64dbg)。</p>
+<p>&emsp;此功能允许应用程序确定是否正在调试它，以便它可以修改其行为。例如，如果应用程序正在调试，则可以使用<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/desktop/api/debugapi/nf-debugapi-outputdebugstringw">OutputDebugString</a>函数提供其他信息 。</p>
+<p>&emsp;要确定是否正在调试<code>远程进程</code>，请使用<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/desktop/api/debugapi/nf-debugapi-checkremotedebuggerpresent">CheckRemoteDebuggerPresent</a>函数。</p>
+<p>&emsp;若要编译使用此功能的应用程序，请将_WIN32_WINNT宏定义为0x0400或更高版本。有关更多信息，请参见 <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/desktop/WinProg/using-the-windows-headers">使用Windows标头</a>。</p>
+<p>语法：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//无参数</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">返回值：如果当前进程运行在调试器的上下文，返回值为非零值。</span></span><br><span class="line"><span class="comment">       如果当前进程没有运行在调试器的上下文，返回值是零。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function">BOOL WINAPI <span class="title">IsDebuggerPresent</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>函数详细介绍在《<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/win32/api/debugapi/nf-debugapi-isdebuggerpresent">IsDebuggerPresent function</a>》</p>
+<h2 id="2-2-IsDebuggerPresent-反调试"><a href="#2-2-IsDebuggerPresent-反调试" class="headerlink" title="2.2 IsDebuggerPresent() 反调试"></a>2.2 IsDebuggerPresent() 反调试</h2><p>函数作用机理：</p>
+<p>&emsp;相对<code>fs</code>段<code>30h</code>偏移的PEB（Process Environment Block）结构（对于x64系统则是相对<code>gs</code>段<code>60h</code>的偏移）。PEB中偏移为2的数据叫做<code>BeingDebugged</code>字段；</p>
+<p>关于PEB的说明详见附加说明附加说明章节里的[PEB详解](#1. PEB详解 )</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0:000&lt; dt _PEB</span><br><span class="line">ntdll!_PEB</span><br><span class="line">   +0x000 InheritedAddressSpace : UChar</span><br><span class="line">   +0x001 ReadImageFileExecOptions : UChar</span><br><span class="line">   +0x002 BeingDebugged    : UChar</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;<code>IsDebuggerPresent</code>函数会读取<code>BeingDebugged</code>字段的值。<strong>如果该进程正在被调试，那么这个值为1，否则为0</strong>。</p>
+<p>&emsp;也就是说本质是<strong>查看<code>BeingDebugged</code>标志位</strong></p>
+<hr>
+<p><strong>PEB:::BeingDebugged标志位</strong></p>
+<p>x32汇编</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov eax, fs:[30h]</span><br><span class="line">cmp byte ptr [eax+2], 0</span><br><span class="line">jne being_debugged</span><br></pre></td></tr></table></figure>
+
+<p>x64汇编</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov rax, gs:[60h]</span><br><span class="line">cmp byte ptr [rax+2], 0</span><br><span class="line">jne being_debugged</span><br></pre></td></tr></table></figure>
+
+<p>wow64:汇编</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov eax, fs:[30h]</span><br><span class="line">cmp byte ptr [eax+1002h], 0</span><br></pre></td></tr></table></figure>
+
+<p>c/c++</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _WIN64</span></span><br><span class="line">PPEB pPeb = (PPEB)__readfsdword(<span class="number">0x30</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">PPEB pPeb = (PPEB)__readgsqword(<span class="number">0x60</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">// _WIN64</span></span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> (pPeb-&gt;BeingDebugged)</span><br><span class="line">    <span class="keyword">goto</span> being_debugged;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>IsDebuggerPresent() 反调试</strong></p>
+<p>C++代码实现：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">IsDebuggerPresent</span>())</span><br><span class="line">	&#123;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;Stop debugging program!&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		<span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;所以我们完全可以通过通过直接查看<code>BeingDebugged</code>标志位去判断进程是否被调试。</p>
+<p>win32系统下查看调试标志位<code>BeingDebugged</code>汇编如下``：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0:000&lt; u kernelbase!IsDebuggerPresent L3</span><br><span class="line">KERNELBASE!IsDebuggerPresent:</span><br><span class="line">751ca8d0 64a130000000    mov     eax,dword ptr fs:[00000030h]</span><br><span class="line">751ca8d6 0fb64002        movzx   eax,byte ptr [eax+2]</span><br><span class="line">751ca8da c3              ret</span><br></pre></td></tr></table></figure>
+
+<p>对于x64进程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0:000&lt; u kernelbase!IsDebuggerPresent L3</span><br><span class="line">KERNELBASE!IsDebuggerPresent:</span><br><span class="line">00007ffc`ab6c1aa0 65488b042560000000 mov   rax,qword ptr gs:[60h]</span><br><span class="line">00007ffc`ab6c1aa9 0fb64002           movzx eax,byte ptr [rax+2]</span><br><span class="line">00007ffc`ab6c1aad c3                 ret</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-3-IsDebuggerPresent-反反调试"><a href="#2-3-IsDebuggerPresent-反反调试" class="headerlink" title="2.3 IsDebuggerPresent() 反反调试"></a>2.3 IsDebuggerPresent() 反反调试</h2><p>&emsp;为了绕过<code>IsDebuggerPresent</code>检查机制，我们可以在检查代码执行之前，将<code>BeingDebugged</code>设置为0。</p>
+<p>&emsp;对于x86进程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov eax, dword ptr fs:[0x30]  </span><br><span class="line">mov byte ptr ds:[eax+2], 0</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;对于x64进程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DWORD64 dwpeb = __readgsqword(0x60);</span><br><span class="line">*((PBYTE)(dwpeb + 2)) = 0;</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-CheckRemoteDebuggerPresent"><a href="#3-CheckRemoteDebuggerPresent" class="headerlink" title="3. CheckRemoteDebuggerPresent()"></a>3. CheckRemoteDebuggerPresent()</h1><h2 id="3-1-CheckRemoteDebuggerPresent-反调试介绍"><a href="#3-1-CheckRemoteDebuggerPresent-反调试介绍" class="headerlink" title="3.1  CheckRemoteDebuggerPresent() 反调试介绍"></a>3.1  CheckRemoteDebuggerPresent() 反调试介绍</h2><p>&emsp;<code>CheckRemoteDebuggerPresent()</code>确定是否正在调试指定的进程；与<code>IsDebuggerPresent</code>函数不同，<a target="_blank" rel="noopener" href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms679280(v=vs.85).aspx">CheckRemoteDebuggerPresent</a>会检查进程是否被另一个并行进程调试。</p>
+<p>&emsp;CheckRemoteDebuggerPresent()实际是使用<code>ProcessDebugPort</code>方法的反调试。</p>
+<p>&emsp;<strong>CheckRemoteDebuggerPresent</strong>中的<code>远程</code>并不意味着调试器必须驻留在另一台计算机上。相反，它表示调试器驻留在单独的并行进程中。使用<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/desktop/api/debugapi/nf-debugapi-isdebuggerpresent">IsDebuggerPresent</a>函数检测调用进程是否在调试器下运行。</p>
+<p>&emsp;若要编译使用此功能的应用程序，请将_WIN32_WINNT宏定义为0x0501或更高版本。有关更多信息，请参见<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/desktop/WinProg/using-the-windows-headers">使用Windows标头</a>。</p>
+<p>&emsp;语法：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//参数1：判断是否被调试的进程句柄</span></span><br><span class="line"><span class="comment">//参数2：返回进程是否正在调试，如果正在调试指定的进程，则指向该函数设置为TRUE的变量的指针，否则为FALSE。</span></span><br><span class="line"><span class="comment">//返回值：如果成功，返回非0</span></span><br><span class="line"><span class="function">BOOL <span class="title">CheckRemoteDebuggerPresent</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  HANDLE hProcess,</span></span></span><br><span class="line"><span class="params"><span class="function">  PBOOL  pbDebuggerPresent</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-2-CheckRemoteDebuggerPresent-反调试"><a href="#3-2-CheckRemoteDebuggerPresent-反调试" class="headerlink" title="3.2 CheckRemoteDebuggerPresent()反调试"></a>3.2 CheckRemoteDebuggerPresent()反调试</h2><p>基于<code>CheckRemoteDebuggerPresent</code>的反调试技术示例代码如下所示：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    BOOL isDebuggerPresent = FALSE;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">CheckRemoteDebuggerPresent</span>(<span class="built_in">GetCurrentProcess</span>(), &amp;isDebuggerPresent ))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (isDebuggerPresent )</span><br><span class="line">        &#123;</span><br><span class="line">            std::cout &lt;&lt; <span class="string">&quot;Stop debugging program!&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>CheckRemoteDebuggerPresent</code>中会调用<code>NtQueryInformationProcess</code>函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">0:000&gt; uf kernelbase!CheckRemotedebuggerPresent</span><br><span class="line">KERNELBASE!CheckRemoteDebuggerPresent:</span><br><span class="line">...</span><br><span class="line">75207a24 6a00            push    0</span><br><span class="line">75207a26 6a04            push    4</span><br><span class="line">75207a28 8d45fc          lea     eax,[ebp-4]</span><br><span class="line">75207a2b 50              push    eax</span><br><span class="line">75207a2c 6a07            push    7</span><br><span class="line">75207a2e ff7508          push    dword ptr [ebp+8]</span><br><span class="line">75207a31 ff151c602775    call    dword ptr [KERNELBASE!_imp__NtQueryInformationProcess (7527601c)]</span><br><span class="line">75207a37 85c0            test    eax,eax</span><br><span class="line">75207a39 0f88607e0100    js      KERNELBASE!CheckRemoteDebuggerPresent+0x2b (7521f89f)</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;如果我们查看<a target="_blank" rel="noopener" href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms684280(v=vs.85).aspx">NtQueryInformationProcess</a>文档，就可知上面汇编代码中，因为<code>ProcessInformationClass</code>参数（第2个参数）值为7，<code>CheckRemoteDebuggerPresent</code>函数会被赋予<code>DebugPort</code>值。具体代码见本文中[<code>2.3.1 ProcessDebugPort章节</code>](#2.3.1 ProcessDebugPort(0x07))</p>
+<h2 id="3-3-CheckRemoteDebuggerPresent-反反调试"><a href="#3-3-CheckRemoteDebuggerPresent-反反调试" class="headerlink" title="3.3 CheckRemoteDebuggerPresent()反反调试"></a>3.3 CheckRemoteDebuggerPresent()反反调试</h2><p>&emsp;为了绕过<code>CheckRemoteDebuggerPresent</code>以及<code>NTQueryInformationProcess</code>，我们需要替换<code>NtQueryInformationProcess</code>函数的返回值。</p>
+<p>绕过CheckRemoteDebuggerPresent()反调试的代码详见本文中[2.3.2 绕过  ProcessDebugPort 反调试章节](#2.3.2 绕过  ProcessDebugPort 反调试)</p>
+<h1 id="4-NtQueryInformationProcess"><a href="#4-NtQueryInformationProcess" class="headerlink" title="4. NtQueryInformationProcess()"></a>4. NtQueryInformationProcess()</h1><h2 id="4-1-NtQueryInformationProcess-介绍"><a href="#4-1-NtQueryInformationProcess-介绍" class="headerlink" title="4.1 NtQueryInformationProcess()介绍"></a>4.1 NtQueryInformationProcess()介绍</h2><p>&emsp;NtQueryInformationProcess()是微软未公开的函数，我们可以控制其第二个参数的传入值，从函数返回值等信息判断进程是否正在被调试。</p>
+<p>检查进程是否被调试的第二个参数的参数值一共有 4 个，可以是：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ProcessDebugPort <span class="number">0x07</span></span><br><span class="line">ProcessDebugFlags <span class="number">0x1F</span></span><br><span class="line">ProcessDebugObjectHandle <span class="number">0x1E</span></span><br><span class="line">ProcessBasicInformation <span class="number">0x00</span></span><br></pre></td></tr></table></figure>
+
+<p>&emsp;<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/windows/win32/api/winternl/nf-winternl-ntqueryinformationprocess?redirectedfrom=MSDN">NtQueryInformationProcess()</a>在上面已经做了简单的介绍，基于NtQueryInformationProcess()的反调试技术还有很多，这里再详细介绍一下：</p>
+<p>&emsp;该函数检索有关指定进程的信息。该<strong>NtQueryInformationProcess</strong>功能和结构，它的返回信息会根据Windows版本和内部的操作系统而异。为了保持应用程序的兼容性，最好改用<em>ProcessInformationClass</em>参数的描述中提到的公共函数。</p>
+<p>如果您确实使用<strong>NtQueryInformationProcess</strong>，请通过<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/desktop/Dlls/using-run-time-dynamic-linking">运行时动态链接</a>访问该函数。如果功能已从操作系统更改或删除，这将使您的代码有机会优雅地响应。但是，签名更改可能无法检测到。</p>
+<p>此功能没有关联的导入库。您必须使用<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/desktop/api/libloaderapi/nf-libloaderapi-loadlibrarya">LoadLibrary</a>和<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/desktop/api/libloaderapi/nf-libloaderapi-getprocaddress">GetProcAddress</a>函数动态链接到Ntdll.dll。</p>
+<p>函数语法：详见&emsp;<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/windows/win32/api/winternl/nf-winternl-ntqueryinformationprocess?redirectedfrom=MSDN">NtQueryInformationProcess()</a></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">参数1：要检索其信息的进程的句柄。</span></span><br><span class="line"><span class="comment">参数2：要检索的过程信息的类型。该值可以是ProcessBasicInformation(0)、ProcessDebugPort(7)、ProcessWow64Information(26)、ProcessImageFileName(27)、ProcessBreakOnTermination(29)、ProcessSubsystemInformation(75)，该参数代表的具体含义可以到微软关于 NtQueryInformationProcess()函数的介绍网址上查看</span></span><br><span class="line"><span class="comment">参数3：指向由调用应用程序提供的缓冲区的指针，函数将请求的信息写入该缓冲区。写入的信息大小取决于ProcessInformationClass参数的数据类型</span></span><br><span class="line"><span class="comment">参数4：ProcessInformation参数所指向的缓冲区大小，以字节为单位。</span></span><br><span class="line"><span class="comment">参数5：指向变量的指针，函数在该变量中返回所请求信息的大小。如果函数成功，则此值是由ProcessInformation参数指向的写入缓冲区的信息的大小，但是如果缓冲区太小，则这是成功接收信息所需的缓冲区的最小大小。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function">__kernel_entry NTSTATUS <span class="title">NtQueryInformationProcess</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  IN HANDLE           ProcessHandle,</span></span></span><br><span class="line"><span class="params"><span class="function">  IN PROCESSINFOCLASS ProcessInformationClass,<span class="comment">//通过此参数传某些参数可以判断是否正在被调试</span></span></span></span><br><span class="line"><span class="params"><span class="function">  OUT PVOID           ProcessInformation,</span></span></span><br><span class="line"><span class="params"><span class="function">  IN ULONG            ProcessInformationLength,</span></span></span><br><span class="line"><span class="params"><span class="function">  OUT PULONG          ReturnLength</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-2-NtQueryInformationProcess-反调试"><a href="#4-2-NtQueryInformationProcess-反调试" class="headerlink" title="4.2 NtQueryInformationProcess()反调试"></a>4.2 NtQueryInformationProcess()反调试</h2><h3 id="4-2-1-ProcessDebugPort-0x07-反调试"><a href="#4-2-1-ProcessDebugPort-0x07-反调试" class="headerlink" title="4.2.1 ProcessDebugPort(0x07)反调试"></a>4.2.1 ProcessDebugPort(0x07)反调试</h3><p>&emsp;ProcessDebugPort是NtQueryInformationProcess()函数的第二个参数的值，表示检索<strong>DWORD_PTR</strong>值，该值是该进程的调试器的端口号。非零值表示该进程正在Ring 3调试器的控制下运行</p>
+<p>如下反调试示例代码就调用了<code>NtQueryInformationProcess</code>：</p>
+<p>代码1：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">NTSTATUS</span> <span class="params">(NTAPI *TNtQueryInformationProcess)</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    IN HANDLE           ProcessHandle,</span></span></span><br><span class="line"><span class="params"><span class="function">    IN PROCESSINFOCLASS ProcessInformationClass,</span></span></span><br><span class="line"><span class="params"><span class="function">    OUT PVOID           ProcessInformation,</span></span></span><br><span class="line"><span class="params"><span class="function">    IN ULONG            ProcessInformationLength,</span></span></span><br><span class="line"><span class="params"><span class="function">    OUT PULONG          ReturnLength</span></span></span><br><span class="line"><span class="params"><span class="function">    )</span></span>;</span><br><span class="line"></span><br><span class="line">HMODULE hNtdll = <span class="built_in">LoadLibraryA</span>(<span class="string">&quot;ntdll.dll&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> (hNtdll)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">auto</span> pfnNtQueryInformationProcess = (TNtQueryInformationProcess)<span class="built_in">GetProcAddress</span>(</span><br><span class="line">        hNtdll, <span class="string">&quot;NtQueryInformationProcess&quot;</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (pfnNtQueryInformationProcess)</span><br><span class="line">    &#123;</span><br><span class="line">        DWORD dwProcessDebugPort, dwReturned;</span><br><span class="line">        NTSTATUS status = <span class="built_in">pfnNtQueryInformationProcess</span>(</span><br><span class="line">            <span class="built_in">GetCurrentProcess</span>(),</span><br><span class="line">            ProcessDebugPort,</span><br><span class="line">            &amp;dwProcessDebugPort,</span><br><span class="line">            <span class="built_in"><span class="keyword">sizeof</span></span>(DWORD),</span><br><span class="line">            &amp;dwReturned);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">NT_SUCCESS</span>(status) &amp;&amp; (<span class="number">-1</span> == dwProcessDebugPort))</span><br><span class="line">        &#123;</span><br><span class="line">            std::cout &lt;&lt; <span class="string">&quot;Stop debugging program!&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">            <span class="built_in">ExitProcess</span>(<span class="number">-1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">            </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码2：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">NTSTATUS</span><span class="params">(NTAPI *pfnNtQueryInformationProcess)</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    _In_      HANDLE           ProcessHandle,</span></span></span><br><span class="line"><span class="params"><span class="function">    _In_      UINT             ProcessInformationClass,</span></span></span><br><span class="line"><span class="params"><span class="function">    _Out_     PVOID            ProcessInformation,</span></span></span><br><span class="line"><span class="params"><span class="function">    _In_      ULONG            ProcessInformationLength,</span></span></span><br><span class="line"><span class="params"><span class="function">    _Out_opt_ PULONG           ReturnLength</span></span></span><br><span class="line"><span class="params"><span class="function">    )</span></span>;</span><br><span class="line"><span class="keyword">const</span> UINT ProcessDebugPort = <span class="number">7</span>;<span class="comment">//这个参数=7表示：检索DWORD_PTR值，该值是该进程的调试器的端口号。非零值表示该进程正在Ring 3调试器的控制下运行。</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    pfnNtQueryInformationProcess NtQueryInformationProcess = <span class="literal">NULL</span>;</span><br><span class="line">    NTSTATUS status;</span><br><span class="line">    DWORD isDebuggerPresent = <span class="number">0</span>;</span><br><span class="line">    HMODULE hNtDll = <span class="built_in">LoadLibrary</span>(<span class="built_in">TEXT</span>(<span class="string">&quot;ntdll.dll&quot;</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> != hNtDll)</span><br><span class="line">    &#123;</span><br><span class="line">        NtQueryInformationProcess = (pfnNtQueryInformationProcess)<span class="built_in">GetProcAddress</span>(hNtDll, <span class="string">&quot;NtQueryInformationProcess&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">NULL</span> != NtQueryInformationProcess)</span><br><span class="line">        &#123;</span><br><span class="line">            status = <span class="built_in">NtQueryInformationProcess</span>(</span><br><span class="line">                <span class="built_in">GetCurrentProcess</span>(),</span><br><span class="line">                ProcessDebugPort,</span><br><span class="line">                &amp;isDebuggerPresent,</span><br><span class="line">                <span class="built_in"><span class="keyword">sizeof</span></span>(DWORD),</span><br><span class="line">                <span class="literal">NULL</span>);</span><br><span class="line">            <span class="keyword">if</span> (status == <span class="number">0x00000000</span> &amp;&amp; isDebuggerPresent != <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                std::cout &lt;&lt; <span class="string">&quot;Stop debugging program!&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>x86代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> lea eax, [dwReturned]</span><br><span class="line">    push eax ; ReturnLength</span><br><span class="line">    push 4   ; ProcessInformationLength</span><br><span class="line">    lea ecx, [dwProcessDebugPort]</span><br><span class="line">    push ecx ; ProcessInformation</span><br><span class="line">    push 7   ; ProcessInformationClass</span><br><span class="line">    push -1  ; ProcessHandle</span><br><span class="line">    call NtQueryInformationProcess</span><br><span class="line">    inc dword ptr [dwProcessDebugPort]</span><br><span class="line">    jz being_debugged</span><br><span class="line">    ...</span><br><span class="line">being_debugged:</span><br><span class="line">    push -1</span><br><span class="line">    call ExitProcess </span><br></pre></td></tr></table></figure>
+
+<p>x64代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">lea rcx, [dwReturned]</span><br><span class="line">    push rcx    ; ReturnLength</span><br><span class="line">    mov r9d, 4  ; ProcessInformationLength</span><br><span class="line">    lea r8, [dwProcessDebugPort] </span><br><span class="line">                ; ProcessInformation</span><br><span class="line">    mov edx, 7  ; ProcessInformationClass</span><br><span class="line">    mov rcx, -1 ; ProcessHandle</span><br><span class="line">    call NtQueryInformationProcess</span><br><span class="line">    cmp dword ptr [dwProcessDebugPort], -1</span><br><span class="line">    jz being_debugged</span><br><span class="line">    ...</span><br><span class="line">being_debugged:</span><br><span class="line">    mov ecx, -1</span><br><span class="line">    call ExitProcess</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-2-ProcessDebugFlags-0x1f-反调试"><a href="#4-2-2-ProcessDebugFlags-0x1f-反调试" class="headerlink" title="4.2.2  ProcessDebugFlags(0x1f)反调试"></a>4.2.2  ProcessDebugFlags(0x1f)反调试</h3><p>&emsp;该反调试原理为<code>NtQueryInformationProcess</code>会返回<code>EPROCESS</code>内核结构中<code>NoDebugInherit</code>位的取反值。如果<code>NtQueryInformationProcess</code>函数的返回值为0，那么该进程正在被调试。</p>
+<p>&emsp;表示过程对象的称为<a target="_blank" rel="noopener" href="https://www.nirsoft.net/kernel_struct/vista/EPROCESS.html">EPROCESS</a>的内核结构包含字段<code>NoDebugInherit</code>。可以使用未记录的类<code>ProcessDebugFlags</code>（<code>0x1f</code>）检索此字段的逆值。因此，如果返回值为<code>0</code>，则存在调试器。</p>
+<p>&emsp;c++代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">status = <span class="built_in">NtQueryInformationProcess</span>(</span><br><span class="line">    <span class="built_in">GetCurrentProcess</span>(),</span><br><span class="line">    ProcessDebugFlags,</span><br><span class="line">    &amp;debugFlags,</span><br><span class="line">    <span class="built_in"><span class="keyword">sizeof</span></span>(ULONG),</span><br><span class="line">    <span class="literal">NULL</span>);</span><br><span class="line"><span class="keyword">if</span> (<span class="number">0x00000000</span> == status &amp;&amp; <span class="literal">NULL</span> != debugFlags)</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Stop debugging program!&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码2：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">NTSTATUS</span><span class="params">(NTAPI *TNtQueryInformationProcess)</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    IN HANDLE           ProcessHandle,</span></span></span><br><span class="line"><span class="params"><span class="function">    IN DWORD            ProcessInformationClass,</span></span></span><br><span class="line"><span class="params"><span class="function">    OUT PVOID           ProcessInformation,</span></span></span><br><span class="line"><span class="params"><span class="function">    IN ULONG            ProcessInformationLength,</span></span></span><br><span class="line"><span class="params"><span class="function">    OUT PULONG          ReturnLength</span></span></span><br><span class="line"><span class="params"><span class="function">    )</span></span>;</span><br><span class="line"></span><br><span class="line">HMODULE hNtdll = <span class="built_in">LoadLibraryA</span>(<span class="string">&quot;ntdll.dll&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> (hNtdll)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">auto</span> pfnNtQueryInformationProcess = (TNtQueryInformationProcess)<span class="built_in">GetProcAddress</span>(</span><br><span class="line">        hNtdll, <span class="string">&quot;NtQueryInformationProcess&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pfnNtQueryInformationProcess)</span><br><span class="line">    &#123;</span><br><span class="line">        DWORD dwProcessDebugFlags, dwReturned;</span><br><span class="line">        <span class="keyword">const</span> DWORD ProcessDebugFlags = <span class="number">0x1f</span>;</span><br><span class="line">        NTSTATUS status = <span class="built_in">pfnNtQueryInformationProcess</span>(</span><br><span class="line">            <span class="built_in">GetCurrentProcess</span>(),</span><br><span class="line">            ProcessDebugFlags,<span class="comment">//注意此参数为0x1f</span></span><br><span class="line">            &amp;dwProcessDebugFlags,</span><br><span class="line">            <span class="built_in"><span class="keyword">sizeof</span></span>(DWORD),</span><br><span class="line">            &amp;dwReturned);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">NT_SUCCESS</span>(status) &amp;&amp; (<span class="number">0</span> == dwProcessDebugFlags))</span><br><span class="line">            <span class="built_in">ExitProcess</span>(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>X86汇编：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> lea eax, [dwReturned]</span><br><span class="line">    push eax ; ReturnLength</span><br><span class="line">    push 4   ; ProcessInformationLength</span><br><span class="line">    lea ecx, [dwProcessDebugPort]</span><br><span class="line">    push ecx ; ProcessInformation</span><br><span class="line">    push 1Fh ; ProcessInformationClass //此参数</span><br><span class="line">    push -1  ; ProcessHandle</span><br><span class="line">    call NtQueryInformationProcess</span><br><span class="line">    cmp dword ptr [dwProcessDebugPort], 0</span><br><span class="line">    jz being_debugged</span><br><span class="line">    ...</span><br><span class="line">being_debugged:</span><br><span class="line">    push -1</span><br><span class="line">    call ExitProcess</span><br></pre></td></tr></table></figure>
+
+<p>x64汇编：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">lea rcx, [dwReturned]</span><br><span class="line">    push rcx     ; ReturnLength</span><br><span class="line">    mov r9d, 4   ; ProcessInformationLength</span><br><span class="line">    lea r8, [dwProcessDebugPort] </span><br><span class="line">                 ; ProcessInformation</span><br><span class="line">    mov edx, 1Fh ; ProcessInformationClass</span><br><span class="line">    mov rcx, -1  ; ProcessHandle</span><br><span class="line">    call NtQueryInformationProcess</span><br><span class="line">    cmp dword ptr [dwProcessDebugPort], 0</span><br><span class="line">    jz being_debugged</span><br><span class="line">    ...</span><br><span class="line">being_debugged:</span><br><span class="line">    mov ecx, -1</span><br><span class="line">    call ExitProcess</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-3-ProcessDebugObjectHandle-0x1e-反调试"><a href="#4-2-3-ProcessDebugObjectHandle-0x1e-反调试" class="headerlink" title="4.2.3  ProcessDebugObjectHandle(0x1e)反调试"></a>4.2.3  ProcessDebugObjectHandle(0x1e)反调试</h3><p>&emsp;调试开始时，将创建一个称为“调试对象”的内核对象。可以通过使用未记录的ProcessDebugObjectHandle（0x1e）类来查询此句柄的值。</p>
+<p>c++代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">status = <span class="built_in">NtQueryInformationProcess</span>(</span><br><span class="line">            <span class="built_in">GetCurrentProcess</span>(),</span><br><span class="line">            ProcessDebugObjectHandle,<span class="comment">//此值为 0x1e</span></span><br><span class="line">            &amp;hProcessDebugObject,</span><br><span class="line">            <span class="built_in"><span class="keyword">sizeof</span></span>(HANDLE),</span><br><span class="line">            <span class="literal">NULL</span>);</span><br><span class="line"><span class="keyword">if</span> (<span class="number">0x00000000</span> == status &amp;&amp; <span class="literal">NULL</span> != hProcessDebugObject)</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Stop debugging program!&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码2：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">NTSTATUS</span><span class="params">(NTAPI * TNtQueryInformationProcess)</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    IN HANDLE           ProcessHandle,</span></span></span><br><span class="line"><span class="params"><span class="function">    IN DWORD            ProcessInformationClass,</span></span></span><br><span class="line"><span class="params"><span class="function">    OUT PVOID           ProcessInformation,</span></span></span><br><span class="line"><span class="params"><span class="function">    IN ULONG            ProcessInformationLength,</span></span></span><br><span class="line"><span class="params"><span class="function">    OUT PULONG          ReturnLength</span></span></span><br><span class="line"><span class="params"><span class="function">    )</span></span>;</span><br><span class="line"></span><br><span class="line">HMODULE hNtdll = <span class="built_in">LoadLibraryA</span>(<span class="string">&quot;ntdll.dll&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> (hNtdll)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">auto</span> pfnNtQueryInformationProcess = (TNtQueryInformationProcess)<span class="built_in">GetProcAddress</span>(</span><br><span class="line">        hNtdll, <span class="string">&quot;NtQueryInformationProcess&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pfnNtQueryInformationProcess)</span><br><span class="line">    &#123;</span><br><span class="line">        DWORD dwReturned;</span><br><span class="line">        HANDLE hProcessDebugObject = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">const</span> DWORD ProcessDebugObjectHandle = <span class="number">0x1e</span>;<span class="comment">//注意此参数</span></span><br><span class="line">        NTSTATUS status = <span class="built_in">pfnNtQueryInformationProcess</span>(</span><br><span class="line">            <span class="built_in">GetCurrentProcess</span>(),</span><br><span class="line">            ProcessDebugObjectHandle,</span><br><span class="line">            &amp;hProcessDebugObject,</span><br><span class="line">            <span class="built_in"><span class="keyword">sizeof</span></span>(HANDLE),</span><br><span class="line">            &amp;dwReturned);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">NT_SUCCESS</span>(status) &amp;&amp; (<span class="number">0</span> != hProcessDebugObject))</span><br><span class="line">            <span class="built_in">ExitProcess</span>(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>x86汇编：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">lea eax, [dwReturned]</span><br><span class="line">    push eax ; ReturnLength</span><br><span class="line">    push 4   ; ProcessInformationLength</span><br><span class="line">    lea ecx, [hProcessDebugObject]</span><br><span class="line">    push ecx ; ProcessInformation</span><br><span class="line">    push 1Eh ; ProcessInformationClass</span><br><span class="line">    push -1  ; ProcessHandle</span><br><span class="line">    call NtQueryInformationProcess</span><br><span class="line">    cmp dword ptr [hProcessDebugObject], 0</span><br><span class="line">    jnz being_debugged</span><br><span class="line">    ...</span><br><span class="line">being_debugged:</span><br><span class="line">    push -1</span><br><span class="line">    call ExitProcess</span><br></pre></td></tr></table></figure>
+
+<p>x64汇编</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">lea rcx, [dwReturned]</span><br><span class="line">    push rcx     ; ReturnLength</span><br><span class="line">    mov r9d, 4   ; ProcessInformationLength</span><br><span class="line">    lea r8, [hProcessDebugObject] </span><br><span class="line">                 ; ProcessInformation</span><br><span class="line">    mov edx, 1Fh ; ProcessInformationClass</span><br><span class="line">    mov rcx, -1  ; ProcessHandle</span><br><span class="line">    call NtQueryInformationProcess</span><br><span class="line">    cmp dword ptr [hProcessDebugObject], 0</span><br><span class="line">    jnz being_debugged</span><br><span class="line">    ...</span><br><span class="line">being_debugged:</span><br><span class="line">    mov ecx, -1</span><br><span class="line">    call ExitProcess</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-4-ProcessBasicInformation-0x00-反调试"><a href="#4-2-4-ProcessBasicInformation-0x00-反调试" class="headerlink" title="4.2.4  ProcessBasicInformation(0x00)反调试"></a>4.2.4  ProcessBasicInformation(0x00)反调试</h3><p>&emsp;当使用<code>ProcessBasicInformation</code>标志来调用<code>NtQueryInformationProcess</code>函数时，就会返回<code>PROCESS_BASIC_INFORMATION</code>结构体：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">PROCESS_BASIC_INFORMATION</span> &#123;</span></span><br><span class="line">    NTSTATUS ExitStatus;</span><br><span class="line">    PVOID PebBaseAddress;</span><br><span class="line">    ULONG_PTR AffinityMask;</span><br><span class="line">    KPRIORITY BasePriority;</span><br><span class="line">    HANDLE UniqueProcessId;</span><br><span class="line">    HANDLE InheritedFromUniqueProcessId;</span><br><span class="line">&#125; PROCESS_BASIC_INFORMATION, *PPROCESS_BASIC_INFORMATION;</span><br></pre></td></tr></table></figure>
+
+<p>这个结构体中最有意思的就是<code>InheritedFromUniqueProcessId</code>字段。这里我们需要获取父进程的名称，然后将其与常用的调试器进行对比。使用这种方法的反调试技术代码如下所示：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::wstring <span class="title">GetProcessNameById</span><span class="params">(DWORD pid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    HANDLE hProcessSnap = <span class="built_in">CreateToolhelp32Snapshot</span>(TH32CS_SNAPPROCESS, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (hProcessSnap == INVALID_HANDLE_VALUE)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    PROCESSENTRY32 pe32;</span><br><span class="line">    pe32.dwSize = <span class="built_in"><span class="keyword">sizeof</span></span>(PROCESSENTRY32);</span><br><span class="line">    std::wstring processName = <span class="string">L&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">Process32First</span>(hProcessSnap, &amp;pe32))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">CloseHandle</span>(hProcessSnap);</span><br><span class="line">        <span class="keyword">return</span> processName;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (pe32.th32ProcessID == pid)</span><br><span class="line">        &#123;</span><br><span class="line">            processName = pe32.szExeFile;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span> (<span class="built_in">Process32Next</span>(hProcessSnap, &amp;pe32));</span><br><span class="line"></span><br><span class="line">    <span class="built_in">CloseHandle</span>(hProcessSnap);</span><br><span class="line">    <span class="keyword">return</span> processName;</span><br><span class="line">&#125;</span><br><span class="line">status = <span class="built_in">NtQueryInformationProcess</span>(</span><br><span class="line">    <span class="built_in">GetCurrentProcess</span>(),</span><br><span class="line">    ProcessBasicInformation,<span class="comment">//此参数 0x00</span></span><br><span class="line">    &amp;processBasicInformation,</span><br><span class="line">    <span class="built_in"><span class="keyword">sizeof</span></span>(PROCESS_BASIC_INFORMATION),</span><br><span class="line">    <span class="literal">NULL</span>);</span><br><span class="line">std::wstring parentProcessName = <span class="built_in">GetProcessNameById</span>((DWORD)processBasicInformation.InheritedFromUniqueProcessId);</span><br><span class="line"><span class="keyword">if</span> (<span class="string">L&quot;devenv.exe&quot;</span> == parentProcessName)<span class="comment">//也可以反向比较父进程的名称不是本进程名称就退出</span></span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Stop debugging program!&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-3-NtQueryInformationProcess-反反调试"><a href="#4-3-NtQueryInformationProcess-反反调试" class="headerlink" title="4.3  NtQueryInformationProcess() 反反调试"></a>4.3  NtQueryInformationProcess() 反反调试</h2><p>&emsp;绕过<code>NtQueryInformationProcess</code>检查的方法非常简单。我们需要修改<code>NtQueryInformationProcess</code>函数的返回值，修改成调试器不存在的值即可：</p>
+<ol>
+<li>将<code>ProcessDebugObjectHandle</code>设置为0；</li>
+<li>将<code>ProcessDebugFlags</code>设置为1；</li>
+<li>对于<code>ProcessBasicInformation</code>，将<code>InheritedFromUniqueProcessId</code>的值修改为其他进程的ID。</li>
+</ol>
+<h3 id="4-3-1-ProcessDebugPort-反反调试"><a href="#4-3-1-ProcessDebugPort-反反调试" class="headerlink" title="4.3.1  ProcessDebugPort 反反调试"></a>4.3.1  ProcessDebugPort 反反调试</h3><p>&emsp;我们可以使用<a target="_blank" rel="noopener" href="https://github.com/martona/mhook">mhook</a>来完成这个任务。为了设置hook，我们需要将DLL注入被调试的进程，然后使用mhook在<code>DLLMain</code>中设置hook。</p>
+<p>&emsp;使用mhook的示例代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;mhook.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">NTSTATUS</span><span class="params">(NTAPI *pfnNtQueryInformationProcess)</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    _In_      HANDLE           ProcessHandle,</span></span></span><br><span class="line"><span class="params"><span class="function">    _In_      UINT             ProcessInformationClass,</span></span></span><br><span class="line"><span class="params"><span class="function">    _Out_     PVOID            ProcessInformation,</span></span></span><br><span class="line"><span class="params"><span class="function">    _In_      ULONG            ProcessInformationLength,</span></span></span><br><span class="line"><span class="params"><span class="function">    _Out_opt_ PULONG           ReturnLength</span></span></span><br><span class="line"><span class="params"><span class="function">    )</span></span>;</span><br><span class="line"><span class="keyword">const</span> UINT ProcessDebugPort = <span class="number">7</span>;</span><br><span class="line">pfnNtQueryInformationProcess g_origNtQueryInformationProcess = <span class="literal">NULL</span>;</span><br><span class="line"><span class="function">NTSTATUS NTAPI <span class="title">HookNtQueryInformationProcess</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    _In_      HANDLE           ProcessHandle,</span></span></span><br><span class="line"><span class="params"><span class="function">    _In_      UINT             ProcessInformationClass,</span></span></span><br><span class="line"><span class="params"><span class="function">    _Out_     PVOID            ProcessInformation,</span></span></span><br><span class="line"><span class="params"><span class="function">    _In_      ULONG            ProcessInformationLength,</span></span></span><br><span class="line"><span class="params"><span class="function">    _Out_opt_ PULONG           ReturnLength</span></span></span><br><span class="line"><span class="params"><span class="function">    )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    NTSTATUS status = <span class="built_in">g_origNtQueryInformationProcess</span>(</span><br><span class="line">        ProcessHandle,</span><br><span class="line">        ProcessInformationClass,</span><br><span class="line">        ProcessInformation,</span><br><span class="line">        ProcessInformationLength,</span><br><span class="line">        ReturnLength);</span><br><span class="line">    <span class="keyword">if</span> (status == <span class="number">0x00000000</span> &amp;&amp; ProcessInformationClass == ProcessDebugPort)</span><br><span class="line">    &#123;</span><br><span class="line">        *((PDWORD_PTR)ProcessInformation) = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> status;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">DWORD <span class="title">SetupHook</span><span class="params">(PVOID pvContext)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    HMODULE hNtDll = <span class="built_in">LoadLibrary</span>(<span class="built_in">TEXT</span>(<span class="string">&quot;ntdll.dll&quot;</span>));</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> != hNtDll)</span><br><span class="line">    &#123;</span><br><span class="line">        g_origNtQueryInformationProcess = (pfnNtQueryInformationProcess)<span class="built_in">GetProcAddress</span>(hNtDll, <span class="string">&quot;NtQueryInformationProcess&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">NULL</span> != g_origNtQueryInformationProcess)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">Mhook_SetHook</span>((PVOID*)&amp;g_origNtQueryInformationProcess, HookNtQueryInformationProcess);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">BOOL WINAPI <span class="title">DllMain</span><span class="params">(HINSTANCE hInstDLL, DWORD fdwReason, LPVOID lpvReserved)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in"><span class="keyword">switch</span></span> (fdwReason)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">case</span> DLL_PROCESS_ATTACH:</span><br><span class="line">        <span class="built_in">DisableThreadLibraryCalls</span>(hInstDLL);</span><br><span class="line">        <span class="built_in">CreateThread</span>(<span class="literal">NULL</span>, <span class="literal">NULL</span>, (LPTHREAD_START_ROUTINE)SetupHook, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">        <span class="built_in">Sleep</span>(<span class="number">20</span>);</span><br><span class="line">    <span class="keyword">case</span> DLL_PROCESS_DETACH:</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">NULL</span> != g_origNtQueryInformationProcess)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">Mhook_Unhook</span>((PVOID*)&amp;g_origNtQueryInformationProcess);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> TRUE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-2-ProcessDebugFlags反反调试"><a href="#4-3-2-ProcessDebugFlags反反调试" class="headerlink" title="4.3.2 ProcessDebugFlags反反调试"></a>4.3.2 ProcessDebugFlags反反调试</h3><p>&emsp;绕过ProcessDebugFlags反调试的手段和绕过 ProcessDebugPort 反调试的原理相同(详见  [2.3.2 绕过  ProcessDebugPort 反调试 章节](#4.3.1  ProcessDebugPort 反反调试)，只需要将<code>ProcessDebugPort=0x07</code>常量替换为<code>ProcessDebugFlags=0x1f</code>就可以。</p>
+<h3 id="4-3-3-ProcessDebugObjectHandle反反调试"><a href="#4-3-3-ProcessDebugObjectHandle反反调试" class="headerlink" title="4.3.3 ProcessDebugObjectHandle反反调试"></a>4.3.3 ProcessDebugObjectHandle反反调试</h3><p>&emsp;绕过ProcessDebugObjectHandle反调试的手段和绕过 ProcessDebugPort 反调试的原理相同(详见  [2.3.2 绕过  ProcessDebugPort 反调试 章节](#4.3.1  ProcessDebugPort 反反调试)，只需要将<code>ProcessDebugPort=0x07</code>常量替换为<code>ProcessDebugObjectHandle=0x1e</code>就可以。</p>
+<h3 id="4-3-4-ProcessBasicInformation反反调试"><a href="#4-3-4-ProcessBasicInformation反反调试" class="headerlink" title="4.3.4 ProcessBasicInformation反反调试"></a>4.3.4 ProcessBasicInformation反反调试</h3><p>&emsp;绕过ProcessBasicInformation反调试的方法要灵活多变，最好的办法就是替换比较的进程名称。</p>
+<h1 id="5-RtlQueryProcessHeapInformation-反调试"><a href="#5-RtlQueryProcessHeapInformation-反调试" class="headerlink" title="5. RtlQueryProcessHeapInformation()反调试"></a>5. RtlQueryProcessHeapInformation()反调试</h1><h2 id="5-1-RtlQueryProcessHeapInformation-函数介绍"><a href="#5-1-RtlQueryProcessHeapInformation-函数介绍" class="headerlink" title="5.1 RtlQueryProcessHeapInformation()函数介绍"></a>5.1 RtlQueryProcessHeapInformation()函数介绍</h2><p>&emsp;RtlQueryProcessHeapInformation()属于微软未公开的函数；</p>
+<p>语法如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTAPI <span class="title">RtlQueryProcessHeapInformation</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    PDEBUG_BUFFER   pDebugBuffer </span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>&emsp;在反调试代码中使用到了<code>RtlCreateQueryDebugBuffer()</code>函数，该函数在成功的情况下分配用于存储堆数据的缓冲区，它返回指向分配的调试缓冲区的指针。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//RtlCreateQueryDebugBuffer 在成功的情况下分配用于存储堆数据的缓冲区，它返回指向分配的调试缓冲区的指针</span></span><br><span class="line"><span class="function">PDEBUG_BUFFER NTAPI <span class="title">RtlCreateQueryDebugBuffer</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    IN ULONG Size,</span></span></span><br><span class="line"><span class="params"><span class="function">    IN BOOLEAN EventPair)</span> </span></span><br></pre></td></tr></table></figure>
+
+<p>&emsp;调试缓冲区的声明如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">DEBUG_BUFFER</span> &#123;</span></span><br><span class="line">HANDLE  SectionHandle;</span><br><span class="line">PVOID  SectionBase;</span><br><span class="line">PVOID  RemoteSectionBase;</span><br><span class="line">ULONG  SectionBaseDelta;</span><br><span class="line">HANDLE  EventPairHandle;</span><br><span class="line">ULONG  Unknown[<span class="number">2</span>];</span><br><span class="line">HANDLE  RemoteThreadHandle;</span><br><span class="line">ULONG  InfoClassMask;</span><br><span class="line">ULONG  SizeOfInfo;</span><br><span class="line">ULONG  AllocatedSize;</span><br><span class="line">ULONG  SectionSize;</span><br><span class="line">PVOID  ModuleInformation;</span><br><span class="line">PVOID  BackTraceInformation;</span><br><span class="line">PVOID  HeapInformation;</span><br><span class="line">PVOID  LockInformation;</span><br><span class="line">PVOID  Reserved[<span class="number">8</span>];</span><br><span class="line">&#125; DEBUG_BUFFER, *PDEBUG_BUFFER;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;分配缓冲区后，我们可以调用堆进程调试信息，可以调用<strong>RtlQueryProcessDebugInformation</strong>来加载进程的所有堆块。此函数加载整个堆节点和进程的相应堆块。调试缓冲区包含指向偏移量为0x38的堆信息结构的指针。该堆结构的第一个参数是节点数，其后包含代表每个堆节点的<strong>DEBUG_HEAP_INFORMATION</strong>结构的数组。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">DEBUG_HEAP_INFORMATION</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">ULONG Base; <span class="comment">// 0x00</span></span><br><span class="line">ULONG Flags; <span class="comment">// 0x04</span></span><br><span class="line">USHORT Granularity; <span class="comment">// 0x08</span></span><br><span class="line">USHORT Unknown; <span class="comment">// 0x0A</span></span><br><span class="line">ULONG Allocated; <span class="comment">// 0x0C</span></span><br><span class="line">ULONG Committed; <span class="comment">// 0x10</span></span><br><span class="line">ULONG TagCount; <span class="comment">// 0x14</span></span><br><span class="line">ULONG BlockCount; <span class="comment">// 0x18</span></span><br><span class="line">ULONG Reserved[<span class="number">7</span>]; <span class="comment">// 0x1C</span></span><br><span class="line">PVOID Tags; <span class="comment">// 0x38</span></span><br><span class="line">PVOID Blocks; <span class="comment">// 0x3C Heap block pointer for this node.</span></span><br><span class="line">&#125; DEBUG_HEAP_INFORMATION, *PDEBUG_HEAP_INFORMATION;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-2-RtlQueryProcessHeapInformation-反调试"><a href="#5-2-RtlQueryProcessHeapInformation-反调试" class="headerlink" title="5.2 RtlQueryProcessHeapInformation()反调试"></a>5.2 RtlQueryProcessHeapInformation()反调试</h2><p>c/c++代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">Check</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ntdll::PDEBUG_BUFFER pDebugBuffer = ntdll::<span class="built_in">RtlCreateQueryDebugBuffer</span>(<span class="number">0</span>, FALSE);</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">SUCCEEDED</span>(ntdll::<span class="built_in">RtlQueryProcessHeapInformation</span>((ntdll::PRTL_DEBUG_INFORMATION)pDebugBuffer)))</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    ULONG dwFlags = ((ntdll::PRTL_PROCESS_HEAPS)pDebugBuffer-&gt;HeapInformation)-&gt;Heaps[<span class="number">0</span>].Flags;</span><br><span class="line">    <span class="keyword">return</span> dwFlags &amp; ~HEAP_GROWABLE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-3-RtlQueryProcessHeapInformation-反反调试"><a href="#5-3-RtlQueryProcessHeapInformation-反反调试" class="headerlink" title="5.3  RtlQueryProcessHeapInformation()反反调试"></a>5.3  RtlQueryProcessHeapInformation()反反调试</h2><p>&emsp;对于RtlQueryProcessHeapInformation()反反调试的唯一方法是<code>HOOK 函数的返回值</code>。</p>
+<blockquote>
+<p><code>RTL_PROCESS_HEAPS::HeapInformation::Heaps[0]::Flags</code> to <code>HEAP_GROWABLE</code> for<br><code>RtlQueryProcessHeapInformation()</code>.</p>
+</blockquote>
+<h1 id="6-RtlQueryProcessDebugInformation"><a href="#6-RtlQueryProcessDebugInformation" class="headerlink" title="6.  RtlQueryProcessDebugInformation()"></a>6.  RtlQueryProcessDebugInformation()</h1><h2 id="6-1-RtlQueryProcessDebugInformation-函数介绍"><a href="#6-1-RtlQueryProcessDebugInformation-函数介绍" class="headerlink" title="6.1 RtlQueryProcessDebugInformation()函数介绍"></a>6.1 RtlQueryProcessDebugInformation()函数介绍</h2><p>&emsp;<code>NTDLL::RtlQueryProcessDebugInformation()</code>函数可以被用来读取来自所请求的处理的处理存储器中的某些字段，包括堆标志。</p>
+<p>语法如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTSTATUS</span></span><br><span class="line"><span class="function">NTAPI</span></span><br><span class="line"><span class="function"><span class="title">RtlQueryProcessDebugInformation</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">IN ULONG ProcessId，</span></span></span><br><span class="line"><span class="params"><span class="function">IN ULONG DebugInfoClassMask，</span></span></span><br><span class="line"><span class="params"><span class="function">IN OUT PDEBUG_BUFFER DebugBuffer)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="6-2-RtlQueryProcessDebugInformation-反调试"><a href="#6-2-RtlQueryProcessDebugInformation-反调试" class="headerlink" title="6.2 RtlQueryProcessDebugInformation()反调试"></a>6.2 RtlQueryProcessDebugInformation()反调试</h2><p>&emsp;使用RtlQueryProcessDebugInformation()函数的反调试依然使用了<code>RtlCreateQueryDebugBuffer()</code>函数；</p>
+<p>c/c++代码如下;</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">Check</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ntdll::PDEBUG_BUFFER pDebugBuffer = ntdll::RtlCreateQueryDebugBuffer(<span class="number">0</span>, FALSE);</span><br><span class="line">    <span class="keyword">if</span> (!SUCCEEDED(ntdll::RtlQueryProcessDebugInformation(GetCurrentProcessId(), ntdll::PDI_HEAPS | ntdll::PDI_HEAP_BLOCKS, pDebugBuffer)))</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    ULONG dwFlags = ((ntdll::PRTL_PROCESS_HEAPS)pDebugBuffer-&gt;HeapInformation)-&gt;Heaps[<span class="number">0</span>].Flags;</span><br><span class="line">    <span class="keyword">return</span> dwFlags &amp; ~HEAP_GROWABLE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="6-3-RtlQueryProcessDebugInformation-反反调试"><a href="#6-3-RtlQueryProcessDebugInformation-反反调试" class="headerlink" title="6.3  RtlQueryProcessDebugInformation()反反调试"></a>6.3  RtlQueryProcessDebugInformation()反反调试</h2><p>&emsp;对于RtlQueryProcessDebugInformation()反反调试的唯一方法是<code>HOOK 函数的返回值</code>。</p>
+<blockquote>
+<p><code>RTL_PROCESS_HEAPS::HeapInformation::Heaps[0]::Flags</code> to <code>HEAP_GROWABLE</code> for<br> <code>RtlQueryProcessDebugInformation()</code>.</p>
+</blockquote>
+<h1 id="7-NtQuerySystemInformation"><a href="#7-NtQuerySystemInformation" class="headerlink" title="7. NtQuerySystemInformation()"></a>7. NtQuerySystemInformation()</h1><h2 id="7-1-NtQuerySystemInformation-函数介绍"><a href="#7-1-NtQuerySystemInformation-函数介绍" class="headerlink" title="7.1  NtQuerySystemInformation()函数介绍"></a>7.1  NtQuerySystemInformation()函数介绍</h2><p>&emsp;<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntquerysysteminformation"><code>NTDLL::NtQuerySystemInformation()</code></a>函数检索指定的系统信息。其第一个参数表示指示要检索的系统信息的类型，第一个参数的值大多数未记录。这包括SystemKernelDebuggerInformation（0x23），该类型从Windows NT开始就存在。其在SystemKernelDebuggerInformation返回两个标志的值：KdDebuggerEnabled的后两个字节(al)和KdDebuggerNotPresent的前两个字节(ah)。因此，如果存在内核调试器，则ah中的返回值为零。</p>
+<p>函数语法：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">参数1：SYSTEM_INFORMATION_CLASS中枚举的值之一，指示要检索的系统信息的类型。该函数用于检测程序</span></span><br><span class="line"><span class="comment">参数2：指向接收所请求信息的缓冲区的指针。此信息的大小和结构取决于SystemInformationClass参数的值 ：</span></span><br><span class="line"><span class="comment">参数3：SystemInformation参数指向的缓冲区大小，以字节为单位。</span></span><br><span class="line"><span class="comment">参数4：指向函数写入请求信息实际大小的位置的可选指针。如果该大小小于或等于</span></span><br><span class="line"><span class="comment">SystemInformationLength参数，则该函数将信息复制到SystemInformation缓冲区中；否则，函数将复制该信息。否则，它将返回NTSTATUS错误代码，并在ReturnLength中返回接收请求的信息所需的缓冲区大小。</span></span><br><span class="line"><span class="comment">返回值：返回NTSTATUS成功或错误代码。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function">__kernel_entry NTSTATUS <span class="title">NtQuerySystemInformation</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  IN SYSTEM_INFORMATION_CLASS SystemInformationClass,</span></span></span><br><span class="line"><span class="params"><span class="function">  OUT PVOID                   SystemInformation,</span></span></span><br><span class="line"><span class="params"><span class="function">  IN ULONG                    SystemInformationLength,</span></span></span><br><span class="line"><span class="params"><span class="function">  OUT PULONG                  ReturnLength</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-2-NtQuerySystemInformation-反调试"><a href="#7-2-NtQuerySystemInformation-反调试" class="headerlink" title="7.2  NtQuerySystemInformation()反调试"></a>7.2  NtQuerySystemInformation()反调试</h2><p>c/c++代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> &#123;</span> SystemKernelDebuggerInformation = <span class="number">0x23</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">SYSTEM_KERNEL_DEBUGGER_INFORMATION</span> &#123;</span> </span><br><span class="line">    BOOLEAN DebuggerEnabled; </span><br><span class="line">    BOOLEAN DebuggerNotPresent; </span><br><span class="line">&#125; SYSTEM_KERNEL_DEBUGGER_INFORMATION, *PSYSTEM_KERNEL_DEBUGGER_INFORMATION; </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">Check</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    NTSTATUS status;</span><br><span class="line">    SYSTEM_KERNEL_DEBUGGER_INFORMATION SystemInfo;</span><br><span class="line">    </span><br><span class="line">    status = NtQuerySystemInformation(</span><br><span class="line">        (SYSTEM_INFORMATION_CLASS)SystemKernelDebuggerInformation,<span class="comment">//此参数为 0x23</span></span><br><span class="line">        &amp;SystemInfo,<span class="comment">//这里是接收到的信息</span></span><br><span class="line">        <span class="keyword">sizeof</span>(SystemInfo),</span><br><span class="line">        <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> SUCCEEDED(status)</span><br><span class="line">        ? (SystemInfo.DebuggerEnabled &amp;&amp; !SystemInfo.DebuggerNotPresent)</span><br><span class="line">        : <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-3-NtQuerySystemInformation-反反调试"><a href="#7-3-NtQuerySystemInformation-反反调试" class="headerlink" title="7.3  NtQuerySystemInformation()反反调试"></a>7.3  NtQuerySystemInformation()反反调试</h2><p>&emsp;对于NtQuerySystemInformation()反反调试的唯一方法是<code>HOOK 函数的返回值</code>。</p>
+<blockquote>
+<p><code>SYSTEM_KERNEL_DEBUGGER_INFORMATION::DebuggerEnabled</code> to 0 and<br><code>SYSTEM_KERNEL_DEBUGGER_INFORMATION::DebuggerNotPresent</code> to 1 for the<br><code>NtQuerySystemInformation()</code> function in case of a <code>SystemKernelDebuggerInformation</code> query.</p>
+</blockquote>
+<h1 id="8-PEB-NtGlobalFlag反调试"><a href="#8-PEB-NtGlobalFlag反调试" class="headerlink" title="8. PEB::NtGlobalFlag反调试"></a>8. PEB::NtGlobalFlag反调试</h1><h2 id="8-1-关于-PEB-NtGlobalFlag"><a href="#8-1-关于-PEB-NtGlobalFlag" class="headerlink" title="8.1 关于 PEB::NtGlobalFlag"></a>8.1 关于 PEB::NtGlobalFlag</h2><p>&emsp;在 32 位机器上, <code>NtGlobalFlag</code>字段位于<code>PEB</code>(进程环境块)<code>0x68</code>的偏移处, 64 位机器则是在偏移<code>0xBC</code>位置. 该字段的默认值为 0. 当调试器正在运行时, 该字段会被设置为一个特定的值. 尽管该值并不能十分可信地表明某个调试器真的有在运行, 但该字段常出于该目的而被使用。</p>
+<p>&emsp;该字段包含有一系列的标志位. 由调试器创建的进程会设置以下标志位；可以通过检查这些标志的组合来检测调试器的存在。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FLG_HEAP_ENABLE_TAIL_CHECK (<span class="number">0x10</span>)</span><br><span class="line">FLG_HEAP_ENABLE_FREE_CHECK (<span class="number">0x20</span>)</span><br><span class="line">FLG_HEAP_VALIDATE_PARAMETERS (<span class="number">0x40</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-2-PEB-NtGlobalFlag-反调试"><a href="#8-2-PEB-NtGlobalFlag-反调试" class="headerlink" title="8.2 PEB::NtGlobalFlag 反调试"></a>8.2 PEB::NtGlobalFlag 反调试</h2><p>x86系统汇编：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mov eax, fs:[30h]</span><br><span class="line">mov al, [eax+68h]</span><br><span class="line">and al, 70h</span><br><span class="line">cmp al, 70h</span><br><span class="line">jz  being_debugged</span><br></pre></td></tr></table></figure>
+
+<p>x64系统汇编</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mov rax, gs:[60h]</span><br><span class="line">mov al, [rax+BCh]</span><br><span class="line">and al, 70h</span><br><span class="line">cmp al, 70h</span><br><span class="line">jz  being_debugged</span><br></pre></td></tr></table></figure>
+
+<p>WOW64汇编：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mov eax, fs:[30h]</span><br><span class="line">mov al, [eax+10BCh]</span><br><span class="line">and al, 70h</span><br><span class="line">cmp al, 70h</span><br><span class="line">jz  being_debugged</span><br></pre></td></tr></table></figure>
+
+<p>c/c++代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FLG_HEAP_ENABLE_TAIL_CHECK   0x10</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FLG_HEAP_ENABLE_FREE_CHECK   0x20</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FLG_HEAP_VALIDATE_PARAMETERS 0x40</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NT_GLOBAL_FLAG_DEBUGGED (FLG_HEAP_ENABLE_TAIL_CHECK | FLG_HEAP_ENABLE_FREE_CHECK | FLG_HEAP_VALIDATE_PARAMETERS)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _WIN64</span></span><br><span class="line">PPEB pPeb = (PPEB)__readfsdword(<span class="number">0x30</span>);</span><br><span class="line">DWORD dwNtGlobalFlag = *(PDWORD)((PBYTE)pPeb + <span class="number">0x68</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">PPEB pPeb = (PPEB)__readgsqword(<span class="number">0x60</span>);</span><br><span class="line">DWORD dwNtGlobalFlag = *(PDWORD)((PBYTE)pPeb + <span class="number">0xBC</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">// _WIN64</span></span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> (dwNtGlobalFlag &amp; NT_GLOBAL_FLAG_DEBUGGED)</span><br><span class="line">    <span class="keyword">goto</span> being_debugged;</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-3-PEB-NtGlobalFlag-反反调试"><a href="#8-3-PEB-NtGlobalFlag-反反调试" class="headerlink" title="8.3 PEB::NtGlobalFlag 反反调试"></a>8.3 PEB::NtGlobalFlag 反反调试</h2><p>&emsp;绕过<code>PEB::NtGlobalFlag</code>反调试的方法就是将该字段重新设置为 0，修改该值的方法这里提供 4 种思路；</p>
+<blockquote>
+<ol>
+<li><p>注册表<code>HKLM\System\CurrentControlSet\Control\SessionManager</code>的<code>GlobalFlag</code>的值会替换<code>NtGlobalFlag</code>字段. 尽管它随后还可能由 Windows 改变 , 注册表键值会对系统中所有进程产生影响并在重启后生效。当然这也产生了另一种检测调试器的方法: 如果一个调试器为了隐藏自己, 而将注册表中的键值复制到<code>NtGlobalFlag</code>字段中, 然而注册表中的键值事先已经替换并且尚未重启生效. 那么调试器只是复制了一个假的值, 而非真正需要的那个. 如果程序知道真正的值而非注册表中的那个假的值, 那么就可以察觉到调试器的存在。</p>
+</li>
+<li><p>依旧是<code>GlobalFlag</code>, 不过这里的是<code>HKLM\Software\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\&lt;filename&gt;</code>. (映像劫持), 这里需要将<code>&lt;filename&gt;</code>替换为需要更改的可执行文件的文件名 (不需要指定路径). 设置好<code>GlobalFlag</code>后, 系统会将其值覆盖到<code>NtGlobalFlag</code>字段 (只单独为指定的进程覆盖)。</p>
+</li>
+<li><p>在加载配置表 (<code>Load Configuration Table</code>) 的两个字段: <code>GlobalFlagsClear</code>和<code>GlobalFlagsSet</code>.</p>
+<p><code>GlobalFlagsClear</code>列出需要清空的标志位, 而<code>GlobalFlagsSet</code>则列出需要设置的标志位, 这些设置会在<code>GlobalFlag</code>应用之后再生效, 因此它可以覆盖掉<code>GlobalFlag</code>指定的值. 然而它无法覆盖掉 Windows 指定设置的标志位. 比如设置<code>FLG_USER_STACK_TRACE_DB (0x1000)</code>可以让 Windows 设置<code>FLG_HEAP_VALIDATE_PARAMETERS (0x40)</code>标志位, 就算<code>FLG_HEAP_VALIDATE_PARAMETERS</code>在加载配置表 (<code>Load Configuration Table</code>) 中被清空了, Windows 也会在随后的进程加载过程中重新设置。</p>
+</li>
+<li><p>当调试器创建进程时, Windows 会做出一些改变. 通过设置环境变量中的<code>_NO_DEBUG_HEAP</code>, <code>NtGlobalFlag</code>将会因为调试器而不会设置其中的 3 个堆的标志位. 当然它们依旧可以通过<code>GlobalFlag</code>或加载配置表中的<code>GlobalFlagsSet</code>继续设置.</p>
+</li>
+</ol>
+</blockquote>
+<h1 id="9-Heap-Flags"><a href="#9-Heap-Flags" class="headerlink" title="9. Heap Flags"></a>9. Heap Flags</h1><h2 id="9-1-Heap-Flags-反调试"><a href="#9-1-Heap-Flags-反调试" class="headerlink" title="9.1 Heap Flags 反调试"></a>9.1 Heap Flags 反调试</h2><p>&emsp;<code>Heap flags</code>包含有两个与<code>NtGlobalFlag</code>一起初始化的标志: <code>Flags</code>和<code>ForceFlags</code>. 这两个字段的值不仅会受调试器的影响, 还会由 windows 版本而不同, 字段的位置也取决于 windows 的版本.</p>
+<p>&emsp;堆包含两个字段，这些字段受调试器的存在影响。究竟如何影响它们取决于Windows版本。这些字段是<code>Flags</code>和<code>ForceFlags</code>。</p>
+<p>&emsp;<code>Flags</code>和<code>ForceFlags</code>的值通常分别设置为<code>HEAP_GROWABLE(2)</code>和<code>0</code>。</p>
+<blockquote>
+<p>Flags 字段：</p>
+<ul>
+<li>在 32 位 Windows NT, Windows 2000 和 Windows XP 中, <code>Flags</code>位于堆的<code>0x0C</code>偏移处. 在 32 位 Windows Vista 及更新的系统中, 它位于<code>0x40</code>偏移处。</li>
+<li>在 64 位 Windows XP 中, <code>Flags</code>字段位于堆的<code>0x14</code>偏移处, 而在 64 位 Windows Vista 及更新的系统中, 它则是位于<code>0x70</code>偏移处。</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>ForceFlags 字段:</p>
+<ul>
+<li>在 32 位 Windows NT, Windows 2000 和 Windows XP 中, <code>ForceFlags</code>位于堆的<code>0x10</code>偏移处. 在 32 位 Windows Vista 及更新的系统中, 它位于<code>0x44</code>偏移处。</li>
+<li>在 64 位 Windows XP 中, <code>ForceFlags</code>字段位于堆的<code>0x18</code>偏移处, 而在 64 位 Windows Vista 及更新的系统中, 它则是位于<code>0x74</code>偏移处。</li>
+</ul>
+</blockquote>
+<p>&emsp;在所有版本的 Windows 中, Flags字段的值正常情况都设为HEAP_GROWABLE(2), 而ForceFlags字段正常情况都设为0. 然而对于一个 32 位进程 (64 位程序不会有此困扰), 这两个默认值, 都取决于它的宿主进程(host process) 的 subsystem版本 (这里不是指所说的比如 win10 的 linux 子系统). 只有当subsystem在3.51及更高的版本, 字段的默认值才如前所述. 如果是在3.10-3.50版本之间, 则两个字段的HEAP_CREATE_ALIGN_16 (0x10000)都会被设置. 如果版本低于3.10, 那么这个程序文件就根本不会被运行.</p>
+<p>&emsp;<code>如果某操作将Flags和ForgeFlags字段的值分别设为2和0, 但是却未对subsystem版本进行检查, 那么就可以表明该动作是为了隐藏调试器而进行的.</code></p>
+<p>&emsp;如果存在调试器，则在Windows NT，Windows 2000和32位Windows XP上，<code>Flags</code>字段会设置以下标志：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">HEAP_GROWABLE</span>(<span class="number">2</span>)</span><br><span class="line"><span class="built_in">HEAP_TAIL_CHECKING_ENABLED</span>(<span class="number">0x20</span>)</span><br><span class="line"><span class="built_in">HEAP_FREE_CHECKING_ENABLED</span>(<span class="number">0x40</span>)</span><br><span class="line"><span class="built_in">HEAP_SKIP_VALIDATION_CHECKS</span>(<span class="number">0x10000000</span>)</span><br><span class="line"><span class="built_in">HEAP_VALIDATE_PARAMETERS_ENABLED</span>(<span class="number">0x40000000</span>)</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;在64位Windows XP和Windows Vista及更高版本上，如果存在调试器，则 <code>标志</code>字段将设置为以下标志的组合：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">HEAP_GROWABLE (<span class="number">2</span>)</span><br><span class="line">HEAP_TAIL_CHECKING_ENABLED (<span class="number">0x20</span>)</span><br><span class="line">HEAP_FREE_CHECKING_ENABLED (<span class="number">0x40</span>)</span><br><span class="line">HEAP_VALIDATE_PARAMETERS_ENABLED (<span class="number">0x40000000</span>)</span><br></pre></td></tr></table></figure>
+
+<p>具体分析见《<a target="_blank" rel="noopener" href="https://ctf-wiki.github.io/ctf-wiki/reverse/windows/anti-debug/heap-flags-zh/">Heap Flags</a>》。这里不多赘述。</p>
+<p>c/c++代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">Check</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _WIN64</span></span><br><span class="line">    PPEB pPeb = (PPEB)__readfsdword(<span class="number">0x30</span>);</span><br><span class="line">    PVOID pHeapBase = !m_bIsWow64</span><br><span class="line">        ? (PVOID)(*(PDWORD_PTR)((PBYTE)pPeb + <span class="number">0x18</span>))</span><br><span class="line">        : (PVOID)(*(PDWORD_PTR)((PBYTE)pPeb + <span class="number">0x1030</span>));</span><br><span class="line">    DWORD dwHeapFlagsOffset = IsWindowsVistaOrGreater()</span><br><span class="line">        ? <span class="number">0x40</span></span><br><span class="line">        : <span class="number">0x0C</span>;</span><br><span class="line">    DWORD dwHeapForceFlagsOffset = IsWindowsVistaOrGreater()</span><br><span class="line">        ? <span class="number">0x44</span> </span><br><span class="line">        : <span class="number">0x10</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">    PPEB pPeb = (PPEB)__readgsqword(<span class="number">0x60</span>);</span><br><span class="line">    PVOID pHeapBase = (PVOID)(*(PDWORD_PTR)((PBYTE)pPeb + <span class="number">0x30</span>));</span><br><span class="line">    DWORD dwHeapFlagsOffset = IsWindowsVistaOrGreater()</span><br><span class="line">        ? <span class="number">0x70</span> </span><br><span class="line">        : <span class="number">0x14</span>;</span><br><span class="line">    DWORD dwHeapForceFlagsOffset = IsWindowsVistaOrGreater()</span><br><span class="line">        ? <span class="number">0x74</span> </span><br><span class="line">        : <span class="number">0x18</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">// _WIN64</span></span></span><br><span class="line"></span><br><span class="line">    PDWORD pdwHeapFlags = (PDWORD)((PBYTE)pHeapBase + dwHeapFlagsOffset);</span><br><span class="line">    PDWORD pdwHeapForceFlags = (PDWORD)((PBYTE)pHeapBase + dwHeapForceFlagsOffset);</span><br><span class="line">    <span class="keyword">return</span> (*pdwHeapFlags &amp; ~HEAP_GROWABLE) || (*pdwHeapForceFlags != <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="9-22-Heap-Flags-反反调试"><a href="#9-22-Heap-Flags-反反调试" class="headerlink" title="9.22  Heap Flags 反反调试"></a>9.22  Heap Flags 反反调试</h2><p>&emsp;将<code>Flags</code>值设置为<code>HEAP_GROWABLE</code>，并将<code>ForceFlags</code>值设置为0。这可以通过DLL注入来完成。如果使用OllyDbg或x32 / 64dbg作为调试器，则可以选择各种Anti-Debug插件，例如<a target="_blank" rel="noopener" href="https://github.com/x64dbg/ScyllaHide">ScyllaHide</a>。</p>
+<p>c/c++</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _WIN64</span></span><br><span class="line">PPEB pPeb = (PPEB)__readfsdword(<span class="number">0x30</span>);</span><br><span class="line">PVOID pHeapBase = !m_bIsWow64</span><br><span class="line">    ? (PVOID)(*(PDWORD_PTR)((PBYTE)pPeb + <span class="number">0x18</span>))</span><br><span class="line">    : (PVOID)(*(PDWORD_PTR)((PBYTE)pPeb + <span class="number">0x1030</span>));</span><br><span class="line">DWORD dwHeapFlagsOffset = IsWindowsVistaOrGreater()</span><br><span class="line">    ? <span class="number">0x40</span></span><br><span class="line">    : <span class="number">0x0C</span>;</span><br><span class="line">DWORD dwHeapForceFlagsOffset = IsWindowsVistaOrGreater()</span><br><span class="line">    ? <span class="number">0x44</span> </span><br><span class="line">    : <span class="number">0x10</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">PPEB pPeb = (PPEB)__readgsqword(<span class="number">0x60</span>);</span><br><span class="line">PVOID pHeapBase = (PVOID)(*(PDWORD_PTR)((PBYTE)pPeb + <span class="number">0x30</span>));</span><br><span class="line">DWORD dwHeapFlagsOffset = IsWindowsVistaOrGreater()</span><br><span class="line">    ? <span class="number">0x70</span> </span><br><span class="line">    : <span class="number">0x14</span>;</span><br><span class="line">DWORD dwHeapForceFlagsOffset = IsWindowsVistaOrGreater()</span><br><span class="line">    ? <span class="number">0x74</span> </span><br><span class="line">    : <span class="number">0x18</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">// _WIN64</span></span></span><br><span class="line"></span><br><span class="line">*(PDWORD)((PBYTE)pHeapBase + dwHeapFlagsOffset) = HEAP_GROWABLE;</span><br><span class="line">*(PDWORD)((PBYTE)pHeapBase + dwHeapForceFlagsOffset) = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="10-Heap-Protection"><a href="#10-Heap-Protection" class="headerlink" title="10. Heap Protection"></a>10. Heap Protection</h1><h2 id="10-1-Heap-Protection-介绍"><a href="#10-1-Heap-Protection-介绍" class="headerlink" title="10.1 Heap Protection 介绍"></a>10.1 Heap Protection 介绍</h2><p>&emsp;如果<code>HEAP_TAIL_CHECKING_ENABLED</code>标志在设置<code>NtGlobalFlag</code>，序列<code>0xABABABAB</code>将被追加（在32位和64位Windows 4次两次）在分配的堆块的末端。</p>
+<p>&emsp;如果<code>HEAP_FREE_CHECKING_ENABLED</code>标志在设置<code>NtGlobalFlag</code>，序列<code>0xFEEEFEEE</code>是否需要附加的字节填充在直到下一个存储块中的空的空间将被追加。</p>
+<h2 id="10-2-Heap-Protection-反调试"><a href="#10-2-Heap-Protection-反调试" class="headerlink" title="10.2 Heap Protection 反调试"></a>10.2 Heap Protection 反调试</h2><p>C/c++</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">Check</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    PROCESS_HEAP_ENTRY HeapEntry = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (!HeapWalk(GetProcessHeap(), &amp;HeapEntry))</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125; <span class="keyword">while</span> (HeapEntry.wFlags != PROCESS_HEAP_ENTRY_BUSY);</span><br><span class="line"></span><br><span class="line">    PVOID pOverlapped = (PBYTE)HeapEntry.lpData + HeapEntry.cbData;</span><br><span class="line">    <span class="keyword">return</span> ((DWORD)(*(PDWORD)pOverlapped) == <span class="number">0xABABABAB</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="10-2-Heap-Protection-反反调试"><a href="#10-2-Heap-Protection-反反调试" class="headerlink" title="10.2 Heap Protection  反反调试"></a>10.2 Heap Protection  反反调试</h2><p>&emsp;堆之后，手动修补32位的12个字节和32位的20个字节。HOOK<code>kernel32！HeapAlloc（）</code>并在分配后修补堆。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _WIN64</span></span><br><span class="line">SIZE_T nBytesToPatch = <span class="number">12</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">SIZE_T nBytesToPatch = <span class="number">20</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">// _WIN64</span></span></span><br><span class="line"></span><br><span class="line">SIZE_T nDwordsToPatch = nBytesToPatch / <span class="keyword">sizeof</span>(DWORD);</span><br><span class="line">PVOID pHeapEnd = (PBYTE)HeapEntry.lpData + HeapEntry.cbData;</span><br><span class="line"><span class="keyword">for</span> (SIZE_T offset = <span class="number">0</span>; offset &lt; nDwordsToPatch; offset++)</span><br><span class="line">    *((PDWORD)pHeapEnd + offset) = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="附加说明"><a href="#附加说明" class="headerlink" title="附加说明"></a>附加说明</h1><h2 id="1-PEB详解"><a href="#1-PEB详解" class="headerlink" title="1. PEB详解"></a>1. PEB详解</h2><p>&emsp;关于PEB的结构详见《<a target="_blank" rel="noopener" href="https://www.nirsoft.net/kernel_struct/vista/PEB.html"><strong>struct PEB</strong></a>》</p>
+<p>&emsp;PEB(Process Environment Block)是Windows操作系统内部使用的一个封闭结构。根据具体环境的不同，我们需要通过不同方法获取PEB结构指针。比如，我们可以使用如下代码获取x32及x64系统的PEB指针：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Current PEB for 64bit and 32bit processes accordingly</span></span><br><span class="line"><span class="function">PVOID <span class="title">GetPEB</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _WIN64</span></span><br><span class="line">    <span class="keyword">return</span> (PVOID)__readgsqword(<span class="number">0x0C</span> * <span class="built_in"><span class="keyword">sizeof</span></span>(PVOID));</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">    <span class="keyword">return</span> (PVOID)__readfsdword(<span class="number">0x0C</span> * <span class="built_in"><span class="keyword">sizeof</span></span>(PVOID));</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>WOW64</code>机制适用于在x64系统上启动的x32进程，此时会创建另一个PEB结构。在<code>WOW64</code>环境中，我们可以使用如下代码获取PEB结构指针：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Get PEB for WOW64 Process</span></span><br><span class="line"><span class="function">PVOID <span class="title">GetPEB64</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    PVOID pPeb = <span class="number">0</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _WIN64</span></span><br><span class="line">    <span class="comment">// 1. There are two copies of PEB - PEB64 and PEB32 in WOW64 process</span></span><br><span class="line">    <span class="comment">// 2. PEB64 follows after PEB32</span></span><br><span class="line">    <span class="comment">// 3. This is true for versions lower than Windows 8, else __readfsdword returns address of real PEB64</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">IsWin8OrHigher</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        BOOL isWow64 = FALSE;</span><br><span class="line">        <span class="function"><span class="keyword">typedef</span> <span class="title">BOOL</span><span class="params">(WINAPI *pfnIsWow64Process)</span><span class="params">(HANDLE hProcess, PBOOL isWow64)</span></span>;</span><br><span class="line">        pfnIsWow64Process fnIsWow64Process = (pfnIsWow64Process)</span><br><span class="line">            <span class="built_in">GetProcAddress</span>(<span class="built_in">GetModuleHandleA</span>(<span class="string">&quot;Kernel32.dll&quot;</span>), <span class="string">&quot;IsWow64Process&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">fnIsWow64Process</span>(<span class="built_in">GetCurrentProcess</span>(), &amp;isWow64))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (isWow64)</span><br><span class="line">            &#123;</span><br><span class="line">                pPeb = (PVOID)__readfsdword(<span class="number">0x0C</span> * <span class="built_in"><span class="keyword">sizeof</span></span>(PVOID));</span><br><span class="line">                pPeb = (PVOID)((PBYTE)pPeb + <span class="number">0x1000</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">    <span class="keyword">return</span> pPeb;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>PEB中与反调试技术密切相关的成员有如下几个：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+<span class="number">0x002</span> BeingDebugged; UChar</span><br><span class="line">+<span class="number">0x00c</span> Ldr 			; Ptr32 _PEB_LDR_DATA</span><br><span class="line">+<span class="number">0X018</span> ProcessHeap	; Ptr32 Void</span><br><span class="line">+<span class="number">0x068</span> NtGlobalFlag	; Uint4B</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-检查操作系统版本"><a href="#2-检查操作系统版本" class="headerlink" title="2. 检查操作系统版本"></a>2. 检查操作系统版本</h2><p>检查操作系统版本的示例代码如下所示：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">WORD <span class="title">GetVersionWord</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    OSVERSIONINFO verInfo = &#123; <span class="built_in"><span class="keyword">sizeof</span></span>(OSVERSIONINFO) &#125;;</span><br><span class="line">    <span class="built_in">GetVersionEx</span>(&amp;verInfo);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">MAKEWORD</span>(verInfo.dwMinorVersion, verInfo.dwMajorVersion);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">BOOL <span class="title">IsWin8OrHigher</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="built_in">GetVersionWord</span>() &gt;= _WIN32_WINNT_WIN8; &#125;</span><br><span class="line"><span class="function">BOOL <span class="title">IsVistaOrHigher</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="built_in">GetVersionWord</span>() &gt;= _WIN32_WINNT_VISTA; &#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://anti-debug.checkpoint.com/techniques/debug-flags.html">Anti-Debug: Debug Flags</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/179709">Windows平台常见反调试技术梳理（上）</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1470246">详解反调试技术</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1471373">26种对付反调试的方法</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/dliv3/p/6504311.html">静态反调试技术</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_32400847/article/details/52798050">详解反调试技术</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_32400847/article/details/52830990">详解反虚拟机技术</a></li>
+<li><a target="_blank" rel="noopener" href="https://ctf-wiki.github.io/ctf-wiki/reverse/windows/anti-debug/ntglobalflag-zh/">NtGlobalFlag</a></li>
+<li><a target="_blank" rel="noopener" href="https://ctf-wiki.github.io/ctf-wiki/reverse/windows/anti-debug/heap-flags-zh/">Heap Flags</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div id="donation_div"></div>
+
+
+<script src="../../../../js/vdonate.js"></script>
+
+<script>
+var a = new Donate({
+  title: '如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作!', // 可选参数，打赏标题
+  btnText: '打赏支持', // 可选参数，打赏按钮文字
+  el: document.getElementById('donation_div'),
+  wechatImage: 'https://raw.githubusercontent.com/iTimeTraveler/iTimeTraveler.github.io/site/source/about/donate/images/WeChanQR.png',
+  alipayImage: 'https://raw.githubusercontent.com/iTimeTraveler/iTimeTraveler.github.io/site/source/about/donate/images/AliPayQR.jpg'
+});
+</script>
+      
+      
+      <div>
+        <ul class="post-copyright">
+          <li class="post-copyright-author">
+          <strong>本文作者:  </strong>Wayoka</a>
+          </li>
+          <li class="post-copyright-link">
+          <strong>本文链接:  </strong>
+          <a href="/2020/04/25/反调试之标志位反调试/" target="_blank" title="反调试手段（一）">http://wayoka.github.io/2020/04/25/反调试之标志位反调试/</a>
+          </li>
+          <li class="post-copyright-license">
+            <strong>版权声明:   </strong>
+            本博客所有文章除特别声明外，均采用 <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">CC BY-NC-ND 4.0</a>
+            许可协议。转载请注明出处
+          </li>
+         
+        </ul>
+<div>
+
+      
+      
+        
+	<div id="comment">
+		<!-- 来必力City版安装代码 -->
+		<div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ4MS82MDQ5">
+		<script type="text/javascript">
+		   (function(d, s) {
+		       var j, e = d.getElementsByTagName(s)[0];
+
+		       if (typeof LivereTower === 'function') { return; }
+
+		       j = d.createElement(s);
+		       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+		       j.async = true;
+
+		       e.parentNode.insertBefore(j, e);
+		   })(document, 'script');
+		</script>
+		<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+		</div>
+		<!-- City版安装代码已完成 -->
+	</div>
+
+
+
+      
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/%E5%8F%8D%E8%B0%83%E8%AF%95/" rel="tag">反调试</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/%E9%80%86%E5%90%91/" rel="tag">逆向</a></li></ul>
+
+      
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="../../../08/21/%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">
+        
+          攻击模型概述
+        
+      </div>
+    </a>
+  
+  
+    <a href="../../../01/02/%E5%B8%B8%E7%94%A8%E4%B8%8B%E8%BD%BD%E5%91%BD%E4%BB%A4%E4%B9%8BWindows/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">常用下载命令整理-Windows篇</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E9%9D%99%E6%80%81%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">1.</span> <span class="nav-text">1. 静态反调试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-IsDebuggerPresent%EF%BC%88%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">2. IsDebuggerPresent（）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-IsDebuggerPresent-%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 IsDebuggerPresent() 介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-IsDebuggerPresent-%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 IsDebuggerPresent() 反调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-IsDebuggerPresent-%E5%8F%8D%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 IsDebuggerPresent() 反反调试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-CheckRemoteDebuggerPresent"><span class="nav-number">3.</span> <span class="nav-text">3. CheckRemoteDebuggerPresent()</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-CheckRemoteDebuggerPresent-%E5%8F%8D%E8%B0%83%E8%AF%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">3.1.</span> <span class="nav-text">3.1  CheckRemoteDebuggerPresent() 反调试介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-CheckRemoteDebuggerPresent-%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 CheckRemoteDebuggerPresent()反调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-CheckRemoteDebuggerPresent-%E5%8F%8D%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 CheckRemoteDebuggerPresent()反反调试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-NtQueryInformationProcess"><span class="nav-number">4.</span> <span class="nav-text">4. NtQueryInformationProcess()</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-NtQueryInformationProcess-%E4%BB%8B%E7%BB%8D"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 NtQueryInformationProcess()介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-NtQueryInformationProcess-%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 NtQueryInformationProcess()反调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-1-ProcessDebugPort-0x07-%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">4.2.1.</span> <span class="nav-text">4.2.1 ProcessDebugPort(0x07)反调试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-2-ProcessDebugFlags-0x1f-%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">4.2.2.</span> <span class="nav-text">4.2.2  ProcessDebugFlags(0x1f)反调试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-3-ProcessDebugObjectHandle-0x1e-%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">4.2.3.</span> <span class="nav-text">4.2.3  ProcessDebugObjectHandle(0x1e)反调试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-4-ProcessBasicInformation-0x00-%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">4.2.4.</span> <span class="nav-text">4.2.4  ProcessBasicInformation(0x00)反调试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-NtQueryInformationProcess-%E5%8F%8D%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">4.3.</span> <span class="nav-text">4.3  NtQueryInformationProcess() 反反调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-1-ProcessDebugPort-%E5%8F%8D%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">4.3.1.</span> <span class="nav-text">4.3.1  ProcessDebugPort 反反调试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-2-ProcessDebugFlags%E5%8F%8D%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">4.3.2.</span> <span class="nav-text">4.3.2 ProcessDebugFlags反反调试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-3-ProcessDebugObjectHandle%E5%8F%8D%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">4.3.3.</span> <span class="nav-text">4.3.3 ProcessDebugObjectHandle反反调试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-4-ProcessBasicInformation%E5%8F%8D%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">4.3.4.</span> <span class="nav-text">4.3.4 ProcessBasicInformation反反调试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-RtlQueryProcessHeapInformation-%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">5.</span> <span class="nav-text">5. RtlQueryProcessHeapInformation()反调试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-RtlQueryProcessHeapInformation-%E5%87%BD%E6%95%B0%E4%BB%8B%E7%BB%8D"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 RtlQueryProcessHeapInformation()函数介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-RtlQueryProcessHeapInformation-%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 RtlQueryProcessHeapInformation()反调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-3-RtlQueryProcessHeapInformation-%E5%8F%8D%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">5.3.</span> <span class="nav-text">5.3  RtlQueryProcessHeapInformation()反反调试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-RtlQueryProcessDebugInformation"><span class="nav-number">6.</span> <span class="nav-text">6.  RtlQueryProcessDebugInformation()</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-1-RtlQueryProcessDebugInformation-%E5%87%BD%E6%95%B0%E4%BB%8B%E7%BB%8D"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 RtlQueryProcessDebugInformation()函数介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-2-RtlQueryProcessDebugInformation-%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 RtlQueryProcessDebugInformation()反调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-RtlQueryProcessDebugInformation-%E5%8F%8D%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">6.3.</span> <span class="nav-text">6.3  RtlQueryProcessDebugInformation()反反调试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-NtQuerySystemInformation"><span class="nav-number">7.</span> <span class="nav-text">7. NtQuerySystemInformation()</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#7-1-NtQuerySystemInformation-%E5%87%BD%E6%95%B0%E4%BB%8B%E7%BB%8D"><span class="nav-number">7.1.</span> <span class="nav-text">7.1  NtQuerySystemInformation()函数介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-2-NtQuerySystemInformation-%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">7.2.</span> <span class="nav-text">7.2  NtQuerySystemInformation()反调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-3-NtQuerySystemInformation-%E5%8F%8D%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">7.3.</span> <span class="nav-text">7.3  NtQuerySystemInformation()反反调试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-PEB-NtGlobalFlag%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">8.</span> <span class="nav-text">8. PEB::NtGlobalFlag反调试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#8-1-%E5%85%B3%E4%BA%8E-PEB-NtGlobalFlag"><span class="nav-number">8.1.</span> <span class="nav-text">8.1 关于 PEB::NtGlobalFlag</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-2-PEB-NtGlobalFlag-%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">8.2.</span> <span class="nav-text">8.2 PEB::NtGlobalFlag 反调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-3-PEB-NtGlobalFlag-%E5%8F%8D%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">8.3.</span> <span class="nav-text">8.3 PEB::NtGlobalFlag 反反调试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#9-Heap-Flags"><span class="nav-number">9.</span> <span class="nav-text">9. Heap Flags</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#9-1-Heap-Flags-%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">9.1.</span> <span class="nav-text">9.1 Heap Flags 反调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-22-Heap-Flags-%E5%8F%8D%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">9.2.</span> <span class="nav-text">9.22  Heap Flags 反反调试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10-Heap-Protection"><span class="nav-number">10.</span> <span class="nav-text">10. Heap Protection</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#10-1-Heap-Protection-%E4%BB%8B%E7%BB%8D"><span class="nav-number">10.1.</span> <span class="nav-text">10.1 Heap Protection 介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-2-Heap-Protection-%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">10.2.</span> <span class="nav-text">10.2 Heap Protection 反调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-2-Heap-Protection-%E5%8F%8D%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">10.3.</span> <span class="nav-text">10.2 Heap Protection  反反调试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84%E5%8A%A0%E8%AF%B4%E6%98%8E"><span class="nav-number">11.</span> <span class="nav-text">附加说明</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-PEB%E8%AF%A6%E8%A7%A3"><span class="nav-number">11.1.</span> <span class="nav-text">1. PEB详解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%A3%80%E6%9F%A5%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%89%88%E6%9C%AC"><span class="nav-number">11.2.</span> <span class="nav-text">2. 检查操作系统版本</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">12.</span> <span class="nav-text">参考链接</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2022 Blog All Rights Reserved.</p>
+	      
+	      
+    		<p class="busuanzi_uv">
+				访客数 : <span id="busuanzi_value_site_uv"></span> |  
+				访问量 : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="../../../../index.html" class="mobile-nav-link">Home</a>
+  
+    <a href="../../../../archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="../../../../categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="../../../../tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="../../../../about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  
+<link rel="stylesheet" href="../../../../fancybox/jquery.fancybox.css">
+
+  
+<script src="../../../../fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="../../../../js/scripts.js"></script>
+
+
+
+
+
+  
+<script src="../../../../js/dialog.js"></script>
+
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            Blog
+          </div>
+          <div class="panel-body">
+            Copyright © 2022 Wayoka All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>

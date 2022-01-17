@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>对华apt组织整理 | Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="APT组织攻击中国" />
+  
+  
+  
+  
+  <meta name="description" content="1. APT概述 APT是英文advanced persistent threat，直译为高级持续威胁，也称高级持续性威胁，先进持续性威胁等。  APT攻击指高级可持续性攻击，一般是针对政府、军队、教育、大型公共设施如电力、水利等的攻击，通常是由有国家背景的组织或资金实力雄厚的团伙发起的攻击，这些攻击带有强烈的目的性，有些带有明显的政治意图，这些发起攻击的组织和团伙我们一般称之为APT组织。  A">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对华APT组织整理">
+<meta property="og:url" content="http://wayoka.github.io/2020/10/27/%E5%AF%B9%E5%8D%8EAPT%E6%95%B4%E7%90%86/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="1. APT概述 APT是英文advanced persistent threat，直译为高级持续威胁，也称高级持续性威胁，先进持续性威胁等。  APT攻击指高级可持续性攻击，一般是针对政府、军队、教育、大型公共设施如电力、水利等的攻击，通常是由有国家背景的组织或资金实力雄厚的团伙发起的攻击，这些攻击带有强烈的目的性，有些带有明显的政治意图，这些发起攻击的组织和团伙我们一般称之为APT组织。  A">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://wayoka.github.io/2020/10/27/%E5%AF%B9%E5%8D%8EAPT%E6%95%B4%E7%90%86/2015-2019%E5%B9%B4%E5%85%A8%E7%90%83%E4%B8%BB%E8%A6%81%E5%8E%82%E5%95%86%E6%8A%AB%E9%9C%B2%E7%9A%84APT%E6%94%BB%E5%87%BB%E4%BA%8B%E4%BB%B6%E6%95%B0%E9%87%8F.jfif">
+<meta property="article:published_time" content="2020-10-27T05:04:48.000Z">
+<meta property="article:modified_time" content="2021-10-29T09:08:03.653Z">
+<meta property="article:author" content="Wayoka">
+<meta property="article:tag" content="APT组织">
+<meta property="article:tag" content="攻击中国">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://wayoka.github.io/2020/10/27/%E5%AF%B9%E5%8D%8EAPT%E6%95%B4%E7%90%86/2015-2019%E5%B9%B4%E5%85%A8%E7%90%83%E4%B8%BB%E8%A6%81%E5%8E%82%E5%95%86%E6%8A%AB%E9%9C%B2%E7%9A%84APT%E6%94%BB%E5%87%BB%E4%BA%8B%E4%BB%B6%E6%95%B0%E9%87%8F.jfif">
+  
+    <link rel="alternate" href="/atom.xml" title="Blog" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt; src:url("/css/fonts/FuturaPTBold.otf") format("woff");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt-light; src:url("/css/fonts/FuturaPTBook.otf") format("woff");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt-italic; src:url("/css/fonts/FuturaPTBookOblique.otf") format("woff");font-weight:400;font-style:italic;}
+}
+
+  </style>
+  
+<link rel="stylesheet" href="../../../../css/style.css">
+
+
+  
+<script src="../../../../js/jquery-3.1.1.min.js"></script>
+
+  
+<script src="../../../../js/bootstrap.js"></script>
+
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css" >
+
+  
+    
+<link rel="stylesheet" href="../../../../css/dialog.css">
+
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/css/header-post.css" >
+  
+
+  
+  
+  
+    <link rel="stylesheet" href="/css/vdonate.css" >
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="80px" height="80px" alt="Hike News" src="/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="../../../../index.html">首页</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../archives">归档</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../categories">分类</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../tags">标签</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../about">关于</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '../../../../content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="../../../../js/insight.js"></script>
+
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-对华APT整理" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      对华APT组织整理
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="" class="article-date">
+	  <time datetime="2020-10-27T05:04:48.000Z" itemprop="datePublished">2020-10-27</time>
+	</a>
+
+      
+    <a class="article-category-link" href="../../../../categories/APT%E7%BB%84%E7%BB%87/">APT组织</a><a class="article-category-link" href="../../../../categories/APT%E7%BB%84%E7%BB%87/%E6%94%BB%E5%87%BB%E4%B8%AD%E5%9B%BD/">攻击中国</a>
+
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		阅读量<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+      
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-APT概述"><a href="#1-APT概述" class="headerlink" title="1. APT概述"></a>1. APT概述</h1><p>&emsp;<strong>APT</strong>是英文<strong>advanced persistent threat</strong>，直译为<strong>高级持续威胁</strong>，也称<strong>高级持续性威胁</strong>，<strong>先进持续性威胁</strong>等。</p>
+<p>&emsp;<strong>APT攻击</strong>指<strong>高级可持续性攻击</strong>，一般是针对政府、军队、教育、大型公共设施如电力、水利等的攻击，通常是由有国家背景的组织或资金实力雄厚的团伙发起的攻击，这些攻击带有强烈的目的性，有些带有明显的政治意图，这些发起攻击的组织和团伙我们一般称之为<strong>APT组织</strong>。</p>
+<p>&emsp;<strong>APT组织</strong>指有能力且已经针对特定机构发起有针对性意图的攻击的组织或团伙，大部分APT组织背后都有深厚的政府背景，不会因为安全厂商的披露而停止攻击活动，大部分攻击者在攻击活动被暴露后会改头换面、更新自己的武器库后从新发起新一轮的网络攻击；其一般具有以下特点：</p>
+<blockquote>
+<ol>
+<li><strong>攻击目标明确</strong>：APT组织攻击的对象一般为政府、军队、教育、科研单位和高校等；</li>
+<li><strong>攻击目的明确</strong>：APT组织的攻击目的一般为信息盗窃和间谍活动，窃取政府、军队、科研单位等国家重要文件；为了经济利益窃取商业机密；破坏大型公共设施；</li>
+<li><strong>攻击方式高级</strong>：APT组织拥有独立的武器库，会使用0 day/1 day/n day等漏洞攻击，注重动态行为和静态文件的隐蔽性，例如通过隐蔽通道、加密通道避免网络行为被检测，或者通过伪造合法签名的方式避免恶意代码文件本身被识别，攻击的各个阶段都不易被发现，即使被发现也很难追踪；</li>
+<li><strong>攻击持续时间长</strong>：APT攻击分为多个步骤，从最初的信息搜集，到信息窃取并外传往往要经历几个月甚至更长的时间；如有资料显示震网病毒从2006年开始，到2010年被发现，用几年的时间对伊朗的核设施进行打击；</li>
+<li><strong>攻击行为特征难以提取</strong>：APT普遍采用漏洞获取权限、通过木马进行远程控制，木马网络通信加密，通信域名或IP一旦暴露立即放弃，而且现在攻击者越来越多的使用公开框架的后门木马作为持续控制手段，这让APT追踪变得更加困难。</li>
+</ol>
+</blockquote>
+<h1 id="2-APT攻击态势"><a href="#2-APT攻击态势" class="headerlink" title="2. APT攻击态势"></a>2. APT攻击态势</h1><blockquote>
+<ul>
+<li>中国仍然是APT攻击的主要受害国，受到来自于东亚、东南亚、南亚、欧美等各个区域的网络威胁；</li>
+<li>网络攻击形势跟地域政治局势有相当密切的关联，地域安全形势复杂的地区，往往是APT攻击最为严重和复杂的地区；</li>
+<li>多平台的攻击能力已经成为大量APT攻击者组织的标配能力；</li>
+<li>0day依然是最有效的攻击工具，一些组织依然不计成本来购买会自己挖掘0day来进行攻击。</li>
+</ul>
+</blockquote>
+<p>从时间上看，从2015年到2019年，关于APT的报告数量不断增加，说明APT组织活动日渐活跃，同时也说明各大安全厂商越来越重视APT带来的威胁。</p>
+<p> <img src="/2020/10/27/%E5%AF%B9%E5%8D%8EAPT%E6%95%B4%E7%90%86/2015-2019%E5%B9%B4%E5%85%A8%E7%90%83%E4%B8%BB%E8%A6%81%E5%8E%82%E5%95%86%E6%8A%AB%E9%9C%B2%E7%9A%84APT%E6%94%BB%E5%87%BB%E4%BA%8B%E4%BB%B6%E6%95%B0%E9%87%8F.jfif" alt="2015-2019年全球主要厂商披露的APT攻击事件数量"> </p>
+<h1 id="3-中国面临的APT威胁"><a href="#3-中国面临的APT威胁" class="headerlink" title="3. 中国面临的APT威胁"></a>3. 中国面临的APT威胁</h1><p>&emsp;中国历来都是APT攻击的主要受害国，随着中国经济的快速发展，以及国际地位的不断攀升，中国面临的外部威胁形势更加严峻。</p>
+<p>&emsp;下表中列出了一些被安全厂商披露的APT组织。</p>
+<table>
+<thead>
+<tr>
+<th>组织名称(命名单位)</th>
+<th>组织归属</th>
+<th>主要攻击手段</th>
+<th>攻击对象</th>
+<th>最早活动时间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DarkHotel(Kaspersky)<br> 黑店<br>APT-C-06 (360)<br>SIG25 (NSA)<br>Dubnium (Microsoft)<br>Fallout Team (FireEye)<br>Shadow Crane (CrowdStrike)</td>
+<td>朝鲜半岛疑似韩国</td>
+<td>鱼叉攻击、网络劫持</td>
+<td>国防工业、政府、非政府、工业、制药公司，医疗、军事、能源</td>
+<td>2010年</td>
+</tr>
+<tr>
+<td>Higaisa<br> 黑格莎</td>
+<td>朝鲜</td>
+<td>鱼叉攻击</td>
+<td>政府、外交等</td>
+<td>2016年</td>
+</tr>
+<tr>
+<td>Reaper (FireEye)<br> APT37 (Mandiant)<br>Ricochet Chollima (CrowdStrike) Group123 (Talos)<br>Red Eyes (AhnLab)<br>Venus 121 (ESRC)</td>
+<td>朝鲜</td>
+<td>鱼叉攻击、漏洞利用</td>
+<td>航空，汽车，化工，金融，政府，医疗，制造业等</td>
+<td>2012年</td>
+</tr>
+<tr>
+<td>Lazarus(Kaspersky)<br> Labyrinth Chollima (CrowdStrike)<br>Group 77 (Talos)<br>Hastati Group (SecureWorks)<br>Whois Hacking Team (McAfee)<br>NewRomanic Cyber Army Team (McAfee)<br>Zinc (Microsoft)<br>Hidden Cobra (Trend Micro)<br>Nickel Academy (SecureWorks)<br>APT-C-26 (360)</td>
+<td>朝鲜</td>
+<td>国家赞助</td>
+<td>工业，金融，政府等</td>
+<td>2007年</td>
+</tr>
+<tr>
+<td>毒云藤(360)<br> 穷奇<br> 绿斑 Green Spot(安天)<br> APT-C-01</td>
+<td>中国台湾</td>
+<td>鱼叉攻击</td>
+<td>政府、科研相关行业</td>
+<td>2007年</td>
+</tr>
+<tr>
+<td>海莲花(360)<br>APT32(Mandiant)<br>OceanLotus (360)<br>SeaLotus<br>APT-C-00 (360)<br>Ocean Buffalo (CrowdStrike)</td>
+<td>越南</td>
+<td>鱼叉攻击、水坑攻击、漏洞利用</td>
+<td>中国政府的海事机构、海域建设部门、科研院所和航运企业</td>
+<td>2012年</td>
+</tr>
+<tr>
+<td>蔓灵花<br>BITTER<br>T-APT-17</td>
+<td>印度</td>
+<td>鱼叉攻击</td>
+<td>政府、军工业、电力、核等单位</td>
+<td>2013年</td>
+</tr>
+<tr>
+<td>Patchwork(Cymmetria)<br> Dropping Elephant (Kaspersky)<br>Chinastrats (Kaspersky)<br>APT-C-09 (360)<br>Monsoon (Forcepoint)<br>Quilted Tiger (CrowdStrike)</td>
+<td>印度</td>
+<td>鱼叉攻击、水坑攻击、漏洞利用</td>
+<td>航空，国防，能源，金融，政府，IT，非政府组织</td>
+<td>2009年</td>
+</tr>
+<tr>
+<td>Sidewinder<br>响尾蛇<br>T-APT-04</td>
+<td>印度</td>
+<td>鱼叉攻击、水坑攻击、漏洞利用</td>
+<td>政府、军工、军事</td>
+<td>2012年</td>
+</tr>
+<tr>
+<td>Turla(Kaspersky)<br>Snake<br>Uroburos<br>WhiteBear<br>Waterbug (Symantec)<br>Venomous Bear (CrowdStrike)<br>Group 88 (Talos)<br>SIG23 (NSA)<br>Iron Hunter (SecureWorks)<br>Pacifier APT (Bitdefender)</td>
+<td>俄罗斯</td>
+<td>鱼叉攻击、水坑攻击、漏洞利用</td>
+<td>政府机构，使馆，教育，研究和制药公司等</td>
+<td>2011年</td>
+</tr>
+<tr>
+<td>Donot<br>APT-C-35 <br>肚脑虫</td>
+<td>疑似具有南亚背景</td>
+<td>鱼叉攻击、水坑攻击、漏洞利用</td>
+<td>政府机构</td>
+<td>2018年</td>
+</tr>
+<tr>
+<td>蓝宝菇<br>APT-C-12</td>
+<td>中国台湾</td>
+<td>鱼叉攻击</td>
+<td>政府、科研、军事</td>
+<td>2011年</td>
+</tr>
+</tbody></table>
+<h1 id="4-各个对华APT组织简介"><a href="#4-各个对华APT组织简介" class="headerlink" title="4.各个对华APT组织简介"></a>4.各个对华APT组织简介</h1><h2 id="4-1-DarkHotel"><a href="#4-1-DarkHotel" class="headerlink" title="4.1 DarkHotel"></a>4.1 DarkHotel</h2><p>&emsp;DarkHotel(Kaspersky)，也被称为 黑店、APT-C-06 (360)、SIG25 (NSA)、Dubnium (Microsoft)、Fallout Team (FireEye)、Shadow Crane (CrowdStrike)等。该组织于2014年11月首次在Kaspersky的报告中出现，一些研究者认为该组织与朝鲜半岛(疑似韩国)有非常大的关系。</p>
+<p>&emsp;该组织使用鱼叉攻击、水坑攻击、0day漏洞等方式对目标发起攻击；他们的攻击国家包括俄罗斯，韩国，日本，孟加拉国，泰国，台湾，中国，美国，印度，莫桑比克，印度尼西亚和德国；攻击目标是来自国防、政府、军事、工业等行业的工作人员，主要以政治人物为目标。</p>
+<p>&emsp;该组织的一大特色是喜欢把木马隐藏在开源的代码中进行伪装，如putty、openssl、zlib等，把少量木马代码隐藏在大量的开源代码中，从而实现躲避检测的目的，因此将被称为“寄生兽”。</p>
+<blockquote>
+<p><strong>攻击时间线</strong></p>
+<ul>
+<li><p>2010：</p>
+<p>目标：来自在亚太地区开展业务的公司和来自外包行业的高层管理人员，包括首席执行官，高级副总裁，销售和营销总监和高级研发人员；</p>
+</li>
+</ul>
+<p>方法：利用 Flash 0day漏洞利用、鱼叉攻击等攻击方式，使用酒店网络来追踪选定目标；</p>
+<ul>
+<li><p>2015年：</p>
+<p>2015年的攻击目标中没有出现中国，详细报告参见《<a target="_blank" rel="noopener" href="https://securelist.com/darkhotels-attacks-in-2015/71713/">Darkhotel’s attacks in 2015</a>》，在2015年，DarkHotel依然主要依靠渗透酒店WIFI系统入侵目标计算机，但其实用的恶意文件由<code>.hta</code>扩展到了<code>.rar</code>;</p>
+<p>2015年12月发起“破晓”行动，使用<code>CVE-2015-8651</code> 0day漏洞对目标发起攻击；</p>
+</li>
+<li><p>2016年：</p>
+<p>2016年9月，DorkHotel发起了“ Inexsmar”行动</p>
+<p>目标：似乎用于针对政治人物的运动；</p>
+<p>方法：此攻击使用新的有效载荷传递机制，而不是经常使用的0day漏洞利用，将社会工程与相对复杂的木马融合在一起，以感染其选定的受害者；详细报告参见《<a target="_blank" rel="noopener" href="https://labs.bitdefender.com/2017/07/inexsmar-an-unusual-darkhotel-campaign/">Inexsmar: An unusual DarkHotel campaign</a>》</p>
+</li>
+</ul>
+</blockquote>
+<p><strong>&emsp;在<a target="_blank" rel="noopener" href="https://attack.mitre.org/groups/G0012/">这里</a>查看DarkHotel更多信息。</strong></p>
+<h2 id="4-2-黑格莎-Higaisa"><a href="#4-2-黑格莎-Higaisa" class="headerlink" title="4.2 黑格莎(Higaisa)"></a>4.2 黑格莎(Higaisa)</h2><p>&emsp;黑格莎，又称“Higaisa”，源于作者喜欢使用的RC4的解密密钥为“Higaisakora”，取Higaisa的英译，该组织和DarkHotel之间似乎存在一些关联。</p>
+<p>&emsp;该组织的攻击活动至少可以追溯到2016年，一直持续活跃到现在。该组织常利用节假日、朝鲜国庆等朝鲜重要时间节点来进行钓鱼活动，诱饵内容包括新年祝福、元宵祝福、朝鲜国庆祝福，以及重要新闻、海外人员联系录等等。</p>
+<p>&emsp;该攻击组织不仅拥有攻击目标PC终端设备的能力，有报告表明此组织还拥有对移动端的攻击能力。被攻击的对象包括跟朝鲜相关的外交实体（如驻各地大使馆官员）、政府官员、人权组织、朝鲜海外居民、贸易往来人员等。目前监测到的受害国家包括中国、朝鲜、日本、尼泊尔、新加坡、俄罗斯、波兰、瑞士等。</p>
+<h2 id="4-3-Reaper"><a href="#4-3-Reaper" class="headerlink" title="4.3 Reaper"></a>4.3 Reaper</h2><p><strong>&emsp;Reaper</strong> APT组织最早由Fireeye发现并公布，以APT组织谁先发现谁拥有命名权的原则，Reaper由Fireeye命名，后由于其多变的攻击方式，又有多个安全厂商对其“起别名”，该组织目前拥有的名字(命名单位)：Reaper (FireEye)、APT37 (Mandiant)、Ricochet Chollima (CrowdStrike)、Group123 (Talos)、Red Eyes(AhnLab)、Venus 121(ESRC)，国内更喜欢称其为 Group123 或 APT37。</p>
+<p>&emsp;该组织是一个很可能来自朝鲜的黑客组织。专家推测，APT37可能直接由朝鲜政府资助。直到2017年，APT37几乎将所有精力集中在位于韩国的目标上。但是，在2017年，黑客组织开始扩大影响范围，并开始在日本和越南等东亚其他州发起活动。 APT37的目标也位于中东。黑客组织还与其他思想不端的演员合作。</p>
+<p>&emsp;该组织旨在促进朝鲜的利益，其一般采用水坑攻击，鱼叉攻击，使用各种社交工程技术来诱骗用户下载并执行损坏的文件等手段攻击指定目标。</p>
+<p>&emsp;该组织在过去实施的攻击活动中主要<code>以情报窃取为意图</code>，并呈现出一些其<code>特有的战术技术特点</code>，包括：</p>
+<blockquote>
+<ol>
+<li>同时拥有对 PC（Windows） 和 Android 终端的攻击武器；</li>
+<li>对韩国网站实施入侵并作为攻击载荷分发和控制回传渠道，或者使用云盘，如 Yandex、Dropbox 等作为攻击载荷分发和控制回传渠道；</li>
+<li>使用 HWP 漏 洞对韩国目标人员实施鱼叉攻击。</li>
+</ol>
+</blockquote>
+<p><strong>APT37工具集</strong></p>
+<blockquote>
+<p><strong>APT37工具集</strong></p>
+<ul>
+<li>NavRAT，一种RAT或远程访问木马，其中包含许多功能。</li>
+<li>CORALDECK，一种用于从受感染主机中收集文件的威胁。</li>
+<li>Karae是一种后门特洛伊木马，它收集有关主机系统的数据，并使攻击者能够确定如何进行攻击。</li>
+<li>DOGCALL，一种后门特洛伊木马，由于其功能而类似于RAT。</li>
+<li>ROKRAT ，一种可以记录音频，劫持登录凭证，执行远程命令等的RAT。</li>
+<li>ScarCruft Bluetooth Harvester，基于Android的威胁，用于从受感染设备中收集信息。</li>
+<li>GELCAPSULE，一种木马，用于在受感染的系统上植入其他恶意软件。</li>
+<li>MILKDRO，一个后门，它可以篡改Windows注册表来获得持久性并且非常安静地运行。</li>
+<li>SHUTTERSPEED，一种后门特洛伊木马，可以获取屏幕快照，虹吸有关主机软件和硬件的信息，并在系统上部署其他恶意软件。</li>
+<li>RICECURRY，一段用JavaScript编写的代码，被注入到被劫持的网站中，用于检查访问该页面的用户的指纹，以确定攻击者是否应该执行恶意软件。</li>
+<li>SLOWDRIFT，木马下载器。</li>
+<li>RUHAPPY，一种磁盘擦除器，利用用户硬盘的MBR（主引导记录）。</li>
+<li>ZUMKONG，与Google Chrome和Internet Explorer Web浏览器兼容的信息窃取者。</li>
+<li>SOUNDWAVE，一种工具，能够记录音频（通过系统上存在的麦克风），然后将记录发送到攻击者的C＆C（命令与控制）服务器。</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>时间线</strong></p>
+<ul>
+<li>2012年：</li>
+</ul>
+<p> 攻击韩国特定目标；</p>
+<ul>
+<li>2016年</li>
+</ul>
+<p> 2016年，<code>Erebus</code>计划；详情见《<a target="_blank" rel="noopener" href="https://www.trendmicro.com/vinfo/us/security/news/cyber-attacks/erebus-linux-ransomware-impact-to-servers-and-countermeasures">Erebus Linux Ransomware: Impact to Servers and Countermeasures</a>》;</p>
+<p> 2016年2月，<code>Daybreak</code>行动，使用两个0day漏洞攻击(Adobe Flash Player、CVE-2016-0147)攻击高知名度成员；详情见《<a target="_blank" rel="noopener" href="https://securelist.com/operation-daybreak/75100/">Operation Daybreak Flash zero-day exploit deployed by the ScarCruft APT Group</a>》;</p>
+<p> 2016年8月， <code>Golden Time</code>计划使用钓鱼邮件攻击韩国用户；</p>
+<p> 2016年11月，<code>Evil New Year</code>计划钓鱼邮件攻击韩国用户；</p>
+<ul>
+<li>2017年</li>
+</ul>
+<p> 2017年2月，<code>Are You Happy?</code>计划攻击韩国用户，破坏目标用户的计算机系统；</p>
+<p> 2017年5月，<code>FreeMilk</code>计划使用恶意的带宏文档对几家非韩国金融机构进行攻击；详见《<a target="_blank" rel="noopener" href="https://unit42.paloaltonetworks.com/unit42-freemilk-highly-targeted-spear-phishing-campaign/">FreeMilk: A Highly Targeted Spear Phishing Campaign</a>》;</p>
+<p> 2017年11月，<code>North Korean Human Right</code>计划使用鱼叉攻击对韩国特定用户发起攻击；</p>
+<p> 2017年12月，<code>Fractured Block</code>计划；详见《<a target="_blank" rel="noopener" href="https://unit42.paloaltonetworks.com/unit42-the-fractured-block-campaign-carrotbat-malware-used-to-deliver-malware-targeting-southeast-asia/">The Fractured Block Campaign: CARROTBAT Used to Deliver Malware Targeting Southeast Asia</a>》</p>
+<ul>
+<li>2018年</li>
+</ul>
+<p> 2018年1月，<code>Evil New Year</code>计划使用鱼叉攻击攻击韩国用户；</p>
+<p> 2018年2月，<code>Battle Cruiser</code>；详见《<a target="_blank" rel="noopener" href="https://blog.alyac.co.kr/1625">‘오퍼레이션 배틀 크루저’ 다양한 취약점으로 국내외 APT 공격 지속</a>》;</p>
+<p> 2018年4月<code>Star Cruiser</code>行动；详见《<a target="_blank" rel="noopener" href="https://blog.alyac.co.kr/1653">국가기반 APT 그룹 ‘오퍼레이션 스타 크루저(Operation Star Cruiser)’ 수행 … 사이버 첩보활동 지</a>》</p>
+<p> 2018年5月，<code>Onezero</code>行动；</p>
+<p> 2018年8月，<code>Rocket Man</code>行动；</p>
+<p> 2018年11月，<code>Korean Sword</code>行动；</p>
+<ul>
+<li>2019年</li>
+</ul>
+<p> 2019年1月，<code>Holiday Wiper</code>行动；</p>
+<p> 2019年2月，<code>Golden Bird</code>行动和<code>High Expert</code>行动；</p>
+<p> 2019年4月，<code>Black Banner</code>行动；</p>
+<p> 2019年5月，<code>Golden Bird</code>行动；我们最近在该组织上发现了一些有趣的<code>遥测技术</code>，因此决定更深入地研究ScarCruft的近期活动。这表明该组织仍然非常活跃，并不断尝试完善其攻击工具。根据遥测技术，可以重新组装ScarCruft的二进制感染程序。它使用多阶段二进制感染来有效地更新每个模块并逃避检测。详见《<a target="_blank" rel="noopener" href="https://securelist.com/scarcruft-continues-to-evolve-introduces-bluetooth-harvester/90729/">ScarCruft continues to evolve, introduces Bluetooth harvester</a>》</p>
+<p> 2019年7月，<code>Fractured Statue</code>行动；详见《<a target="_blank" rel="noopener" href="https://unit42.paloaltonetworks.com/the-fractured-statue-campaign-u-s-government-targeted-in-spear-phishing-attacks/">The Fractured Statue Campaign: U.S. Government Agency Targeted in Spear-Phishing Attacks</a>》</p>
+<p> 2019年9月，<code>Dragon messenger</code>行动；详见《<a target="_blank" rel="noopener" href="https://blog.alyac.co.kr/attachment/cfile1.uf@99A46A405DC8E3031C9E2A.pdf">Dragon messenger</a>》</p>
+<ul>
+<li>2020年</li>
+</ul>
+<p> 2020年2月，<code>Spy Cloud</code>行动；详见《<a target="_blank" rel="noopener" href="https://blog.alyac.co.kr/attachment/cfile8.uf@9977CF405E81A09B1C4CE2.pdf">The’Spy Cloud’ Operation:Geumseong121 group carries out the APT attack disguising the evidence of North Korean defection</a>》</p>
+</blockquote>
+<h2 id="4-4-Lazarus"><a href="#4-4-Lazarus" class="headerlink" title="4.4 Lazarus"></a>4.4 Lazarus</h2><p>&emsp;Lazarus组织别名：Lazarus Group *(Kaspersky)*、Labyrinth Chollima *(CrowdStrike)*、Group 77 *(Talos)*、Hastati Group *(SecureWorks)*、Whois Hacking Team *(McAfee)*、NewRomanic Cyber Army Team *(McAfee)*、Zinc *(Microsoft)*、Hidden Cobra *(Trend Micro)*、Nickel Academy *(SecureWorks)*、Appleworm *(?)*、APT-C-26 *(Qihoo 360)*、ATK 3 *(Thales)*、T-APT-15 *(Tencent)*、SectorA01 *(ThreatRecon)*、ITG03 <em>(IBM)</em></p>
+<p>&emsp;有证据表明Lazarus组织隶属于朝鲜政府，是国家资助的网络组织，主要从事信息盗窃与间谍活动，网络破坏，金融犯罪等活动；</p>
+<p>&emsp;<a target="_blank" rel="noopener" href="https://blog.malwarebytes.com/threat-analysis/2019/03/the-advanced-persistent-threat-files-lazarus-group/">Malwarebytes</a>  Lazarus组织主要动机是获得经济收益，以此作为规避对该政权长期制裁的一种方法。他们在2013年利用DarkSeoul对一系列韩国广播公司和金融机构进行了一系列协同攻击，从而首次引起了媒体的关注；</p>
+<p>&emsp;2014年11月，Lazarus涉嫌违反Sony Pictures。这次攻击之所以引人注目，是因为它已广泛渗透到Sony网络中，导致大量数据被泄露。袭击的起因基本上是朦胧的，但联邦调查局发表了一份声明，将索尼的违规行为归咎于较早的《黑暗首尔》袭击，并将这两次事件均归因于朝鲜。</p>
+<p>&emsp;2017年5月，WannaCry爆发，这是一种勒索软件，使用SMB漏洞作为攻击媒介。归因于WannaCry和先前的朝鲜攻击之间的代码重用主要归功于朝鲜，但是鉴于区域性威胁组之间共享工具的普遍做法，这被认为是薄弱的理由。西方情报机构向公众发布了正式声明，重申了这一归属。</p>
+<p>&emsp;2018年9月6日，美国司法部指控一名朝鲜国民参与WannaCry和Sony的违规行为。</p>
+<blockquote>
+<p><strong>Lazarus组织的3个子组织：</strong></p>
+<ol>
+<li><p>[Andariel, Silent Chollima](<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Subgroup:">https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Subgroup%3A</a> Andariel%2C Silent Chollima)</p>
+</li>
+<li><p>[BeagleBoyz](<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Subgroup:">https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Subgroup%3A</a> BeagleBoyz)</p>
+</li>
+<li><p>[Bluenoroff, APT 38, Stardust Chollima](<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Subgroup:">https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Subgroup%3A</a> Bluenoroff%2C APT 38%2C Stardust Chollima)</p>
+</li>
+</ol>
+</blockquote>
+<p>除此之外，研究人员还发现一些和Lazarus有联系的组织：<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Covellite">Covellite</a>，[Reaper，APT 37，Ricochet Chollima，ScarCruft](<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Reaper,">https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Reaper%2C</a> APT 37%2C Ricochet Chollima%2C ScarCruft)和<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Wassonite">Wassonite</a>。</p>
+<p>&emsp;Lazarus组织使用的工具和发起的攻击都非常多，这里不一一赘述，详情参见《[APT group: Lazarus Group, Hidden Cobra, Labyrinth Chollima]([<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Lazarus%20Group,%20Hidden%20Cobra,%20Labyrinth%20Chollima&amp;n=1%5D">https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Lazarus%20Group%2C%20Hidden%20Cobra%2C%20Labyrinth%20Chollima&amp;n=1]</a>(<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Lazarus">https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Lazarus</a> Group%2C Hidden Cobra%2C Labyrinth Chollima&amp;n=1))》</p>
+<h2 id="4-5-毒云藤"><a href="#4-5-毒云藤" class="headerlink" title="4.5 毒云藤"></a>4.5 毒云藤</h2><p>&emsp;2007年，360追日团队发现毒云藤组织对中国国防、政府、科技、教育以及海事机构等重点单位和部门进行了长达11年的网络间谍活动。该组织主要关注军工、中美关系、两岸关系和海洋相关领域，其关注的领域与之前发布的海莲花（OceanLotus）APT组织有一定相似的地方。</p>
+<p>&emsp;国内安天实验室于2018年9月19日发布APT攻击组织“绿斑”（Green  Spot）分析报告。根据360威胁情报中心与安天实验室之间达成的能力型厂商成果互认约定，360威胁情报中心发现的“毒云藤”（APT-C-01）对应“绿斑”（Green Spot），二者是同一组织。</p>
+<p>&emsp;该组织主要使用<code>鱼叉攻击投放漏洞文档或二进制可执行文件</code>;毒云藤组织主要使用的恶意木马包括Poison Ivy，ZxShell，XRAT 等，并<code>使用动态域名，云盘，第三方博客作为其控制回传的基础设施</code>。</p>
+<blockquote>
+<p><strong>毒云藤攻击事件时间线：</strong></p>
+<p>2007年12月，首次发现与该组织相关的木马。涉及海洋相关领域（疑似对某大型船务公司进行相关攻击）；</p>
+<p>2008年3月，对国内某高校重点实验室（某科研机构）；</p>
+<p>2009年2月，开始对军工行业展开攻击（某知名军工类期刊杂志社）；</p>
+<p>2009年10月，木马增加了特殊的对抗静态扫描的手法（API字符串逆序），相关手法沿用到大部分版本的木马中，并持续应用到2018年；</p>
+<p>2011年12月，木马增加了特殊的对抗动态检测的手法（错误API参数），相关手法沿用到大部分版本的木马中，并持续应用到2015年；</p>
+<p>2012年2月，首次发现基于zxshell代码的修改版后门1，其中关键功能是窃取如.doc.ppt.xls.wps类文档文件</p>
+<p>2013年3月，对中科院，以及若干科技、海事等领域国家部委、局等进行了集中攻击；</p>
+<p>2013年10月，对中国某政府网站进行水坑攻击；</p>
+<p>2014年5月，发现zxshell修改版后门1的进化版本，其中除了基于修改版1功能，增加了如“军”，“航”，“报告”关键字的搜索；</p>
+<p>2014年9月12日，首次发现与CVE-2014-4114（0day漏洞）相关事件和样本；</p>
+<p>2014年10月14日，iSIGHT发布相关报告，并指出CVE-2014-4114（0day漏洞）。同日微软发布相关安全公告；</p>
+<p>2015年2月25日，对某军工领域协会组织（国防科技相关）、中国工程院等攻击，同时发现酷盘版样本；</p>
+<p>2017年10月，主要通过CVE-2017-8759漏洞文档对某大型媒体机构网站和泉州某机关相关人员实施鱼叉攻击；</p>
+<p>2018年4月，360威胁情报中心公开披露了该组织利用CVE-2017-8759漏洞文档的攻击恶意代码；</p>
+<p>2018年5月，针对数家船舶重工企业、港口运营公司等海事行业机构发动攻击；</p>
+</blockquote>
+<p>关于毒云藤的更多信息参见《<a target="_blank" rel="noopener" href="https://ti.qianxin.com/uploads/2018/09/20/6f8ad451646c9eda1f75c5d31f39f668.pdf">APT 毒云藤(APT-C-01) 军政情报刺探揭露</a>》</p>
+<h2 id="4-6-OceanLotus"><a href="#4-6-OceanLotus" class="headerlink" title="4.6 OceanLotus"></a>4.6 OceanLotus</h2><p>&emsp;”OceanLotus”（又名APT32、海莲花、SeaLotus 、APT-C-00），被认为是来自越南的APT攻击组织，自2012年活跃以来，一直针对中国大陆的敏感目标进行攻击活动，是近几年来针对中国大陆进行攻击活动最活跃的APT攻击组织，甚至没有之一。</p>
+<p>&emsp;该组织的攻击目标众多且广泛，包括中国大陆的政府部门、海事机构、外交机构、大型国企、科研机构以及部分重要的私营企业等。并且有大量的国内目标被该组织攻击而整个内网都沦陷，且有大量的机密资料、企业服务器配置信息等被打包窃取。</p>
+<p>&emsp;该组织攻击人员非常熟悉我国，对我国的时事、新闻热点、政府结构等都非常熟悉，如刚出个税改革时候，就立马使用个税改革方案做为攻击诱饵主题。此外钓鱼主题还包括绩效、薪酬、工作报告、总结报告等。</p>
+<p>&emsp;海莲花使用的攻击战术和技术特点，包括使用开源的代码和公开的攻击工具，如Cobalt Strike。2018 年的攻击活动中使用了<code>更加多样化的载荷投放形式</code>，并使用多种<code>白利用技术</code>加载其恶意模块。</p>
+<p>&emsp;有关海莲花APT组织2019年对中国大陆攻击情况的完整技术报告，请参考：</p>
+<p>&emsp;《<a target="_blank" rel="noopener" href="https://pc1.gtimg.com/softmgr/files/apt32_report_2019.pdf">“海莲花”(OceanLotus)2019年针对中国攻击活动汇总</a>》</p>
+<p>关于该组织的更多信息请参考：《[APT group: APT 32, OceanLotus, SeaLotus](<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=APT">https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=APT</a> 32%2C OceanLotus%2C SeaLotus&amp;n=1)》</p>
+<h2 id="4-7-BITTER"><a href="#4-7-BITTER" class="headerlink" title="4.7 BITTER"></a>4.7 BITTER</h2><p>&emsp;蔓灵花（T-APT-17、BITTER）APT组织是一个长期针对中国、巴基斯坦等国家进行攻击活动的APT组织，该APT组织为目前活跃的针对境内目标进行攻击的境外APT组织之一。</p>
+<p>&emsp;该组织主要针对政府、军工业、电力、核等单位进行攻击，窃取敏感资料，具有强烈的政治背景。该组织最早在2016由美国安全公司Forcepoint进行了披露，并且命名为<code>BITTER</code>，同年国内360也跟进发布了分析报告，命名为<code>蔓灵花</code>。</p>
+<p>&emsp;该组织的名称的命名由来为，该组织的特马数据包头部以“BITTER”作为标识，因此命名为“BITTER”。但是值得注意的是，自从该活动被曝光后，该组织就修改了数据包结构，不再以“BITTER”作为数据包的标识，改为五字节的随机字符进行代替。</p>
+<p>&emsp;蔓灵花组织主要使用鱼叉邮件向目标人员投放<code>漏洞利用文档</code>，其中包括针对<code>Office 的漏洞文档和InPage 文字处理软件的漏洞文档</code>（InPage 是一个专门针对乌尔都语使用者，即巴基斯坦国语设计的文字处理软件）。</p>
+<p>&emsp;该组织主要使用鱼叉钓鱼进行攻击，投递伪装成word图标的自解压文件：</p>
+<p>&emsp;有证据显示，该组织跟“白象”（摩诃草、HangOver、Patchwork）也有千丝万缕的关系。</p>
+<p>关于该组织的更多信息请参考：《<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Bitter&n=1">APT group: Bitter</a>》</p>
+<h2 id="4-8-Patchwork"><a href="#4-8-Patchwork" class="headerlink" title="4.8  Patchwork"></a>4.8  Patchwork</h2><p>&emsp;Patchwork，也叫摩诃草、白象、HangOver，也是经常针对中国大陆进行攻击的组织，除了中国大陆的目标外，巴基斯坦也是该组织的主要目标。该组织的攻击活动以窃取敏感信息为主，最早可以追溯到2009年11月，至今还非常活跃。在针对中国地区的攻击中，该组织主要针对政府机构、科研教育领域进行攻击。该组织的常用特马包括badnews、qrat等。</p>
+<p>&emsp;该组织使用的代码是从各种在线论坛上复制粘贴而成的；在活动的受害者系统中，Patchwork会立即搜索文档并将其上传到其C＆C，只有在目标被认为足够有价值时，才可以安装更高级的第二阶段恶意软件。</p>
+<p>关于该组织的更多信息请参考：《[APT group: Patchwork, Dropping Elephant]([<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Patchwork,%20Dropping%20Elephant&amp;n=1%5D">https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Patchwork%2C%20Dropping%20Elephant&amp;n=1]</a>(<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Patchwork,">https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Patchwork%2C</a> Dropping Elephant&amp;n=1))》</p>
+<h2 id="4-9-Sidewinder"><a href="#4-9-Sidewinder" class="headerlink" title="4.9 Sidewinder"></a>4.9 Sidewinder</h2><p>&emsp;响尾蛇(又称<strong>SideWinder</strong>，<strong>T-APT-04</strong>。<strong>Rattlesnake <em>(Tencent)</em></strong>)是一个背景可能来源于印度的 APT 组织，该组织此前已对巴基斯坦和东南亚各国发起过多次攻击， 该组织以窃取政府， 能源， 军事， 矿产等领域的机密信息为主要目的。</p>
+<p>关于该组织的更多信息请参考：《<a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/210404">蛇从暗黑中袭来——响尾蛇(SideWinder) APT组织2020年上半年活动总结报告</a>》、《[APT group: SideWinder, Rattlesnake]([<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=SideWinder,%20Rattlesnake&amp;n=1%5D">https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=SideWinder%2C%20Rattlesnake&amp;n=1]</a>(<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=SideWinder,">https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=SideWinder%2C</a> Rattlesnake&amp;n=1))》</p>
+<h2 id="4-10-Turla"><a href="#4-10-Turla" class="headerlink" title="4.10 Turla"></a>4.10 Turla</h2><p>&emsp;Turla又称为：Turla，Snake，Venomous Bear，VOOMOUS Bear，Group 88，Waterbug，WRAITH，Turla Team，Uroburos，Pfinet，TAG_0530，KRYPTON，Hippo Team，Pacifier APT，Popeye，SIG23，Iron Hunter，MAKERSMARK；</p>
+<p>&emsp;Turla是总部位于俄罗斯的威胁组织，该组织最早的网络活动可以追溯到1996年，自2004年以来已感染了超过45个国家的受害者，涉及政府，大使馆，军事，教育，研究和制药公司等多个行业。2015年中期，活动加剧。Turla以进行水坑和鱼叉式网络钓鱼活动以及利用内部工具和恶意软件而闻名。Turla的间谍平台主要用于Windows计算机，但也已被发现用于macOS和Linux计算机。</p>
+<p>关于该组织的更多信息请参考：《<a target="_blank" rel="noopener" href="https://malpedia.caad.fkie.fraunhofer.de/actor/turla_group">Turla Group</a>》、 《[APT group: Turla, Waterbug, Venomous Bear]([<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Turla,%20Waterbug,%20Venomous%20Bear&amp;n=1%5D">https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Turla%2C%20Waterbug%2C%20Venomous%20Bear&amp;n=1]</a>(<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Turla,">https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Turla%2C</a> Waterbug%2C Venomous Bear&amp;n=1))》</p>
+<h2 id="4-11-Donot"><a href="#4-11-Donot" class="headerlink" title="4.11 Donot"></a>4.11 Donot</h2><p>&emsp;Donot“肚脑虫”（APT-C-35）是疑似具有南亚背景的APT组织，其主要以周边国家的政府机构为目标进行网络攻击活动，通常以窃取敏感信息为目的。该组织具备针对Windows与Android双平台的攻击能力。</p>
+<p>&emsp;Donot APT组织利用恶意宏样本以及公式编辑漏洞利用样本对周边国家地区开展了多次攻击活动，同时，其在移动端攻击活动也并未停息。</p>
+<p>&emsp;该组织使用了两种特定的攻击恶意框架，EHDevel 和 yty，命名取自恶意代码中的 PDB 路径信息。该组织使用的攻击载荷使用了<code>多种语言开发</code>，包括<code>C++、.NET、Python、VBS 和AutoIt</code>。</p>
+<blockquote>
+<p><strong>Donot此次的攻击活动有如下特点：</strong></p>
+<ol>
+<li><p> RTF文档中嵌入Excel流，Excel流中包含恶意宏。</p>
+</li>
+<li><p>在文档单元格中写入长段语句，通过宏代码从语句特定位置获取字符拼接为恶意Payload远程服务器地址。</p>
+</li>
+<li><p>增加Loader模块，将恶意木马分割成为Loader以及加密数据两个模块，最终恶意木马由Loader解密数据模块释放执行，目前，Loader模块在VirusTotal上无杀软报毒。</p>
+</li>
+<li><p>在最新的攻击活动中，最终恶意木马不落地，在内存中解密执行，从而绕过杀软检测。</p>
+</li>
+<li><p>托管模板注入资源的恶意服务器上存在着多个测试样本。</p>
+</li>
+</ol>
+</blockquote>
+<p>关于该组织的更多信息请参考：《[APT group: Donot Team](<a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Donot">https://apt.thaicert.or.th/cgi-bin/showcard.cgi?g=Donot</a> Team&amp;n=1)》</p>
+<h2 id="4-12-蓝宝菇"><a href="#4-12-蓝宝菇" class="headerlink" title="4.12 蓝宝菇"></a>4.12 蓝宝菇</h2><p>&emsp;从2011年开始持续至今，高级攻击组织蓝宝菇（APT-C-12）对我国政府、军工、科研、金融等重点单位和部门进行了持续的网络间谍活动。该组织主要关注核工业和科研等相关信息。被攻击目标主要集中在中国大陆境内。</p>
+<p>&emsp;该组织主要关注核工业和科研等相关信息。被攻击目标主要集中在中国大陆境内。在2018 年中的高级持续性威胁报告中曾对该组织进行了介绍。蓝宝菇组织也主要使用<code>鱼叉邮件实施攻击</code>，其投放的文件主要是<code>RLO伪装成文档的可执行文件或LNK 格式文件</code>。</p>
+<p>&emsp;该组织主要使用<code>动态域名或IDC IP 最为其控制基础设施</code>，后续也常使用<code>AWSS3、新浪云等云服务</code>作为其上传和托管窃取的数据。其常使用的恶意程序包括<code>Poison Ivy、Bfnet，以及PowerShell</code> 实现的后门。</p>
+<p>&emsp;蓝宝菇和毒云藤两个组织从攻击来源来源来看，属于同一地域，但使用的TTP(策略技术流程)却存在一些差异。</p>
+<blockquote>
+<p><strong>蓝宝菇攻击事件时间线：</strong></p>
+<p>2011年3月，首次发现与该组织相关的木马，针对政府相关机构进行攻击。</p>
+<p>2011年11月，对某核工业研究机构进行攻击。</p>
+<p>2012年1月，对某大型科研机构进行攻击。</p>
+<p>2012年3月，对某军事机构进行攻击。</p>
+<p>2012年6月，对国内多所顶尖大学进行攻击。</p>
+<p>2013年6月，对某中央直属机构进行攻击，同时开始使用新类型的RAT。</p>
+<p>2014年8月，发现该组织使用5种以上的横向移动恶意代码针对重点目标机构进行大量横向移动攻击。</p>
+<p>2014年12月，发现新的RAT，我们将其命名为Bfnet，该后门具备窃取指定扩展名文档等重要功能。</p>
+<p>2015年9月，针对多个国家的华侨办事机构进行攻击。</p>
+<p>2018年4月，针对国内某重要敏感金融机构发动鱼叉邮件攻击。</p>
+</blockquote>
+<p>关于该组织的更多信息请参考：《<a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/system/176678.html">蓝宝菇（APT-C-12）：核危机行动揭露</a>》、《<a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/system/178422.html">蓝宝菇(APT-C-12)最新攻击样本及C&amp;C机制分析</a>》</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.thaicert.or.th/downloads/files/A_Threat_Actor_Encyclopedia.pdf">Threat Group Cards: A Threat Actor Encyclopedia</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.secrss.com/articles/17642">全球高级持续性威胁 (APT) 2019年研究报告</a></li>
+<li><a target="_blank" rel="noopener" href="https://s.tencent.com/research/report/836.html">APT攻击组织”黑格莎（Higaisa）”攻击活动披露</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.enigmasoftware.com/threat-database/advanced-persistent-threat-apt/">Advanced Persistent Threat (APT)</a></li>
+<li><a target="_blank" rel="noopener" href="https://apt.thaicert.or.th/cgi-bin/listgroups.cgi">Threat Group Cards: A Threat Actor Encyclopedia</a></li>
+<li><a target="_blank" rel="noopener" href="https://ti.qianxin.com/uploads/2018/09/20/6f8ad451646c9eda1f75c5d31f39f668.pdf">APT 毒云藤(APT-C-01) 军政情报刺探揭露</a></li>
+<li><a target="_blank" rel="noopener" href="https://s.tencent.com/research/report/860.html">“海莲花”(OceanLotus)2019年针对中国攻击活动汇总</a></li>
+<li><a target="_blank" rel="noopener" href="https://s.tencent.com/research/report/615.html">蔓灵花（BITTER）APT组织针对中国境内军工、核能、政府等敏感机构的最新攻击活动报告</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/210404">蛇从暗黑中袭来——响尾蛇(SideWinder) APT组织2020年上半年活动总结报告</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/network/241527.html">Donot APT团伙使用升级版数字武器针对周边地区的攻击活动分析</a></li>
+<li><a target="_blank" rel="noopener" href="https://malpedia.caad.fkie.fraunhofer.de/">malpedia</a></li>
+<li><a target="_blank" rel="noopener" href="https://otx.alienvault.com/">The World’s First Truly Open Threat Intelligence Community</a></li>
+<li>《<a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/system/176678.html">蓝宝菇（APT-C-12）：核危机行动揭露</a>》</li>
+<li>《<a target="_blank" rel="noopener" href="https://www.k0rz3n.com/2019/03/21/APT(%E9%AB%98%E7%BA%A7%E6%8C%81%E7%BB%AD%E5%A8%81%E8%83%81">APT(高级持续威胁) 概念以及趋势概述</a> 概念以及趋势概述/)》</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div id="donation_div"></div>
+
+
+<script src="../../../../js/vdonate.js"></script>
+
+<script>
+var a = new Donate({
+  title: '如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作!', // 可选参数，打赏标题
+  btnText: '打赏支持', // 可选参数，打赏按钮文字
+  el: document.getElementById('donation_div'),
+  wechatImage: 'https://raw.githubusercontent.com/iTimeTraveler/iTimeTraveler.github.io/site/source/about/donate/images/WeChanQR.png',
+  alipayImage: 'https://raw.githubusercontent.com/iTimeTraveler/iTimeTraveler.github.io/site/source/about/donate/images/AliPayQR.jpg'
+});
+</script>
+      
+      
+      <div>
+        <ul class="post-copyright">
+          <li class="post-copyright-author">
+          <strong>本文作者:  </strong>Wayoka</a>
+          </li>
+          <li class="post-copyright-link">
+          <strong>本文链接:  </strong>
+          <a href="/2020/10/27/对华APT整理/" target="_blank" title="对华APT组织整理">http://wayoka.github.io/2020/10/27/对华APT整理/</a>
+          </li>
+          <li class="post-copyright-license">
+            <strong>版权声明:   </strong>
+            本博客所有文章除特别声明外，均采用 <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">CC BY-NC-ND 4.0</a>
+            许可协议。转载请注明出处
+          </li>
+         
+        </ul>
+<div>
+
+      
+      
+        
+	<div id="comment">
+		<!-- 来必力City版安装代码 -->
+		<div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ4MS82MDQ5">
+		<script type="text/javascript">
+		   (function(d, s) {
+		       var j, e = d.getElementsByTagName(s)[0];
+
+		       if (typeof LivereTower === 'function') { return; }
+
+		       j = d.createElement(s);
+		       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+		       j.async = true;
+
+		       e.parentNode.insertBefore(j, e);
+		   })(document, 'script');
+		</script>
+		<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+		</div>
+		<!-- City版安装代码已完成 -->
+	</div>
+
+
+
+      
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/APT%E7%BB%84%E7%BB%87/" rel="tag">APT组织</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/%E6%94%BB%E5%87%BB%E4%B8%AD%E5%9B%BD/" rel="tag">攻击中国</a></li></ul>
+
+      
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="../../../11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">
+        
+          宏病毒分析技巧整理
+        
+      </div>
+    </a>
+  
+  
+    <a href="../../../08/21/%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">攻击模型概述</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-APT%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">1. APT概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-APT%E6%94%BB%E5%87%BB%E6%80%81%E5%8A%BF"><span class="nav-number">2.</span> <span class="nav-text">2. APT攻击态势</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E4%B8%AD%E5%9B%BD%E9%9D%A2%E4%B8%B4%E7%9A%84APT%E5%A8%81%E8%83%81"><span class="nav-number">3.</span> <span class="nav-text">3. 中国面临的APT威胁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E5%90%84%E4%B8%AA%E5%AF%B9%E5%8D%8EAPT%E7%BB%84%E7%BB%87%E7%AE%80%E4%BB%8B"><span class="nav-number">4.</span> <span class="nav-text">4.各个对华APT组织简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-DarkHotel"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 DarkHotel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-%E9%BB%91%E6%A0%BC%E8%8E%8E-Higaisa"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 黑格莎(Higaisa)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-Reaper"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 Reaper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4-Lazarus"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 Lazarus</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-5-%E6%AF%92%E4%BA%91%E8%97%A4"><span class="nav-number">4.5.</span> <span class="nav-text">4.5 毒云藤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-6-OceanLotus"><span class="nav-number">4.6.</span> <span class="nav-text">4.6 OceanLotus</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-7-BITTER"><span class="nav-number">4.7.</span> <span class="nav-text">4.7 BITTER</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-8-Patchwork"><span class="nav-number">4.8.</span> <span class="nav-text">4.8  Patchwork</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-9-Sidewinder"><span class="nav-number">4.9.</span> <span class="nav-text">4.9 Sidewinder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-10-Turla"><span class="nav-number">4.10.</span> <span class="nav-text">4.10 Turla</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-11-Donot"><span class="nav-number">4.11.</span> <span class="nav-text">4.11 Donot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-12-%E8%93%9D%E5%AE%9D%E8%8F%87"><span class="nav-number">4.12.</span> <span class="nav-text">4.12 蓝宝菇</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2022 Blog All Rights Reserved.</p>
+	      
+	      
+    		<p class="busuanzi_uv">
+				访客数 : <span id="busuanzi_value_site_uv"></span> |  
+				访问量 : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="../../../../index.html" class="mobile-nav-link">Home</a>
+  
+    <a href="../../../../archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="../../../../categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="../../../../tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="../../../../about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  
+<link rel="stylesheet" href="../../../../fancybox/jquery.fancybox.css">
+
+  
+<script src="../../../../fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="../../../../js/scripts.js"></script>
+
+
+
+
+
+  
+<script src="../../../../js/dialog.js"></script>
+
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            Blog
+          </div>
+          <div class="panel-body">
+            Copyright © 2022 Wayoka All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>

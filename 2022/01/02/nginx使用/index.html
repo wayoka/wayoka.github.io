@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>nginx简单使用 | Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="nginx实用模块" />
+  
+  
+  
+  
+  <meta name="description" content="功能：   1. nginx搭建简单文件服务器  2. nginx启用https  3. nginx简单登录认证  4. nginx添加fancyindex美化模块  5. nginx设置代理与其他模块配合使用  1. nginx搭建简单文件服务器 1.1 安装nginx Linux下安装nginx使用系统安装命令安装即可，一般安装命令为：  1 2 3 4   # centos yum -y i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nginx简单使用">
+<meta property="og:url" content="http://wayoka.github.io/2022/01/02/nginx%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="功能：   1. nginx搭建简单文件服务器  2. nginx启用https  3. nginx简单登录认证  4. nginx添加fancyindex美化模块  5. nginx设置代理与其他模块配合使用  1. nginx搭建简单文件服务器 1.1 安装nginx Linux下安装nginx使用系统安装命令安装即可，一般安装命令为：  1 2 3 4   # centos yum -y i">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://wayoka.github.io/2022/01/02/nginx%E4%BD%BF%E7%94%A8/image-20220114180008424.png">
+<meta property="og:image" content="http://wayoka.github.io/2022/01/02/nginx%E4%BD%BF%E7%94%A8/image-20220117165602474.png">
+<meta property="article:published_time" content="2022-01-02T09:36:03.000Z">
+<meta property="article:modified_time" content="2022-01-17T09:08:52.378Z">
+<meta property="article:author" content="Wayoka">
+<meta property="article:tag" content="nginx">
+<meta property="article:tag" content="实用模块">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://wayoka.github.io/2022/01/02/nginx%E4%BD%BF%E7%94%A8/image-20220114180008424.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Blog" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt; src:url("/css/fonts/FuturaPTBold.otf") format("woff");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt-light; src:url("/css/fonts/FuturaPTBook.otf") format("woff");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt-italic; src:url("/css/fonts/FuturaPTBookOblique.otf") format("woff");font-weight:400;font-style:italic;}
+}
+
+  </style>
+  
+<link rel="stylesheet" href="../../../../css/style.css">
+
+
+  
+<script src="../../../../js/jquery-3.1.1.min.js"></script>
+
+  
+<script src="../../../../js/bootstrap.js"></script>
+
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css" >
+
+  
+    
+<link rel="stylesheet" href="../../../../css/dialog.css">
+
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/css/header-post.css" >
+  
+
+  
+  
+  
+    <link rel="stylesheet" href="/css/vdonate.css" >
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="80px" height="80px" alt="Hike News" src="/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="../../../../index.html">首页</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../archives">归档</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../categories">分类</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../tags">标签</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../about">关于</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '../../../../content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="../../../../js/insight.js"></script>
+
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-nginx使用" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      nginx简单使用
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="" class="article-date">
+	  <time datetime="2022-01-02T09:36:03.000Z" itemprop="datePublished">2022-01-02</time>
+	</a>
+
+      
+    <a class="article-category-link" href="../../../../categories/nginx/">nginx</a>
+
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		阅读量<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+      
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>功能：</p>
+<ol>
+<li>nginx搭建简单文件服务器</li>
+<li>nginx启用https</li>
+<li>nginx简单登录认证</li>
+<li>nginx添加fancyindex美化模块</li>
+<li>nginx设置代理与其他模块配合使用</li>
+</ol>
+<h1 id="1-nginx搭建简单文件服务器"><a href="#1-nginx搭建简单文件服务器" class="headerlink" title="1. nginx搭建简单文件服务器"></a>1. nginx搭建简单文件服务器</h1><h2 id="1-1-安装nginx"><a href="#1-1-安装nginx" class="headerlink" title="1.1 安装nginx"></a>1.1 安装nginx</h2><p>Linux下安装nginx使用系统安装命令安装即可，一般安装命令为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># centos</span><br><span class="line">yum -y install nginx</span><br><span class="line"># ubuntu</span><br><span class="line">apt-get install nginx</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-2-修改用户"><a href="#1-2-修改用户" class="headerlink" title="1.2 修改用户"></a>1.2 修改用户</h2><p>默认安装后，配置文件一般在<code>/etc/nginx</code>目录下，配置文件为<code>nginx.conf</code>，配置文件前几行存在<code>user nginx;</code>，表示使用nginx的用户为nginx，需要改为使用用户，如使用root安装的nginx，要将<code>user nginx;</code>修改为<code>user root;</code>。</p>
+<h2 id="1-3-nginx命令"><a href="#1-3-nginx命令" class="headerlink" title="1.3 nginx命令"></a>1.3 nginx命令</h2><h3 id="1-3-1-html目录"><a href="#1-3-1-html目录" class="headerlink" title="1.3.1 html目录"></a>1.3.1 html目录</h3><p>nginx的默认html目录在<code>/usr/share/nginx/html</code>路径下，这个路径可以在nginx的配置文件<code>nginx.conf</code>中修改。</p>
+<p>可以在<code>/usr/share/nginx/html</code>目录下新建文件夹，正常启动nginx后可以在浏览器中访问到。</p>
+<h3 id="1-3-2-检查配置文件"><a href="#1-3-2-检查配置文件" class="headerlink" title="1.3.2 检查配置文件"></a>1.3.2 检查配置文件</h3><p>nginx检查配置文件命令用于检查<code>/etc/nginx/nginx.conf</code>文件是否正常加载，如果配置文件出错会有提示。</p>
+<p>配置文件检查命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nginx -t -c /etc/nginx/nginx.conf</span><br></pre></td></tr></table></figure>
+
+<p>检查没有问题输出结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nginx: the configuration file /usr/local/nginx/conf/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /usr/local/nginx/conf/nginx.conf test is successful </span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-2-启动停止nginx"><a href="#1-3-2-启动停止nginx" class="headerlink" title="1.3.2 启动停止nginx"></a>1.3.2 启动停止nginx</h3><p>nginx默认安装后会添加到服务中，可以通过服务命令启动停止</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 服务启动nginx</span></span><br><span class="line">service nginx start</span><br><span class="line"><span class="meta">#</span><span class="bash"> 服务停止nginx</span></span><br><span class="line">service nginx stop</span><br><span class="line"><span class="meta">#</span><span class="bash"> 服务重新加载nginx配置文件</span></span><br><span class="line">service reload nginx</span><br></pre></td></tr></table></figure>
+
+<p>还可以通过systemctl命令停止启动nginx</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 系统启动nginx</span></span><br><span class="line">systemctl start nginx</span><br><span class="line"><span class="meta">#</span><span class="bash"> 系统停止nginx</span></span><br><span class="line">systemctl stop nginx</span><br><span class="line"><span class="meta">#</span><span class="bash"> 系统重启nginx</span></span><br><span class="line">systemctl restart nginx.service</span><br><span class="line"><span class="meta">#</span><span class="bash"> 系统重新加载nginx配置文件</span></span><br><span class="line">systemctl reload nginx</span><br></pre></td></tr></table></figure>
+
+<p>nginx启动后可以使用浏览器访问网页查看nginx是否启动</p>
+<p><img src="/2022/01/02/nginx%E4%BD%BF%E7%94%A8/image-20220114180008424.png" alt="image-20220114180008424"></p>
+<h2 id="2-nginx启用https"><a href="#2-nginx启用https" class="headerlink" title="2. nginx启用https"></a>2. nginx启用https</h2><p>nginx使用https需要有X509证书，X509证书可以自己申请，也可以使用openssl命令直接生成。</p>
+<p>使用openssl命令生成证书步骤如下：</p>
+<h3 id="2-1-openssl生成证书"><a href="#2-1-openssl生成证书" class="headerlink" title="2.1 openssl生成证书"></a>2.1 openssl生成证书</h3><p>生成证书命令如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 打到nginx配置文件目录</span></span><br><span class="line">$ <span class="built_in">cd</span> /etc/nginx/</span><br><span class="line"><span class="comment"># 创建ssl目录用于存放公私钥</span></span><br><span class="line">$ mkdir ssl</span><br><span class="line"><span class="comment"># 使用openssl生成无密码server.key</span></span><br><span class="line">$ openssl rsa -<span class="keyword">in</span> server.key -out server.key</span><br><span class="line"><span class="comment"># 创建服务器证书的申请文件 server.csr，按照提示输入国家、省份、城市、公司、部门及邮箱</span></span><br><span class="line">$ openssl req -new -key server.key -out server.csr</span><br><span class="line"><span class="comment"># 生成crt证书文件server.crt</span></span><br><span class="line">$ openssl x509 -<span class="keyword">in</span> server.csr -out server.crt -req -signkey server.key -days 3650</span><br></pre></td></tr></table></figure>
+
+<p>执行上述命令后会在ssl目录下生成3个文件：server.crt、server.csr、server.key</p>
+<h2 id="2-2-修改nginx配置文件"><a href="#2-2-修改nginx配置文件" class="headerlink" title="2.2 修改nginx配置文件"></a>2.2 修改nginx配置文件</h2><p>修改nginx配置文件以使nginx支持https</p>
+<p>配置文件依旧是<code>/etc/nginx/nginx.conf</code>，修改配置文件中<code>http</code>下<code>server</code>中的内容；</p>
+<p>将nginx.conf文件中以下部分</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    listen       [::]:80;</span><br><span class="line">    server_name  _;</span><br><span class="line">    root         /usr/share/nginx/html;</span><br><span class="line"></span><br><span class="line">    # Load configuration files for the default server block.</span><br><span class="line">    include /etc/nginx/default.d/*.conf;</span><br><span class="line"></span><br><span class="line">    error_page 404 /404.html;</span><br><span class="line">    location = /404.html &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    error_page 500 502 503 504 /50x.html;</span><br><span class="line">    location = /50x.html &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>替换为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen       556 default_server;</span><br><span class="line">        listen       [::]:555 default_server;</span><br><span class="line">        listen       443 ssl http2 default_server;</span><br><span class="line">        listen       [::]:443 ssl http2 default_server;</span><br><span class="line">        server_name  _;</span><br><span class="line">        root         /usr/share/nginx/html;</span><br><span class="line">        charset utf-8,gbk; #展示中文文件名 </span><br><span class="line">        ssl_certificate &quot;/etc/nginx/ssl/server.crt&quot;;</span><br><span class="line">        ssl_certificate_key &quot;/etc/nginx/ssl/server.key&quot;;</span><br><span class="line">        ssl_session_cache shared:SSL:1m;</span><br><span class="line">        ssl_session_timeout  10m;</span><br><span class="line">        ssl_ciphers HIGH:!aNULL:!MD5;</span><br><span class="line">        ssl_prefer_server_ciphers on;        </span><br><span class="line">        #listen       80;</span><br><span class="line">        #listen       [::]:80;</span><br><span class="line">        #server_name  _;</span><br><span class="line">        #root         /usr/share/nginx/html;</span><br><span class="line"></span><br><span class="line">        # Load configuration files for the default server block.</span><br><span class="line">        include /etc/nginx/default.d/*.conf;</span><br><span class="line"></span><br><span class="line">        error_page 404 /404.html;</span><br><span class="line">        location = /404.html &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        error_page 500 502 503 504 /50x.html;</span><br><span class="line">        location = /50x.html &#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用命令：<code>systemctl restart nginx.service</code>重启nginx，本地查看是否报错，浏览器查看是否可以通过https访问，正常的话nginx应该启动监听555和443端口，可以使用<code>netstat -tunpl | grep nginx</code>命令查看nginx是否正常启动。</p>
+<h1 id="3-nginx简单登录认证"><a href="#3-nginx简单登录认证" class="headerlink" title="3. nginx简单登录认证"></a>3. nginx简单登录认证</h1><h2 id="3-1-使用htpasswd创建密码文件"><a href="#3-1-使用htpasswd创建密码文件" class="headerlink" title="3.1 使用htpasswd创建密码文件"></a>3.1 使用htpasswd创建密码文件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在nginx配置文件中创建目录</span></span><br><span class="line">$ <span class="built_in">cd</span> /etc/nginx</span><br><span class="line"><span class="comment"># 创建pwd目录用于存放密码文件</span></span><br><span class="line">$ mkdir <span class="built_in">pwd</span></span><br><span class="line"><span class="comment"># 生成密码文件，登陆名为user，按要求输入密码，生成密码文件为.samplepwd</span></span><br><span class="line">$ htpasswd -c /etc/nginx/<span class="built_in">pwd</span>/.samplepwd user</span><br><span class="line">New password:</span><br><span class="line">Re-type new password:</span><br><span class="line">Adding password <span class="keyword">for</span> user ngin</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-2-修改配置文件"><a href="#3-2-修改配置文件" class="headerlink" title="3.2 修改配置文件"></a>3.2 修改配置文件</h2><p>配置文件：<code>/etc/nginx/nginx.conf</code></p>
+<p>如果想用户访问sample目录时需要登陆，可以做如下设置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen       556 default_server;</span><br><span class="line">        listen       [::]:555 default_server;</span><br><span class="line">        listen       443 ssl http2 default_server;</span><br><span class="line">        listen       [::]:443 ssl http2 default_server;</span><br><span class="line">        server_name  _;</span><br><span class="line">        root         /usr/share/nginx/html;</span><br><span class="line">        charset utf-8,gbk; #展示中文文件名 </span><br><span class="line">        ssl_certificate &quot;/etc/nginx/ssl/server.crt&quot;;</span><br><span class="line">        ssl_certificate_key &quot;/etc/nginx/ssl/server.key&quot;;</span><br><span class="line">        ssl_session_cache shared:SSL:1m;</span><br><span class="line">        ssl_session_timeout  10m;</span><br><span class="line">        ssl_ciphers HIGH:!aNULL:!MD5;</span><br><span class="line">        ssl_prefer_server_ciphers on;        </span><br><span class="line">        #listen       80;</span><br><span class="line">        #listen       [::]:80;</span><br><span class="line">        #server_name  _;</span><br><span class="line">        #root         /usr/share/nginx/html;</span><br><span class="line">        ###########新增登录认证###############</span><br><span class="line">        location ^~/sample/&#123;</span><br><span class="line">        auth_basic &quot;login&quot;;</span><br><span class="line">        auth_basic_user_file /etc/nginx/pwd/.samplepwd;</span><br><span class="line">        &#125;</span><br><span class="line">        #########################################</span><br><span class="line">        # Load configuration files for the default server block.</span><br><span class="line">        include /etc/nginx/default.d/*.conf;</span><br><span class="line"></span><br><span class="line">        error_page 404 /404.html;</span><br><span class="line">        location = /404.html &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        error_page 500 502 503 504 /50x.html;</span><br><span class="line">        location = /50x.html &#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>重启nginx就可以实现访问特定目录需要登录认证。</p>
+<h1 id="4-nginx添加fancyindex美化模块"><a href="#4-nginx添加fancyindex美化模块" class="headerlink" title="4.nginx添加fancyindex美化模块"></a>4.nginx添加fancyindex美化模块</h1><h2 id="4-1-下载fancyindex模块"><a href="#4-1-下载fancyindex模块" class="headerlink" title="4.1 下载fancyindex模块"></a>4.1 下载fancyindex模块</h2><p>可以直接到Fancyindex项目地址下载：<a target="_blank" rel="noopener" href="https://github.com/aperezdc/ngx-fancyindex">https://github.com/aperezdc/ngx-fancyindex</a></p>
+<p>下载好后解压到某目录下，如/usr/local/src</p>
+<h2 id="4-2-nginx重新安装"><a href="#4-2-nginx重新安装" class="headerlink" title="4.2 nginx重新安装"></a>4.2 nginx重新安装</h2><p>nginx添加fancyindex模块需要在安装时就添加此模块，如果已安装nginx，需要停止nginx并重新安装</p>
+<p>执行：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ nginx -s quit</span><br><span class="line">$ nginx -V</span><br><span class="line">configure arguments: --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib64/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/<span class="built_in">log</span>/nginx/error.log --http-log-path=/var/<span class="built_in">log</span>/nginx/access.log --http-client-body-temp-path=/var/lib/nginx/tmp/client_body --http-proxy-temp-path=/var/lib/nginx/tmp/proxy --http-fastcgi-temp-path=/var/lib/nginx/tmp/fastcgi --http-uwsgi-temp-path=/var/lib/nginx/tmp/uwsgi --http-scgi-temp-path=/var/lib/nginx/tmp/scgi --pid-path=/run/nginx.pid --lock-path=/run/lock/subsys/nginx --user=nginx --group=nginx --with-compat --with-debug --with-file-aio --with-google_perftools_module --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_degradation_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_image_filter_module=dynamic --with-http_mp4_module --with-http_perl_module=dynamic --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-http_xslt_module=dynamic --with-mail=dynamic --with-mail_ssl_module --with-pcre --with-pcre-jit --with-stream=dynamic --with-stream_ssl_module --with-stream_ssl_preread_module --with-threads</span><br></pre></td></tr></table></figure>
+
+<p>复制<code>configure arguments</code>中的值。</p>
+<p>下载nginx源码并解压，cd到源码目录下，手动安装nginx</p>
+<p>执行编译时在编译参数中添加模块路径</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ./configure --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib64/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/<span class="built_in">log</span>/nginx/error.log --http-log-path=/var/<span class="built_in">log</span>/nginx/access.log --http-client-body-temp-path=/var/lib/nginx/tmp/client_body --http-proxy-temp-path=/var/lib/nginx/tmp/proxy --http-fastcgi-temp-path=/var/lib/nginx/tmp/fastcgi --http-uwsgi-temp-path=/var/lib/nginx/tmp/uwsgi --http-scgi-temp-path=/var/lib/nginx/tmp/scgi --pid-path=/run/nginx.pid --lock-path=/run/lock/subsys/nginx --user=nginx --group=nginx --with-compat --with-debug --with-file-aio --with-google_perftools_module --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_degradation_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_image_filter_module=dynamic --with-http_mp4_module --with-http_perl_module=dynamic --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-http_xslt_module=dynamic --with-mail=dynamic --with-mail_ssl_module --with-pcre --with-pcre-jit --with-stream=dynamic --with-stream_ssl_module --with-stream_ssl_preread_module --with-threads --add-module=/usr/<span class="built_in">local</span>/src/ngx-fancyindex-0.5.2</span><br><span class="line">$ make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-3-修改配置文件"><a href="#4-3-修改配置文件" class="headerlink" title="4.3 修改配置文件"></a>4.3 修改配置文件</h2><p>修改<code>/etc/nginx/nginx.conf</code>配置文件 ，添加fancyindex部分，并添加功能开启gzip提高传输速度。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br></pre></td><td class="code"><pre><span class="line"># For more information on configuration, see:</span><br><span class="line">#   * Official English Documentation: http://nginx.org/en/docs/</span><br><span class="line">#   * Official Russian Documentation: http://nginx.org/ru/docs/</span><br><span class="line"></span><br><span class="line">user nginx;</span><br><span class="line">worker_processes auto;</span><br><span class="line">error_log /var/log/nginx/error.log;</span><br><span class="line">pid /run/nginx.pid;</span><br><span class="line"></span><br><span class="line"># Load dynamic modules. See /usr/share/doc/nginx/README.dynamic.</span><br><span class="line">include /usr/share/nginx/modules/*.conf;</span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections 1024;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    log_format  main  &#x27;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#x27;</span><br><span class="line">                      &#x27;$status $body_bytes_sent &quot;$http_referer&quot; &#x27;</span><br><span class="line">                      &#x27;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#x27;;</span><br><span class="line"></span><br><span class="line">    map $http_upgrade $connection_upgrade &#123;</span><br><span class="line">    default upgrade;</span><br><span class="line">    &#x27;&#x27; close;</span><br><span class="line">    &#125;</span><br><span class="line">    access_log  /var/log/nginx/access.log  main;</span><br><span class="line">    autoindex on;# 显示目录</span><br><span class="line">    autoindex_exact_size on;# 显示文件大小</span><br><span class="line">    autoindex_localtime on;# 显示文件时间</span><br><span class="line">    sendfile            on;</span><br><span class="line">    tcp_nopush          on;</span><br><span class="line">    tcp_nodelay         on;</span><br><span class="line">    keepalive_timeout   65;</span><br><span class="line">    types_hash_max_size 4096;</span><br><span class="line"># Enable gzip compression.</span><br><span class="line">  gzip on;</span><br><span class="line"></span><br><span class="line">  # Compression level (1-9).</span><br><span class="line">  # 5 is a perfect compromise between size and CPU usage, offering about</span><br><span class="line">  # 75% reduction for most ASCII files (almost identical to level 9).</span><br><span class="line">  gzip_comp_level    5;</span><br><span class="line"></span><br><span class="line">  # Don&#x27;t compress anything that&#x27;s already small and unlikely to shrink much</span><br><span class="line">  # if at all (the default is 20 bytes, which is bad as that usually leads to</span><br><span class="line">  # larger files after gzipping).</span><br><span class="line">  gzip_min_length    256;</span><br><span class="line"></span><br><span class="line">  # Compress data even for clients that are connecting to us via proxies,</span><br><span class="line">  # identified by the &quot;Via&quot; header (required for CloudFront).</span><br><span class="line">  gzip_proxied       any;</span><br><span class="line"></span><br><span class="line">  # Tell proxies to cache both the gzipped and regular version of a resource</span><br><span class="line">  # whenever the client&#x27;s Accept-Encoding capabilities header varies;</span><br><span class="line">  # Avoids the issue where a non-gzip capable client (which is extremely rare</span><br><span class="line">  # today) would display gibberish if their proxy gave them the gzipped version.</span><br><span class="line">  gzip_vary          on;</span><br><span class="line"></span><br><span class="line">  # Compress all output labeled with one of the following MIME-types.</span><br><span class="line">  gzip_types</span><br><span class="line">    application/atom+xml</span><br><span class="line">    application/javascript</span><br><span class="line">    application/json</span><br><span class="line">    application/ld+json</span><br><span class="line">    application/manifest+json</span><br><span class="line">    application/rss+xml</span><br><span class="line">    application/vnd.geo+json</span><br><span class="line">    application/vnd.ms-fontobject</span><br><span class="line">    application/x-font-ttf</span><br><span class="line">    application/x-web-app-manifest+json</span><br><span class="line">    application/xhtml+xml</span><br><span class="line">    application/xml</span><br><span class="line">    font/opentype</span><br><span class="line">    image/bmp</span><br><span class="line">    image/svg+xml</span><br><span class="line">    image/x-icon</span><br><span class="line">    text/cache-manifest</span><br><span class="line">    text/css</span><br><span class="line">    text/plain</span><br><span class="line">    text/vcard</span><br><span class="line">    text/vnd.rim.location.xloc</span><br><span class="line">    text/vtt</span><br><span class="line">    text/x-component</span><br><span class="line">    text/x-cross-domain-policy;</span><br><span class="line">  # text/html is always compressed by gzip module</span><br><span class="line"></span><br><span class="line">  # This should be turned on if you are going to have pre-compressed copies (.gz) of</span><br><span class="line">  # static files available. If not it should be left off as it will cause extra I/O</span><br><span class="line">  # for the check. It is best if you enable this in a location&#123;&#125; block for</span><br><span class="line">  # a specific directory, or on an individual server&#123;&#125; level.</span><br><span class="line">  # gzip_static on;</span><br><span class="line">    include             /etc/nginx/mime.types;</span><br><span class="line">    default_type        application/octet-stream;</span><br><span class="line"></span><br><span class="line">    # Load modular configuration files from the /etc/nginx/conf.d directory.</span><br><span class="line">    # See http://nginx.org/en/docs/ngx_core_module.html#include</span><br><span class="line">    # for more information.</span><br><span class="line">    include /etc/nginx/conf.d/*.conf;</span><br><span class="line"></span><br><span class="line"># Settings for a TLS enabled server.</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">        listen       555 default_server;</span><br><span class="line">        listen       [::]:555 default_server;</span><br><span class="line">        listen       443 ssl http2 default_server;</span><br><span class="line">        listen       [::]:443 ssl http2 default_server;</span><br><span class="line">        server_name  _;</span><br><span class="line">        root         /usr/share/nginx/html;</span><br><span class="line">        charset utf-8,gbk; #展示中文文件名 </span><br><span class="line">        ssl_certificate &quot;/etc/nginx/ssl/server.crt&quot;;</span><br><span class="line">        ssl_certificate_key &quot;/etc/nginx/ssl/server.key&quot;;</span><br><span class="line">        ssl_session_cache shared:SSL:1m;</span><br><span class="line">        ssl_session_timeout  10m;</span><br><span class="line">        ssl_ciphers HIGH:!aNULL:!MD5;</span><br><span class="line">        ssl_prefer_server_ciphers on;</span><br><span class="line">        location /&#123;</span><br><span class="line">            root /usr/share/nginx/html;</span><br><span class="line">            if ($request_filename ~* ^.*?\.(txt|doc|pdf|rar|gz|zip|docx|exe|xlsx|ppt|pptx)$)&#123;</span><br><span class="line">                add_header Content-Disposition attachment;&#125;        </span><br><span class="line">        &#125;</span><br><span class="line">        fancyindex on;</span><br><span class="line">        fancyindex_exact_size off;</span><br><span class="line">        fancyindex_name_length 500;</span><br><span class="line">        fancyindex_show_dotfiles on;</span><br><span class="line">        fancyindex_localtime on;</span><br><span class="line">        fancyindex_time_format &quot;%Y-%m-%d %H:%M:%S&quot;;</span><br><span class="line">        fancyindex_header &quot;/Nginx-Fancyindex-Theme-light/header.html&quot;;</span><br><span class="line">        fancyindex_footer &quot;/Nginx-Fancyindex-Theme-light/footer.html&quot;;</span><br><span class="line">        # Ignored files will not show up in the directory listing, but will still be public.</span><br><span class="line">        fancyindex_ignore &quot;examplefile.html&quot;;</span><br><span class="line">        # Making sure folder where these files are do not show up in the listing.</span><br><span class="line">        fancyindex_ignore &quot;Nginx-Fancyindex-Theme-light&quot;;</span><br><span class="line">        location ^~/sample/&#123;</span><br><span class="line">        auth_basic &quot;login&quot;;</span><br><span class="line">        auth_basic_user_file /etc/nginx/.samplepwd;</span><br><span class="line">        &#125;</span><br><span class="line">        # Load configuration files for the default server block.</span><br><span class="line">        include /etc/nginx/default.d/*.conf;</span><br><span class="line"></span><br><span class="line">        error_page 404 /404.html;</span><br><span class="line">            location = /40x.html &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        error_page 500 502 503 504 /50x.html;</span><br><span class="line">            location = /50x.html &#123;</span><br><span class="line">        &#125;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>之后重启nginx即可，效果如下：</p>
+<p><img src="/2022/01/02/nginx%E4%BD%BF%E7%94%A8/image-20220117165602474.png" alt="image-20220117165602474"></p>
+<h1 id="5-nginx设置代理"><a href="#5-nginx设置代理" class="headerlink" title="5. nginx设置代理"></a>5. nginx设置代理</h1><p>项目需要使用webio搭建简单的文件上传服务器，需要将webio的端口映射到nginx上去，修改配置文件即可；</p>
+<p>在http—-server下添加如下数据：将https://{ip}/webio/ 的地址映射到本地的<code>/home/test/html/</code>，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">location /webio/ &#123;</span><br><span class="line">    alias /home/test/html/;</span><br><span class="line">&#125;       </span><br><span class="line">location /webio/upload &#123;</span><br><span class="line"> proxy_read_timeout 300s;</span><br><span class="line"> proxy_send_timeout 300s;</span><br><span class="line"> proxy_http_version 1.1;</span><br><span class="line"> proxy_set_header Host $host:$server_port;</span><br><span class="line"> proxy_set_header Upgrade $http_upgrade;</span><br><span class="line"> proxy_set_header Connection $connection_upgrade;</span><br><span class="line"> proxy_pass http://localhost:5000/;</span><br><span class="line">&#125;</span><br><span class="line"># Load configuration files for the default server block.</span><br><span class="line">include /etc/nginx/default.d/*.conf;</span><br><span class="line">error_page 404 /404.html;</span><br><span class="line">    location = /40x.html &#123;</span><br><span class="line">&#125;</span><br><span class="line">error_page 500 502 503 504 /50x.html;</span><br><span class="line">    location = /50x.html &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div id="donation_div"></div>
+
+
+<script src="../../../../js/vdonate.js"></script>
+
+<script>
+var a = new Donate({
+  title: '如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作!', // 可选参数，打赏标题
+  btnText: '打赏支持', // 可选参数，打赏按钮文字
+  el: document.getElementById('donation_div'),
+  wechatImage: 'https://raw.githubusercontent.com/iTimeTraveler/iTimeTraveler.github.io/site/source/about/donate/images/WeChanQR.png',
+  alipayImage: 'https://raw.githubusercontent.com/iTimeTraveler/iTimeTraveler.github.io/site/source/about/donate/images/AliPayQR.jpg'
+});
+</script>
+      
+      
+      <div>
+        <ul class="post-copyright">
+          <li class="post-copyright-author">
+          <strong>本文作者:  </strong>Wayoka</a>
+          </li>
+          <li class="post-copyright-link">
+          <strong>本文链接:  </strong>
+          <a href="/2022/01/02/nginx使用/" target="_blank" title="nginx简单使用">http://wayoka.github.io/2022/01/02/nginx使用/</a>
+          </li>
+          <li class="post-copyright-license">
+            <strong>版权声明:   </strong>
+            本博客所有文章除特别声明外，均采用 <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">CC BY-NC-ND 4.0</a>
+            许可协议。转载请注明出处
+          </li>
+         
+        </ul>
+<div>
+
+      
+      
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/nginx/" rel="tag">nginx</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/%E5%AE%9E%E7%94%A8%E6%A8%A1%E5%9D%97/" rel="tag">实用模块</a></li></ul>
+
+      
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="../../17/commit-220117/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">
+        
+          commit-220117
+        
+      </div>
+    </a>
+  
+  
+    <a href="../../../../2021/04/13/%E4%B8%93%E4%B8%9A%E8%81%8C%E4%BD%8D%E8%A7%A3%E9%87%8A/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">安全行业职位介绍</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-nginx%E6%90%AD%E5%BB%BA%E7%AE%80%E5%8D%95%E6%96%87%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">1. nginx搭建简单文件服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E5%AE%89%E8%A3%85nginx"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 安装nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 修改用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-nginx%E5%91%BD%E4%BB%A4"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 nginx命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-1-html%E7%9B%AE%E5%BD%95"><span class="nav-number">1.3.1.</span> <span class="nav-text">1.3.1 html目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-2-%E6%A3%80%E6%9F%A5%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.3.2.</span> <span class="nav-text">1.3.2 检查配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-2-%E5%90%AF%E5%8A%A8%E5%81%9C%E6%AD%A2nginx"><span class="nav-number">1.3.3.</span> <span class="nav-text">1.3.2 启动停止nginx</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-nginx%E5%90%AF%E7%94%A8https"><span class="nav-number">1.4.</span> <span class="nav-text">2. nginx启用https</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-openssl%E7%94%9F%E6%88%90%E8%AF%81%E4%B9%A6"><span class="nav-number">1.4.1.</span> <span class="nav-text">2.1 openssl生成证书</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E4%BF%AE%E6%94%B9nginx%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.5.</span> <span class="nav-text">2.2 修改nginx配置文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-nginx%E7%AE%80%E5%8D%95%E7%99%BB%E5%BD%95%E8%AE%A4%E8%AF%81"><span class="nav-number">2.</span> <span class="nav-text">3. nginx简单登录认证</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E4%BD%BF%E7%94%A8htpasswd%E5%88%9B%E5%BB%BA%E5%AF%86%E7%A0%81%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text">3.1 使用htpasswd创建密码文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">3.2 修改配置文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-nginx%E6%B7%BB%E5%8A%A0fancyindex%E7%BE%8E%E5%8C%96%E6%A8%A1%E5%9D%97"><span class="nav-number">3.</span> <span class="nav-text">4.nginx添加fancyindex美化模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-%E4%B8%8B%E8%BD%BDfancyindex%E6%A8%A1%E5%9D%97"><span class="nav-number">3.1.</span> <span class="nav-text">4.1 下载fancyindex模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-nginx%E9%87%8D%E6%96%B0%E5%AE%89%E8%A3%85"><span class="nav-number">3.2.</span> <span class="nav-text">4.2 nginx重新安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.3.</span> <span class="nav-text">4.3 修改配置文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-nginx%E8%AE%BE%E7%BD%AE%E4%BB%A3%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">5. nginx设置代理</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2022 Blog All Rights Reserved.</p>
+	      
+	      
+    		<p class="busuanzi_uv">
+				访客数 : <span id="busuanzi_value_site_uv"></span> |  
+				访问量 : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="../../../../index.html" class="mobile-nav-link">Home</a>
+  
+    <a href="../../../../archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="../../../../categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="../../../../tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="../../../../about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  
+<link rel="stylesheet" href="../../../../fancybox/jquery.fancybox.css">
+
+  
+<script src="../../../../fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="../../../../js/scripts.js"></script>
+
+
+
+
+
+  
+<script src="../../../../js/dialog.js"></script>
+
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            Blog
+          </div>
+          <div class="panel-body">
+            Copyright © 2022 Wayoka All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>

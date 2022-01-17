@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>宏病毒分析技巧整理 | Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="逆向宏宏病毒word知识积累" />
+  
+  
+  
+  
+  <meta name="description" content="1. 关于宏 宏病毒是一种常见的计算机病毒，寄存在文档或模板中，但是并不会直接感染可执行程序。其诞生于上世纪90年代，自其诞生之日，各种各样的宏病毒不断在网络上涌现。早期的宏病毒是病毒先驱者们展现高超技术的舞台，只感染文档文件，随着时间的推移，宏病毒的危害也越来越大，宏病毒不再只是感染文档文件，而成为了分发恶意程序的常规途经。宏病毒的执行简易隐蔽快速，一旦用户打开含有宏病毒的文档，其中的宏病毒就会">
+<meta property="og:type" content="article">
+<meta property="og:title" content="宏病毒分析技巧整理">
+<meta property="og:url" content="http://wayoka.github.io/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="1. 关于宏 宏病毒是一种常见的计算机病毒，寄存在文档或模板中，但是并不会直接感染可执行程序。其诞生于上世纪90年代，自其诞生之日，各种各样的宏病毒不断在网络上涌现。早期的宏病毒是病毒先驱者们展现高超技术的舞台，只感染文档文件，随着时间的推移，宏病毒的危害也越来越大，宏病毒不再只是感染文档文件，而成为了分发恶意程序的常规途经。宏病毒的执行简易隐蔽快速，一旦用户打开含有宏病毒的文档，其中的宏病毒就会">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://wayoka.github.io/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/VBA.png">
+<meta property="og:image" content="http://wayoka.github.io/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/docx%E6%A0%BC%E5%BC%8F.png">
+<meta property="og:image" content="http://wayoka.github.io/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/docx%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90.png">
+<meta property="og:image" content="http://wayoka.github.io/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/.rel%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9-16355025108821.png">
+<meta property="og:image" content="http://wayoka.github.io/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/%E8%BF%9C%E7%A8%8B%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5-16355025155872.png">
+<meta property="og:image" content="http://wayoka.github.io/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/oledump.png">
+<meta property="og:image" content="http://wayoka.github.io/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/oledump%E8%BD%AC%E5%82%A8%E6%B5%81-16355025389133.png">
+<meta property="og:image" content="http://wayoka.github.io/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/VBA%E8%A7%A3%E5%8E%8B%E7%BC%A9%E5%AE%8F%E4%BB%A3%E7%A0%81.png">
+<meta property="og:image" content="http://wayoka.github.io/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/plugin_http_heuristics.py.png">
+<meta property="og:image" content="http://wayoka.github.io/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/oledumppython-yara.png">
+<meta property="og:image" content="http://wayoka.github.io/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/oledump-xor%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3.png">
+<meta property="article:published_time" content="2020-11-12T10:09:33.000Z">
+<meta property="article:modified_time" content="2021-10-29T10:16:29.248Z">
+<meta property="article:author" content="Wayoka">
+<meta property="article:tag" content="逆向">
+<meta property="article:tag" content="宏">
+<meta property="article:tag" content="宏病毒">
+<meta property="article:tag" content="word">
+<meta property="article:tag" content="知识积累">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://wayoka.github.io/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/VBA.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Blog" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt; src:url("/css/fonts/FuturaPTBold.otf") format("woff");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt-light; src:url("/css/fonts/FuturaPTBook.otf") format("woff");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt-italic; src:url("/css/fonts/FuturaPTBookOblique.otf") format("woff");font-weight:400;font-style:italic;}
+}
+
+  </style>
+  
+<link rel="stylesheet" href="../../../../css/style.css">
+
+
+  
+<script src="../../../../js/jquery-3.1.1.min.js"></script>
+
+  
+<script src="../../../../js/bootstrap.js"></script>
+
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css" >
+
+  
+    
+<link rel="stylesheet" href="../../../../css/dialog.css">
+
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/css/header-post.css" >
+  
+
+  
+  
+  
+    <link rel="stylesheet" href="/css/vdonate.css" >
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="80px" height="80px" alt="Hike News" src="/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="../../../../index.html">首页</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../archives">归档</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../categories">分类</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../tags">标签</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../about">关于</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '../../../../content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="../../../../js/insight.js"></script>
+
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-宏病毒分析技巧整理" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      宏病毒分析技巧整理
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="" class="article-date">
+	  <time datetime="2020-11-12T10:09:33.000Z" itemprop="datePublished">2020-11-12</time>
+	</a>
+
+      
+    <a class="article-category-link" href="../../../../categories/%E9%80%86%E5%90%91/">逆向</a><a class="article-category-link" href="../../../../categories/%E9%80%86%E5%90%91/%E5%AE%8F%E7%97%85%E6%AF%92/">宏病毒</a><a class="article-category-link" href="../../../../categories/%E9%80%86%E5%90%91/%E5%AE%8F%E7%97%85%E6%AF%92/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/">知识积累</a><a class="article-category-link" href="../../../../categories/%E9%80%86%E5%90%91/%E5%AE%8F%E7%97%85%E6%AF%92/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a>
+
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		阅读量<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+      
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-关于宏"><a href="#1-关于宏" class="headerlink" title="1. 关于宏"></a>1. 关于宏</h1><p>&emsp;宏病毒是一种常见的计算机病毒，寄存在文档或模板中，但是并不会直接感染可执行程序。其诞生于上世纪90年代，自其诞生之日，各种各样的宏病毒不断在网络上涌现。早期的宏病毒是病毒先驱者们展现高超技术的舞台，只感染文档文件，随着时间的推移，宏病毒的危害也越来越大，宏病毒不再只是感染文档文件，而成为了分发恶意程序的常规途经。宏病毒的执行简易隐蔽快速，一旦用户打开含有宏病毒的文档，其中的宏病毒就会被执行。</p>
+<p>&emsp;对于攻击者而言，宏病毒是一把利器，尤其是结合了社会工程学的宏病毒。如乌克兰电网事件（BlackEnergy），工作人员只是打开了一篇看似很正常的文档，然后便造成了无法挽回的损失。不只是BlackEnergy，近来肆虐的各种各样的勒索软件，都离不开Office宏的帮助。借助传统的宏病毒，一旦用户打开含有宏病毒的文档，其中的宏病毒就会被执行，释放并激活恶意软件</p>
+<h2 id="1-1-宏"><a href="#1-1-宏" class="headerlink" title="1.1 宏"></a>1.1 宏</h2><p>&emsp;广义上的宏指的是一些命令组织在一起，作为一个单独命令完成一个特定任务；狭义上的宏指office系列办公软件中的宏，本文中提及到的宏都是office办公软件下的宏。</p>
+<p>&emsp;Office宏，译自英文单词Macro。宏是Office自带的一种高级脚本特性，通过VBA代码，可以在Office中去完成某项特定的任务，而不必再重复相同的动作，目的是让用户文档中的一些任务自动化。而宏病毒是一种寄存在文档或模板的宏中的计算机病毒。一旦打开这样的文档，其中的宏就会被执行，于是宏病毒就会被激活，转移到计算机上，并驻留在Normal模板上。</p>
+<h2 id="1-2-宏病毒"><a href="#1-2-宏病毒" class="headerlink" title="1.2 宏病毒"></a>1.2 宏病毒</h2><p>&emsp;在计算机技术的历史中，<strong>宏病毒</strong>（英语：<strong>Macro virus</strong>）是一种使得应用软件的相关应用文档内含有被称为宏的可执行代码的病毒。一个电子表格程序可能允许用户在一个文档中嵌入“宏命令”，使得某种操作得以自动运行；同样的操作也就可以将病毒嵌入电子表格来对用户的使用造成破坏。</p>
+<p>&emsp;宏病毒的另一个特别危险的特征体现于它们有时能够感染运行不同操作系统平台上的的电脑。比如Microsoft Word宏病毒可以感染使用微软公司视窗系统的Word用户，同样也可以感染使用苹果公司Macintosh电脑的用户。</p>
+<p>&emsp;绝大多数的宏病毒都是根据微软公司系列软件所特有的宏功能所编写，这一方面是因为其他应用软件对编写宏病毒来说十分困难，另一方面也是因为微软公司系列软件得到了最广泛的使用，以致于它们成为了这些电脑病毒的首要目标。</p>
+<p>&emsp;值得一提的是目前的一些攻击诸如水坑攻击、鱼叉攻击等都会通过宏利用方式投递下一步控制的恶意样本。</p>
+<h1 id="2-office文件格式"><a href="#2-office文件格式" class="headerlink" title="2. office文件格式"></a>2. office文件格式</h1><p>&emsp;要认识宏病毒就要了解宏病毒是如何在office系列办公软件中运行的，这就需要对office系列办公软件的文件格式有所了解。</p>
+<p>&emsp;微软最初使用的是<strong>OLE文件格式</strong>，OLE文件数据管理方式类似磁盘管理，该方式能够有效组装各个零件，但是却不够灵活。在office2007中，微软推出了<strong>OpenXML文件格式</strong>，该文件格式其实是标准的压缩文件格式，通过XML组装各个零件。OpenXML文件格式足够灵活，同时也“解决”了office文档最大的安全问题——宏病毒威胁，微软将所有宏相关的内容都放进了vbaProject.bin文件中，只要文件中不包含vbaProject.bin，就不可能含有宏，也就不可能是宏病毒。于是，微软推出了以x结尾(docx)和以m结尾(docm)的两大类文档文件，这两类文件均是OpenXML文件，但是以x结尾的文件中不含有vbaProject.bin。</p>
+<h2 id="2-1-OpenXML及OLE"><a href="#2-1-OpenXML及OLE" class="headerlink" title="2.1 OpenXML及OLE"></a>2.1 OpenXML及OLE</h2><p>&emsp;目前office系列办公软件使用最多的是word、Excel、PowerPoint(PPT)文件，其默认均采用OpenXML格式，。OpenXML在2006年12月成为了ECMA规范的一部分，编号为ECMA376；并于2008年4月通过国际标准化组织的表决，并于两个月后公布为ISO／IEC 29500国际标准。</p>
+<p>&emsp;另一种结构是office 97-03的存储规范：OLE。它是一种对象链接和嵌入的技术，该技术可以包含文本，图形，电子表格甚至其他二进制数据。关于Word、Excel 和 PowerPoint 的文件格式参考请参考链接<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/deployoffice/compat/office-file-format-reference">Word、Excel 和 PowerPoint 的文件格式参考</a>。</p>
+<p>&emsp;Office文档（如：.doc、.ppt、.xls等）很多是<strong>复合文档（OLE文件）</strong>，所有文件数据都是存储在一个或多个流中。每个流都有一个相似的数据结构，用于存储元数据的数据结构。这些元数据有用户和系统的信息、文件属性、格式信息、文本内容、媒体内容。宏代码信息也是以这种方式存储在复合文档中的。为了在Office文档文件中提取出宏代码，必须能够解析复合文档的二进制格式，下面以word为例，分析复合文档的二进制结构。</p>
+<p>&emsp;<strong>.doc文件是一种普通的OLE文件(复合文件)，能够包含宏。而.docx和.docm文件，实际上都是是压缩文件</strong></p>
+<p>目前本人已知的可以在office办公系列的文件格式中启用宏的文件后缀为<code>doc</code>、<code>xls</code>、<code>ppt</code>及文件后缀最后字母为<code>m</code>的文件；攻击者使用最多的文件格式为<code>doc</code>、<code>xls</code>，还有部分<code>docx</code>、<code>xlsx</code>类型的远程模板注入。</p>
+<h1 id="3-宏病毒惯用对抗手段"><a href="#3-宏病毒惯用对抗手段" class="headerlink" title="3. 宏病毒惯用对抗手段"></a>3. 宏病毒惯用对抗手段</h1><h2 id="3-1-自动执行"><a href="#3-1-自动执行" class="headerlink" title="3.1 自动执行"></a>3.1 自动执行</h2><p>&emsp;宏病毒分析的第一步是定位自动执行入口。宏病毒具有自动执行的特性，特别是含有AutoOpen的宏，一旦用户打开含有宏的文档，其中的宏就会被执行，而用户一无所知。<strong>宏病毒的激发机制有三种：利用自动运行的宏，修改Word命令和利用Document对象的事件</strong>。</p>
+<p>&emsp;宏病毒中常用的自动执行方法有<em><strong>两种</strong></em>：一种是<strong>用户执行某种操作时自动执行的宏</strong>，如Sub botton(),当用户单击文档中的按钮控件时，宏自动执行；另一种则是<strong>Auto自动执行</strong>，如Sub AutoOpen()和Sub AutoClose()，分别在文档打开和关闭时自动执行。</p>
+<h2 id="3-2-隐秘执行"><a href="#3-2-隐秘执行" class="headerlink" title="3.2 隐秘执行"></a>3.2 隐秘执行</h2><p>宏病毒利用几行代码就可以实现隐秘，下面程序为宏病毒通过阻止弹出各类提示，防止用户发现宏正在运行来实现自我隐藏：</p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">On</span> <span class="keyword">Error</span> <span class="keyword">Resume</span> <span class="keyword">Next</span>             <span class="comment">&#x27;如果发生错误，不弹出错误对话框</span></span><br><span class="line">Application.DisplayStatusBar = <span class="literal">False</span>  <span class="comment">&#x27;进制显示状态栏</span></span><br><span class="line">Options.SaveNormalPrompt = <span class="literal">False</span>    <span class="comment">&#x27;修改公用模板时自动保存，不弹出提示</span></span><br></pre></td></tr></table></figure>
+
+<p>宏病毒自我隐藏还有一种方式，那就是屏蔽菜单按钮和快捷键，普通用户即使猜测到有宏正在运行，也无法取消正在执行中的宏，查看宏信息。下表是笔者总结的宏病毒采取的隐蔽执行的一些措施：</p>
+<table>
+<thead>
+<tr>
+<th>代码</th>
+<th>措施</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>On Error Resume Next</td>
+<td>如果发生错误 不弹出错误对话框</td>
+</tr>
+<tr>
+<td>Application.DisplayStatusBar=False</td>
+<td>不显示状态栏 避免显示宏的运行状态</td>
+</tr>
+<tr>
+<td>Opition.SaveNormalPrompt=False</td>
+<td>修改公用模版时在后台自动保存 不给任何提示</td>
+</tr>
+<tr>
+<td>EnableCancelKey=wdCancelDisabled</td>
+<td>使不可以通过ESC键取消正在执行的宏</td>
+</tr>
+<tr>
+<td>Application.SreenUpdating=0</td>
+<td>不让屏幕更新 使病毒执行不影响计算机速度</td>
+</tr>
+<tr>
+<td>Application.DisplayAlerts=wdAlertsNone</td>
+<td>不让Excel弹出报警信息</td>
+</tr>
+<tr>
+<td>CommandBars(“Tools”).Controls(“Marco”).Enable=0</td>
+<td>屏蔽工具菜单中的宏按钮</td>
+</tr>
+<tr>
+<td>CommandBars(“Marco”).Controls(“Security”).Enable=0</td>
+<td>屏蔽宏菜单中的安全性</td>
+</tr>
+<tr>
+<td>CommandBars(“Marco”).Controls(“Marco”).Enable=0</td>
+<td>屏蔽宏菜单中的宏</td>
+</tr>
+<tr>
+<td>CommandBars(“Tools”).Controls(“Customize”).Enable=0</td>
+<td>屏蔽工具菜单的自定义</td>
+</tr>
+<tr>
+<td>CommandBars(“View”).Controls(“Toolsbars”).Enable=0</td>
+<td>屏蔽视图宏菜单的工具栏</td>
+</tr>
+<tr>
+<td>CommandBars(“format”).Controls(“Object”).Enable=0</td>
+<td>屏蔽格式菜单的对象</td>
+</tr>
+</tbody></table>
+<h2 id="3-3-调用外部例程和命令执行"><a href="#3-3-调用外部例程和命令执行" class="headerlink" title="3.3 调用外部例程和命令执行"></a>3.3 调用外部例程和命令执行</h2><p>&emsp;宏病毒的强大主要来自与对Windows API和外部例程的调用，通过对大量样本的分析，本文总结出一张宏病毒调用的外部例程表。</p>
+<table>
+<thead>
+<tr>
+<th>外部例程</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MSXML2.ServerXMLHTTP</td>
+<td>Xmlhttp是一种浏览器对象， 可用于模拟http的GET和POST请求</td>
+</tr>
+<tr>
+<td>Net.WebClient</td>
+<td>提供网络服务</td>
+</tr>
+<tr>
+<td>Adodb.Stream</td>
+<td>Stream 流对象用于表示数据流。配合XMLHTTP服务使用Stream对象可以从网站上下载各种可执行程序</td>
+</tr>
+<tr>
+<td>Wscript.shell</td>
+<td>WScript.Shell是WshShell对象的ProgID，创建WshShell对象可以运行程序、操作注册表、创建快捷方式、访问系统文件夹、管理环境变量。</td>
+</tr>
+<tr>
+<td>Poweshell</td>
+<td>PowerShell.exe 是微软提供的一种命令行shell程序和脚本环境</td>
+</tr>
+<tr>
+<td>Application.Run</td>
+<td>调用该函数，可以运行.exe文件</td>
+</tr>
+<tr>
+<td>WMI</td>
+<td>用户可以利用 WMI 管理计算机，在宏病毒中主要通过winmgmts:.\root\CIMV2隐藏启动进程</td>
+</tr>
+<tr>
+<td>Shell.Application</td>
+<td>能够执行sehll命令</td>
+</tr>
+</tbody></table>
+<p>如下所示，使用Wscript.shell实现命令执行功能：</p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Set</span> oWshell = <span class="built_in">CreateObject</span>(<span class="string">&quot;WScript.Shell&quot;</span>)</span><br><span class="line"><span class="keyword">If</span> ValueTpe = <span class="string">&quot;&quot;</span> <span class="keyword">Then</span></span><br><span class="line">    oWshell.Regwrite strkey,Value</span><br><span class="line"><span class="keyword">Else</span></span><br><span class="line">    oWshell.Regwrite strkey,Value,ValueType</span><br><span class="line"><span class="keyword">End</span> <span class="keyword">If</span></span><br></pre></td></tr></table></figure>
+
+<p>上表中Wscript.shell、Poweshell、Application.Run、Shell.Application这些外部例程都可以用来执行命令，除此之外，一些API如：Shell( )、CallWindowProc( )也常用于执行命令。</p>
+<h2 id="3-4-字符串隐写"><a href="#3-4-字符串隐写" class="headerlink" title="3.4 字符串隐写"></a>3.4 字符串隐写</h2><p>&emsp;宏病毒分析比较简单，这是因为任何能执行宏的用户都能查看宏源码，分析人员轻而易举就分析出宏病毒的行为。通过扫描宏中特征字符串，杀软也很容易检测出宏病毒。宏病毒的开发者们便想尽办法隐藏这些特征字符串，下面本文就对宏病毒中这些字符串的隐写方式进行分析。</p>
+<h3 id="3-4-1-Chr-函数"><a href="#3-4-1-Chr-函数" class="headerlink" title="3.4.1 Chr()函数"></a>3.4.1 Chr()函数</h3><p>Chr()，返回以数值表达式值为编码的字符（例如：Chr(70)返回字符‘F’）。使用Chr函数是最常见的字符串隐写技术,利用ascii码，逃避字符串扫描。如下列代码：</p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Nrh1INh1S5hGed = <span class="string">&quot;h&quot;</span> &amp; <span class="built_in">Chr</span>(<span class="number">116</span>) &amp; <span class="built_in">Chr</span>(<span class="number">61</span>) &amp; <span class="string">&quot;t&quot;</span> &amp; <span class="built_in">Chr</span>(<span class="number">112</span>) &amp;<span class="built_in">Chr</span>(<span class="number">58</span>) &amp; <span class="built_in">Chr</span>(<span class="number">47</span>) &amp; <span class="built_in">Chr</span>(<span class="number">59</span>) &amp; <span class="built_in">Chr</span>(<span class="number">47</span>) &amp; <span class="built_in">Chr</span>(<span class="number">99</span>) &amp; <span class="built_in">Chr</span>(<span class="number">104</span>) &amp; <span class="built_in">Chr</span>(<span class="number">97</span>) &amp; <span class="string">&quot;t&quot;</span> &amp; <span class="built_in">Chr</span>(<span class="number">101</span>) &amp; <span class="built_in">Chr</span>(<span class="number">97</span>) &amp; <span class="built_in">Chr</span>(<span class="number">117</span>) &amp; <span class="built_in">Chr</span>(<span class="number">45</span>) &amp; <span class="built_in">Chr</span>(<span class="number">100</span>) &amp; <span class="built_in">Chr</span>(<span class="number">60</span>) &amp; <span class="built_in">Chr</span>(<span class="number">101</span>) &amp; <span class="built_in">Chr</span>(<span class="number">115</span>) &amp; <span class="built_in">Chr</span>(<span class="number">45</span>) &amp; <span class="built_in">Chr</span>(<span class="number">105</span>) &amp; <span class="built_in">Chr</span>(<span class="number">108</span>) &amp; <span class="string">&quot;e&quot;</span> &amp; <span class="built_in">Chr</span>(<span class="number">115</span>) &amp; <span class="built_in">Chr</span>(<span class="number">46</span>) &amp; <span class="built_in">Chr</span>(<span class="number">61</span>) &amp; <span class="built_in">Chr</span>(<span class="number">99</span>) &amp; <span class="built_in">Chr</span>(<span class="number">111</span>) &amp; <span class="built_in">Chr</span>(<span class="number">109</span>) &amp; <span class="built_in">Chr</span>(<span class="number">47</span>) &amp; <span class="built_in">Chr</span>(<span class="number">60</span>) &amp; <span class="built_in">Chr</span>(<span class="number">52</span>) &amp; <span class="built_in">Chr</span>(<span class="number">116</span>) &amp; <span class="built_in">Chr</span>(<span class="number">102</span>) &amp; <span class="built_in">Chr</span>(<span class="number">51</span>) &amp; <span class="built_in">Chr</span>(<span class="number">51</span>) &amp; <span class="built_in">Chr</span>(<span class="number">119</span>) &amp; <span class="built_in">Chr</span>(<span class="number">47</span>) &amp; <span class="built_in">Chr</span>(<span class="number">60</span>) &amp; <span class="built_in">Chr</span>(<span class="number">119</span>) &amp; <span class="string">&quot;4&quot;</span> &amp; <span class="built_in">Chr</span>(<span class="number">116</span>) &amp; <span class="built_in">Chr</span>(<span class="number">52</span>) &amp; <span class="built_in">Chr</span>(<span class="number">53</span>) &amp; <span class="built_in">Chr</span>(<span class="number">51</span>) &amp; <span class="built_in">Chr</span>(<span class="number">46</span>) &amp; <span class="built_in">Chr</span>(<span class="number">59</span>) &amp; <span class="built_in">Chr</span>(<span class="number">101</span>) &amp; <span class="built_in">Chr</span>(<span class="number">61</span>) &amp; <span class="built_in">Chr</span>(<span class="number">120</span>) &amp; <span class="built_in">Chr</span>(<span class="number">101</span>)</span><br></pre></td></tr></table></figure>
+
+<p>上列代码使用了大量的Chr函数，看似很复杂，实际上就只是一串字符串“ht=tp:/;/chateau-d&lt;es-iles.=com/，4tf33w/&lt;w4t453.;e=xe”。Nrh1INh1S5hGed字符串看着很像一个链接，但是中间多了几个字符，其实处理起来很简单，只要将多余字符删掉就好。将这串字符串命名为Nrh1INh1S5hGed也是为了混淆，但是对于宏病毒分析人员来说，这种混淆并没有增加分析难度，分析人员只需要 全选–查找–替换。</p>
+<p>Chr()函数还可以利用表达式，增加技术人员的分析难度：</p>
+<p>Ndjs = Sgn(Asc(317 - 433) + 105）</p>
+<p>ATTH = Chr(Ndjs) + Chr(Ndjs + 12) + Chr(Ndjs + 12) + Chr(Ndjs + 8)</p>
+<p>经过分析发现，上述代码的字符串是：“http://”</p>
+<h3 id="3-4-2-Replace-函数"><a href="#3-4-2-Replace-函数" class="headerlink" title="3.4.2 Replace()函数"></a>3.4.2 Replace()函数</h3><p>Replace函数的作用就是替换字符串，返回一个新字符串，其中某个指定的子串被另一个子串替换。</p>
+<p>承接上文，把Nrh1INh1S5hGed中多余字符去掉，这里使用Replace函数把多余字符替换为空</p>
+<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Nrh1INh1S5hGed = Replace(Replace(Replace(Nrh1INh1S5hGed,Chr(<span class="number">60</span>), <span class="string">&quot;&quot;</span>), Chr(<span class="number">61</span>), <span class="string">&quot;&quot;</span>), Chr(<span class="number">59</span>), <span class="string">&quot;&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>处理之后：Nrh1INh1S5hGed=“<a target="_blank" rel="noopener" href="http://chateau-des-iles.com/4tf33w/w4t453.exe%E2%80%9D">http://chateau-des-iles.com/4tf33w/w4t453.exe”</a></p>
+<p>可以很清晰看出Nrh1INh1S5hGed是一个下载名为w4t453可执行文件的链接。可以猜测w4t453.exe是一个恶意程序，之后一定会执行w4t453.exe。在用户一无所知的情况下，宏已经完成了入侵工作。</p>
+<h3 id="3-4-3-CallByname-函数"><a href="#3-4-3-CallByname-函数" class="headerlink" title="3.4.3 CallByname()函数"></a>3.4.3 CallByname()函数</h3><p>CallByname函数允许使用一个字符串在运行时指定一个属性或方法。CallByName 函数的用法如下：</p>
+<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Result = CallByName(<span class="type">Object</span>, ProcedureName, CallType, Arguments())</span><br></pre></td></tr></table></figure>
+
+<p>CallByName 的第一个参数包含要对其执行动作的对象名。第二个参数，ProcedureName，是一个字符串，包含将要调用的方法或属性过程名。CallType 参数包含一个常数，代表要调用的过程的类型：方法 (vbMethod)、property let (vbLet)、property get (vbGet)，或 property set (vbSet)。最后一个参数是可选的，它包含一个变量数组，数组中包含该过程的参数。</p>
+<p>例如：**CallByName Text1, “Move”, vbMethod, 100, 100就相当于执行Text1.Move(100,10) **这种隐藏的函数执行增加了分析的难度。</p>
+<p>CallByName的作用不仅仅在此，在下面的这个例子中，利用callByName，可以用脚本控制控件:</p>
+<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Dim</span> obj <span class="keyword">As</span> <span class="type">Object</span>[/align]        <span class="keyword">Set</span> obj = <span class="keyword">Me</span></span><br><span class="line"></span><br><span class="line">       <span class="keyword">Set</span> obj = CallByName(obj, <span class="string">&quot;Text1&quot;</span>, VbGet)</span><br><span class="line"></span><br><span class="line">       <span class="keyword">Set</span> obj = CallByName(obj, <span class="string">&quot;Font&quot;</span>, VbGet)</span><br><span class="line"></span><br><span class="line">       CallByName obj, <span class="string">&quot;Size&quot;</span>, VbLet, <span class="number">50</span></span><br><span class="line"></span><br><span class="line">     <span class="comment">&#x27;以上代码=&quot;Me.Text1.Font.Size = 50&quot;</span></span><br><span class="line"></span><br><span class="line">      <span class="keyword">Dim</span> obj <span class="keyword">As</span> <span class="type">Object</span></span><br><span class="line"></span><br><span class="line">       <span class="keyword">Dim</span> V <span class="keyword">As</span> <span class="type">String</span></span><br><span class="line"></span><br><span class="line">       <span class="keyword">Set</span> obj = <span class="keyword">Me</span></span><br><span class="line"></span><br><span class="line">       <span class="keyword">Set</span> obj = CallByName(obj, <span class="string">&quot;Text1&quot;</span>, VbGet)</span><br><span class="line"></span><br><span class="line">       <span class="keyword">Set</span> obj = CallByName(obj, <span class="string">&quot;Font&quot;</span>, VbGet)</span><br><span class="line"></span><br><span class="line">       V = CallByName(obj, <span class="string">&quot;Size&quot;</span>, VbGet)</span><br><span class="line"></span><br><span class="line">       <span class="comment">&#x27;以上代码=&quot;V = Me.Text1.Font.Size&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-4-4-Alias替换函数名"><a href="#3-4-4-Alias替换函数名" class="headerlink" title="3.4.4 Alias替换函数名"></a>3.4.4 Alias替换函数名</h3><p>Alias子句是一个可选的部分，用户可以通过它所标识的别名对动态库中的函数进行引用。</p>
+<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Public</span> <span class="keyword">Declare</span> <span class="keyword">Function</span> clothed <span class="keyword">Lib</span> <span class="string">&quot;user32&quot;</span> <span class="keyword">Alias</span> <span class="string">&quot;GetUpdateRect&quot;</span> (prestigiation <span class="keyword">As</span> <span class="type">Long</span>, knightia <span class="keyword">As</span> <span class="type">Long</span>, otoscope <span class="keyword">As</span> <span class="type">Long</span>) <span class="keyword">As</span> <span class="type">Boolean</span></span><br></pre></td></tr></table></figure>
+
+<p>如上例所示，clothed作为GetUpdateRect的别名，调用clothed函数相当于调用user32库里的GetUpdateRect函数。事实上喜欢使用别名的不仅仅是宏病毒制造者，普通的宏程序员也喜欢使用别名。使用别名的好处是比较明显的，一方面Visual Basic不允许调用以下划线为前缀的函数，然而在Win32 API函数中有大量C开发的函数可能以下划线开始。使用别名可以绕过这个限制。另外使用别名有利于用户命名标准统一。对于一些大小写敏感的函数名，使用别名可以改变函数的大小写。</p>
+<h3 id="3-4-5-利用窗口、控件隐藏信息"><a href="#3-4-5-利用窗口、控件隐藏信息" class="headerlink" title="3.4.5 利用窗口、控件隐藏信息"></a>3.4.5 利用窗口、控件隐藏信息</h3><p>控件在宏程序里很常见，有些宏病毒的制造者们便想到利用控件隐藏危险字符串。控件里存放着关键字符串，程序用到上述字符串时，<strong>只需要调用标签控件的caption属性</strong>。</p>
+<p>控件的各个属性（name、caption、controtiptext、等）都可以成为危险字符串的藏身之所。而仅仅查看宏代码，分析者无法得知这些字符串内容，分析者必须进入编辑器查看窗体属性，这大大增加了分析的难度。</p>
+<h3 id="3-4-6-利用文件属性"><a href="#3-4-6-利用文件属性" class="headerlink" title="3.4.6 利用文件属性"></a>3.4.6 利用文件属性</h3><p>这种方式和利用窗体属性的方式类似，就是将一切能存储数据的地方利用起来。就像Demo3中读取文件详细信息中的备注</p>
+<h3 id="3-4-7-恶意行为字符串"><a href="#3-4-7-恶意行为字符串" class="headerlink" title="3.4.7 恶意行为字符串"></a>3.4.7 恶意行为字符串</h3><p>不同的宏病毒执行不同的恶意行为，但这些恶意行为是类似的，它们使用的代码往往是相似的。通过大量的样本分析，笔者总结了一些宏病毒执行危险操作时代码中含有的字符串，详见下表：</p>
+<table>
+<thead>
+<tr>
+<th>字符串</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>http</td>
+<td>URL连接</td>
+</tr>
+<tr>
+<td>CallByName</td>
+<td>允许使用一个字符串在运行时指定一个属性或方法，许多宏病毒使用CallByName执行危险函数</td>
+</tr>
+<tr>
+<td>Powershell</td>
+<td>可以执行脚本，运行.exe文件，可以执行base64的命令</td>
+</tr>
+<tr>
+<td>Winmgmts</td>
+<td>WinMgmt.exe是Windows管理服务，可以创建windows管理脚本</td>
+</tr>
+<tr>
+<td>Wscript</td>
+<td>可以执行脚本命令</td>
+</tr>
+<tr>
+<td>Shell</td>
+<td>可以执行脚本命令</td>
+</tr>
+<tr>
+<td>Environment</td>
+<td>宏病毒用于获取系统环境变量</td>
+</tr>
+<tr>
+<td>Adodb.stream</td>
+<td>用于处理二进制数据流或文本流</td>
+</tr>
+<tr>
+<td>Savetofile</td>
+<td>结合Adodb.stream用于文件修改后保存</td>
+</tr>
+<tr>
+<td>MSXML2</td>
+<td>能够启动网络服务</td>
+</tr>
+<tr>
+<td>XMLHTTP</td>
+<td>能够启动网络服务</td>
+</tr>
+<tr>
+<td>Application.Run</td>
+<td>可以运行.exe文件</td>
+</tr>
+<tr>
+<td>Download</td>
+<td>文件下载</td>
+</tr>
+<tr>
+<td>Write</td>
+<td>文件写入</td>
+</tr>
+<tr>
+<td>Get</td>
+<td>http中get请求</td>
+</tr>
+<tr>
+<td>Post</td>
+<td>http中post请求</td>
+</tr>
+<tr>
+<td>Response</td>
+<td>http中认识response回复</td>
+</tr>
+<tr>
+<td>Net</td>
+<td>网络服务</td>
+</tr>
+<tr>
+<td>WebClient</td>
+<td>网络服务</td>
+</tr>
+<tr>
+<td>Temp</td>
+<td>常被宏病毒用于获取临时文件夹</td>
+</tr>
+<tr>
+<td>Process</td>
+<td>启动进程</td>
+</tr>
+<tr>
+<td>Cmd</td>
+<td>执行控制台命令</td>
+</tr>
+<tr>
+<td>createObject</td>
+<td>宏病毒常用于创建进行危险行为的对象</td>
+</tr>
+<tr>
+<td>Comspec</td>
+<td>%ComSpec%一般指向你cmd.exe的路径</td>
+</tr>
+</tbody></table>
+<h2 id="3-5-VBA-Stomping"><a href="#3-5-VBA-Stomping" class="headerlink" title="3.5 VBA Stomping"></a>3.5 VBA Stomping</h2><p>VBA 在 Office 文档中可以以下面三种形式存在</p>
+<ol>
+<li><p>源代码: 宏模块的原始源代码被压缩，并存储在模块流的末尾。可以删除源代码，并不影响宏的执行</p>
+</li>
+<li><p>P-Code: 与 VB 语言相同，VBA 同样有 P-Code，通过内置的 VB 虚拟机来解释 P-Code 并执行，平常我们 Alt+F11 打开所看到的正是反编译的 P-Code。</p>
+</li>
+<li><p>ExeCodes: 当 P-Code 执行一次之后，其会被一种标记化的形式存储在 <strong>SRP</strong> 流中,之后再次运行时会提高 VBA 的执行速度，可以将其删除，并不影响宏的执行。</p>
+</li>
+</ol>
+<p>&emsp;<strong>每一个流模块中都会存在一个未被文档化的 PerformanceCache，其中包含了被编译后的 P-Code 代码，如果 _VBA_PROJECT 流中指定的 Office 版本与打开的 Office 版本相同，则会忽略流模块中的源代码，去执行 P-Code 代码</strong></p>
+<p>&emsp;VBA Stomping 是一种可以绕过反病毒检测恶意文档生成技术，它最初由 Vesselin Bontchev 博士引起我们的注意（见<a target="_blank" rel="noopener" href="https://github.com/bontchev/pcodedmp">此处</a>）。VBA stomping 是指销毁 Microsoft Office 文档中的 VBA 源代码，只留下文档文件中称为 p-code 的宏代码的编译版本。在这种情况下，仅基于VBA源代码的恶意文档检测会失败。</p>
+<p>&emsp;在宏文件中，我们看到的宏代码只是一些字符串，真正执行的其实是真正的代码，也就是<code>p-code</code>。只要 p-code 与系统上的当前 VBA 版本兼容，文档实际执行的是存储的 p-code。此外，宏编辑器中显示的内容（一旦启用内容）并不是解压的 VBA 源代码，而是反编译的 p-code。在这种情况下，攻击者可以通过用零或随机字节覆盖 VBA 源代码来完全擦除（stomp），而不仅仅是修改它。</p>
+<p>&emsp;但是，如果我们在不同版本的 Word（使用不同的 VBA 版本）中打开文档，则 p-code 将不可重用。这将强制将 VBA 源代码解压缩并重新编译为 p-code。</p>
+<p>&emsp;<strong>使用 VBA Stomping 技术的恶意文档只能使用用于创建文档时相同的 VBA 版本执行。</strong> 我们可以通过在恶意文档生成之前对目标进行侦察来确定要使用的适当 Office 版本；或者通过生成具有多个 Office 版本的恶意文档并将其投递到目标上来解决此限制。</p>
+<p>&emsp;Office 文档包含两个用于提取 VBA 的位置，即压缩的 VBA 源代码和 p-code。下表详细说明了在以下情况下使用哪个 VBA 数据源：</p>
+<p><img src="/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/VBA.png"></p>
+<p>&emsp;从该表中我们可以看到，如果我们有有效的 p-code，则在启用宏时它会忽略压缩的 VBA 源代码，并通过运行 p-code 来执行所有宏功能。作为攻击者，这告诉我们，我们可以完全破坏或修改压缩的 VBA 源代码，并且仍然让我们的恶意文档执行其指定的任务。</p>
+<h2 id="3-6-规避杀软"><a href="#3-6-规避杀软" class="headerlink" title="3.6 规避杀软"></a>3.6 规避杀软</h2><ol>
+<li>目前杀软查杀 VBA 基本上都是静态查杀，所以静态免杀至关重要，从源头上讲 Word 是一个 zip 文件，解压之后的 vbaProject.bin 包含着要执行的宏信息，也是杀软的重点关注对象，可以修改该文件名用于规避检测，步骤分以下三步</li>
+</ol>
+<blockquote>
+<ol>
+<li>将“vbaProject.bin”重命名为“[重命名].txt”</li>
+<li>更新“word / _rels / document.xml.rels”中的关系</li>
+<li>在“[Content_Types] .xml”中，将“bin”替换为“txt”</li>
+</ol>
+</blockquote>
+<p>&emsp;很多诱饵文档喜欢在 VBA 中启动脚本程序执行 ps 或者从网络上下载一段 shellcode 或恶意程序等等，这样非常容易被杀软的行为拦截拦住，同时沙箱可以根据进程链和流量判定该 word 文档是恶意的，安全分析人员可以轻易的通过监控进程树的方式观察恶意行为。</p>
+<ol start="2">
+<li><p><strong>使用 WMI 来执行后续攻击链</strong>，由 WMI 启动的进程的父进程为 wmiprvse.exe 而不是 word.exe 这样就可以与恶意 word 文档取消关联，规避检测。</p>
+<p>动态检测沙箱可以利用 dotnet 属性以及 WMI 来检测 Office：是否含有最近的文档，正在运行的任务数，特定进程检查（vbox，vmware 等等），检测备用数据流（ADS），判断计算机是否是域的一部分（Win32_ComputerSystem 类中 PartOfDomain 对象），检测 Bios 信息，检测即插即用信息（Win32_PnPEntity），检查用户名，检测文件名 hash，检测文件名是否被易名，检测 CPU 核心（Win32_Processor），检测应用及个数。</p>
+</li>
+</ol>
+<h1 id="4-远程模板注入"><a href="#4-远程模板注入" class="headerlink" title="4. 远程模板注入"></a>4. 远程模板注入</h1><p>&emsp;远程模板注入宏病毒更多使用在<strong>OpenXML文件格式</strong>中，文件中不包含<code>vbaProject.bin</code>，就无法在本地加载宏；素以攻击者使用远程模板注入技术加载执行宏。</p>
+<p>&emsp;远程模板注入技术在打开docx文件时，此docx文件会打开一个远程站点上的dotm文件，而以m结尾的文档文件是可能携带宏的。</p>
+<h2 id="4-1-远程模板注入原理"><a href="#4-1-远程模板注入原理" class="headerlink" title="4.1 远程模板注入原理"></a>4.1 远程模板注入原理</h2><h3 id="4-1-1-docx文件格式解析"><a href="#4-1-1-docx文件格式解析" class="headerlink" title="4.1.1 docx文件格式解析"></a>4.1.1 docx文件格式解析</h3><p>将docx文件解压后，可以发现docx文件的格式如下：</p>
+<p><img src="/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/docx%E6%A0%BC%E5%BC%8F.png" alt="docx文件结构图"></p>
+<p>其结构解释如下：</p>
+<p><img src="/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/docx%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90.png" alt="docx文件解析图"></p>
+<p>其中<strong>document.xml.rels</strong>和<strong>settings.xml.rels</strong>一样都是用于定位文档各零件的。在rels文件Relationship标签中，Target表示零件的文件位置，正常情况下，给值是相对路径，且存在于压缩包中：</p>
+<p><img src="/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/.rel%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9-16355025108821.png" alt=".rel文件内容"></p>
+<p>通过恶意构造Target，使其执行远程文件，就可以打开远程文件：</p>
+<p><img src="/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/%E8%BF%9C%E7%A8%8B%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5-16355025155872.png" alt="远程模板注入"></p>
+<h1 id="5-宏分析工具"><a href="#5-宏分析工具" class="headerlink" title="5. 宏分析工具"></a>5. 宏分析工具</h1><h2 id="5-1-oletools"><a href="#5-1-oletools" class="headerlink" title="5.1 oletools"></a>5.1 oletools</h2><p>&emsp;oletools下载地址请 <a target="_blank" rel="noopener" href="https://bitbucket.org/decalage/oletools/downloads">点击</a></p>
+<p>&emsp;<a target="_blank" rel="noopener" href="http://www.decalage.info/python/oletools">python-oletools</a>是python工具包，用于分析<a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Compound_File_Binary_Format">Microsoft OLE2文件（也称为结构化存储，复合文件二进制格式或复合文档文件格式）</a>，例如Microsoft Office文档或Outlook邮件，主要用于恶意软件分析和调试。它基于 <a target="_blank" rel="noopener" href="http://www.decalage.info/python/olefileio">OleFileIO_PL</a>解析器。有关 更多信息，请参见 <a target="_blank" rel="noopener" href="http://www.decalage.info/python/oletools%E3%80%82">http://www.decalage.info/python/oletools。</a></p>
+<h3 id="5-1-1-oletools-模块及使用方法"><a href="#5-1-1-oletools-模块及使用方法" class="headerlink" title="5.1.1 oletools 模块及使用方法"></a>5.1.1 oletools 模块及使用方法</h3><ul>
+<li><strong>olebrowse</strong>：一个简单的GUI，可以浏览OLE文件（例如MS Word，Excel，Powerpoint文档），以查看和提取单个数据流。</li>
+<li><strong>oleid</strong>：分析OLE文件以检测可能表明该文件可疑或恶意的特定特征的工具。</li>
+<li><strong>pyxswf</strong>：用于检测，提取和分析可能嵌入在MS Office文档（例如Word，Excel和RTF）等文件中的Flash对象（SWF）的工具，该工具对于恶意软件分析特别有用。</li>
+<li><strong>rtfobj</strong>：从RTF文件提取嵌入式对象的工具和python模块。</li>
+<li>和其他一些（即将推出）</li>
+</ul>
+<p><strong>olebrowse</strong>：</p>
+<p>&emsp;一个简单的GUI，可浏览OLE文件（例如MS Word，Excel，Powerpoint文档），以查看和提取单个数据流。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python olebrowse.py [文件]</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;如果您提供一个文件，它将被打开，否则将出现一个对话框，让您浏览文件夹以打开文件。然后，如果它是有效的OLE文件，将显示数据流列表。您可以选择一个流，然后在内置的十六进制查看器中查看其内容，或将其保存到文件中以进行进一步分析。</p>
+<p><strong>oleid</strong>：</p>
+<p>&emsp;oleid是一个脚本，用于分析OLE文件（例如MS Office文档）（例如Word，Excel），以检测特定特征，就安全性（例如恶意软件）而言，这些特征可能表明该文件可疑或恶意。例如，它可以检测VBA宏，嵌入式Flash对象，碎片。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python oleid.py [文件]</span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&gt; C:\oletools&gt;oleid.py word_flash_vba.doc</span><br><span class="line">Filename: word_flash_vba.doc</span><br><span class="line">OLE format: True</span><br><span class="line">Has SummaryInformation stream: True</span><br><span class="line">Application name: Microsoft Office Word</span><br><span class="line">Encrypted: False</span><br><span class="line">Word Document: True</span><br><span class="line">VBA Macros: True</span><br><span class="line">Excel Workbook: False</span><br><span class="line">PowerPoint Presentation: False</span><br><span class="line">Visio Drawing: False</span><br><span class="line">ObjectPool: True</span><br><span class="line">Flash objects: <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>pyxswf</strong>：</p>
+<p>&emsp;pyxswf是一个脚本，用于检测，提取和分析可能嵌入在诸如MS Office文档（例如Word，Excel）之类的文件中的Flash对象（SWF文件），这对于恶意软件分析特别有用。</p>
+<p>&emsp;它可以通过正确解析其OLE结构从MS Office文档中提取流，这在流被分段时是必需的。流分段是一种已知的混淆技术，如 <a target="_blank" rel="noopener" href="http://www.breakingpointsystems.com/resources/blog/evasion-with-ole2-fragmentation/">http://www.breakingpointsystems.com/resources/blog/evasion-with-ole2-fragmentation/所述</a></p>
+<p>&emsp;通过解析以十六进制格式（-f选项）编码的嵌入式对象，它也可以从RTF文档中提取Flash对象。</p>
+<p>&emsp;为此，只需添加-o选项以在OLE流而不是原始文件上工作，或者添加-f选项以在RTF文件上工作。</p>
+<p>用法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pyxswf.py [选项] &lt;file.bad&gt;</span><br><span class="line"></span><br><span class="line">选项：</span><br><span class="line">  -o，--ole解析OLE文件（例如Word，Excel）在每个流中查找SWF </span><br><span class="line">  -f，--rtf解析RTF文件以查找对于每个嵌入式对象</span><br><span class="line">  -x中的SWF，--extract提取嵌入式SWF，将其命名为MD5HASH.swf并将其保存在工作目录中。不需要其他args </span><br><span class="line">  -h，--help显示此帮助消息并退出</span><br><span class="line">  -y，--yara使用yara扫描SWF。如果SWF被压缩，则将放气。未加ARGS需要</span><br><span class="line">  -s，--md5scan扫描SWF以获取MD5签名。请参阅funccheckMD5定义哈希。不需要附加args </span><br><span class="line">  -H，--header显示SWF文件头。不需要其他args </span><br><span class="line">  -d，--decompress压缩压缩的SWFS文件</span><br><span class="line">  -r PATH，--recdir = PATH 将递归扫描目录以查找包含SWF的文件。必须在引号中提供路径</span><br><span class="line">  -c，--compress 使用Zlib压缩SWF</span><br></pre></td></tr></table></figure>
+
+<p>例1：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt; C:\oletools&gt;pyxswf.py <span class="literal">-o</span> word_flash.doc</span><br><span class="line">OLE stream: <span class="string">&#x27;Contents&#x27;</span></span><br><span class="line">[<span class="type">SUMMARY</span>] <span class="number">1</span> SWF(s) <span class="keyword">in</span> MD5:<span class="number">993664</span>cc86f60d52d671b6610813cfd1:Contents</span><br><span class="line">        [<span class="type">ADDR</span>] SWF <span class="number">1</span> at <span class="number">0</span>x8  - FWS Header</span><br><span class="line"></span><br><span class="line">&gt; C:\oletools&gt;pyxswf.py <span class="literal">-xo</span> word_flash.doc</span><br><span class="line">OLE stream: <span class="string">&#x27;Contents&#x27;</span></span><br><span class="line">[<span class="type">SUMMARY</span>] <span class="number">1</span> SWF(s) <span class="keyword">in</span> MD5:<span class="number">993664</span>cc86f60d52d671b6610813cfd1:Contents</span><br><span class="line">        [<span class="type">ADDR</span>] SWF <span class="number">1</span> at <span class="number">0</span>x8  - FWS Header</span><br><span class="line">                [<span class="type">FILE</span>] Carved SWF MD5: <span class="number">2498</span>e9c0701dc0e461ab4358f9102bc5.swf</span><br></pre></td></tr></table></figure>
+
+<p>例2：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">C:\oletools&gt;pyxswf.py <span class="literal">-xf</span> <span class="string">&quot;rtf_flash.rtf&quot;</span></span><br><span class="line">RTF embedded object size <span class="number">1498557</span> at index <span class="number">000036</span>DD</span><br><span class="line">[<span class="type">SUMMARY</span>] <span class="number">1</span> SWF(s) <span class="keyword">in</span> MD5:<span class="number">46</span>a110548007e04f4043785ac4184558:RTF_embedded_object_0</span><br><span class="line"><span class="number">00036</span>DD</span><br><span class="line">        [<span class="type">ADDR</span>] SWF <span class="number">1</span> at <span class="number">0</span>xc40  - FWS Header</span><br><span class="line">                [<span class="type">FILE</span>] Carved SWF MD5: <span class="number">2498</span>e9c0701dc0e461ab4358f9102bc5.swf</span><br></pre></td></tr></table></figure>
+
+<p><strong>rtfobj</strong>：</p>
+<p>&emsp;rtfobj是一个Python模块，用于从RTF文件中提取嵌入式对象，例如OLE对象。它可以用作Python库或命令行工具。</p>
+<p>使用方法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rtfobj.py &lt;file.rtf&gt;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;它提取并解码RTF文档中编码为十六进制的所有数据块，并将它们保存为名为“ object_xxxx.bin”的文件，其中xxxx是对象在RTF文件中的位置。</p>
+<p>&emsp;用作python模块：rtf_iter_objects（filename）是一个迭代器，它生成一个元组（索引，对象），该元组提供RTF文件中每个十六进制流的索引以及相应的解码对象。例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> rtfobj</span><br><span class="line"><span class="keyword">for</span> index, data <span class="keyword">in</span> rtfobj.rtf_iter_objects(<span class="string">&quot;myfile.rtf&quot;</span>):</span><br><span class="line">    <span class="built_in">print</span> <span class="string">&#x27;found object size %d at index %08X&#x27;</span> % (<span class="built_in">len</span>(data), index)</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-2-oledump"><a href="#5-2-oledump" class="headerlink" title="5.2 oledump"></a>5.2 oledump</h2><p>oledump.py是用于分析OLE文件（<a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Compound_File_Binary_Format">复合文件二进制格式</a>）的程序。这些文件包含数据流。oledump允许您分析这些流。</p>
+<p>许多应用程序都使用这种文件格式，最著名的是MS Office。.doc，.xls，.ppt等是OLE文件（docx，xlsx等是新文件格式：ZIP中的XML）。</p>
+<p>oledump有一个嵌入式手册页：运行<code>oledump.py -m</code>进行查看。</p>
+<p>在.xls文件上运行oledump，它将向您显示流：</p>
+<p><img src="/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/oledump.png"></p>
+<p><strong>流7、8、9和10旁边的字母M表示该流包含VBA宏。</strong></p>
+<p><strong>转储一个流的内容</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">oledump.py -s 流序号(例如 1) xx.xls</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<p><img src="/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/oledump%E8%BD%AC%E5%82%A8%E6%B5%81-16355025389133.png" alt="oledump转储流"></p>
+<p><strong>VBA宏的源代码在存储在流中时会被压缩。使用选项-v解压缩VBA宏：</strong></p>
+<p>使用如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">oledump.py -s 流序号(例如 1) -v xx.xls</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<p><img src="/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/VBA%E8%A7%A3%E5%8E%8B%E7%BC%A9%E5%AE%8F%E4%BB%A3%E7%A0%81.png"></p>
+<h3 id="5-2-1-oledump额外的插件"><a href="#5-2-1-oledump额外的插件" class="headerlink" title="5.2.1 oledump额外的插件"></a>5.2.1 oledump额外的插件</h3><ol>
+<li><p>plugin_http_heuristics.py</p>
+<p>插件<strong>plugin_http_heuristics.py</strong>使用一些技巧从恶意的，模糊的VBA宏中提取URL，如下所示：</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">oledump.py -p plugin_http_heuristics.py xxx.zip</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<p><img src="%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/plugin_http_heuristics.py.png"></p>
+<p>&emsp;您可能已经注意到，上面的屏幕快照中分析的文件是一个zip文件。像我的许多分析程序一样，oledump.py可以分析zip文件（受密码保护）中的文件。这使您可以将恶意软件样本存储在受密码保护的zip文件（受密码感染）中，然后进行分析，而无需提取它们。</p>
+<ol start="2">
+<li><p>YARA Python 模块</p>
+<p>如果安装YARA Python模块，则可以使用YARA规则扫描流：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; type contains_pe_file.yara</span><br><span class="line">&gt; oledump.py -y contains_pe_file.yara xxx.xls</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<p><img src="/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/oledumppython-yara.png"></p>
+</li>
+<li><p>decode_xor1.py</p>
+</li>
+</ol>
+<p>&emsp;如果您怀疑流的内容已编码，例如使用XOR编码，则可以尝试使用我提供的简单解码器对XOR密钥进行暴力破解（或者您可以使用Python开发自己的解码器）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; oledump.py -y contains_pe_file.yara -D decode_xor1.py xxx.xls</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<p><img src="/2020/11/12/%E5%AE%8F%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90%E6%8A%80%E5%B7%A7%E6%95%B4%E7%90%86/oledump-xor%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3.png"></p>
+<p>该程序需要Python模块OleFileIO_PL：<a target="_blank" rel="noopener" href="http://www.decalage.info/python/olefileio">http</a> : <a target="_blank" rel="noopener" href="http://www.decalage.info/python/olefileio">//www.decalage.info/python/olefileio</a></p>
+<h2 id="5-3-pcodedmp"><a href="#5-3-pcodedmp" class="headerlink" title="5.3 pcodedmp"></a>5.3 pcodedmp</h2><p>它不是众所周知的，但是用VBA（Visual Basic for Applications； Microsoft Office中使用的宏编程语言）编写的宏以三种不同的可执行形式存在，每种形式都可以是实际在运行时执行的形式，具体取决于环境。这些形式是：</p>
+<ul>
+<li><em>源代码</em>。宏模块的原始源代码被压缩并存储在模块流的末尾。这使得查找和提取相对容易，并且大多数免费的DFIR工具（例如<a target="_blank" rel="noopener" href="https://blog.didierstevens.com/programs/oledump-py/">oledump</a>或<a target="_blank" rel="noopener" href="http://www.decalage.info/python/olevba">olevba）</a>甚至许多专业的防病毒工具都只看这种形式的宏分析。但是，大多数情况下，Office会完全忽略源代码。实际上，可以删除源代码（并因此使所有这些工具都认为没有宏），但是宏仍将执行而不会出现任何问题。我已经创建了<a target="_blank" rel="noopener" href="http://bontchev.my.contact.bg/poc2.zip">概念证明</a>说明这一点。大多数工具在此存档中的文档中都看不到任何宏，但是如果使用相应的Word版本（与文档名称匹配）打开，它将显示一条消息并启动<code>calc.exe</code>。令人惊讶的是，恶意软件作者并未更广泛地使用此技巧。</li>
+<li><em>P-code</em>。将每条VBA行输入到VBA编辑器中后，立即将其编译为P-code（堆栈机的伪代码）并存储在模块流中的其他位置。P-code正是大多数时间执行的代码。实际上，即使在VBA编辑器中打开宏模块的源代码时，显示的也不是解压缩的源代码，而是反编译为源代码的P-code。只有在使用与创建该文档使用的VBA版本不同的Office版本的Office版本下打开该文档时，才将存储的压缩源代码重新编译为P-code，然后执行该P-code。这样就可以在任何支持VBA的Office版本上打开包含VBA的文档，并使其中的宏保持可执行状态，</li>
+<li><em>Execodes</em>。当P-code至少执行了一次后，它的另一种标记形式将存储在文档中的其他位置（在流中，其名称以开头<code>__SRP_</code>，后跟数字）。从那里可以更快地执行它。但是，execode的格式非常复杂，并且特定于创建它们的特定Office版本（不是VBA版本）。这使得它们极不可携带。此外，它们的存在不是必需的-可以将它们删除，并且宏将运行正常（从P-code开始）。</li>
+</ul>
+<p>由于大多数情况下，由P-code决定宏将执行的操作（即使既没有源代码也没有execode）都存在，因此拥有一个可以显示宏的工具是很有意义的。这就是促使我们创建此VBA P-code反汇编程序的原因。</p>
+<p>安装</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install pcodedmp -U</span><br></pre></td></tr></table></figure>
+
+<p>使用方法：</p>
+<blockquote>
+<p>该脚本将一个或多个文件或目录名称的列表作为命令行参数。如果名称是OLE2文档，则将检查该文档中的VBA代码，并且将反汇编每个代码模块的P-code。如果名称是目录，则将对该目录及其子目录中的所有文件进行类似的处理。除了反汇编的P-code外，默认情况下，脚本还显示<code>dir</code>流的已解析记录，以及VBA模块中使用并存储在<code>_VBA_PROJECT</code>流中的标识符（变量名和函数名）。</p>
+<p>该脚本支持VBA5（Office 97，MacOffice 98），VBA6（Office 2000至Office 2009）和VBA7（Office 2010及更高版本）。</p>
+</blockquote>
+<p>命令行选项：</p>
+<blockquote>
+<p><code>-h</code>，<code>--help</code> 显示简短说明如何使用脚本以及什么是命令行选项。</p>
+<p><code>-v</code>，<code>--version</code>显示脚本的版本。</p>
+<p><code>-n</code>，<code>--norecurse</code>如果在命令行上指定的名称是目录，则仅处理该目录中的文件；否则，将不执行任何操作。不要在其子目录中处理文件。</p>
+<p><code>-d</code>，<code>--disasmonly</code>只有P-code会被反汇编，而无需解析<code>dir</code>流的内容或流中的标识符<code>_VBA_PROJECT</code>。</p>
+<p><code>-b</code>，和流<code>--verbose</code>的内容以十六进制和ASCII格式转储。此外，每个编译为P-code VBA行的原始字节也都以十六进制和ASCII转储。<code>dir_VBA_PROJECT</code></p>
+<p><code>-o OUTFILE</code>，<code>--output OUTFILE</code>将结果保存到指定的输出文件，而不是将其发送到标准输出。</p>
+</blockquote>
+<h1 id="6-参考链接"><a href="#6-参考链接" class="headerlink" title="6. 参考链接"></a>6. 参考链接</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/deployoffice/compat/office-file-format-reference">Word、Excel 和 PowerPoint 的文件格式参考</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/system/203157.html">海莲花团伙对中南半岛国家攻击活动的总结：目标、手法及技术演进</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38474570/article/details/88382677">宏病毒的研究与实例分析01——基础篇</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38474570/article/details/88389304">宏病毒的研究与实例分析02——复合文档格式分析</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38474570/article/details/88410731">宏病毒的研究与实例分析05——无宏文件携带宏病毒</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38474570/article/details/97167995">宏病毒的研究与实例分析06——终结篇 进击的MACRO</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/175548">Office文件格式基础知识（1）</a></li>
+<li><a href="%5Bhttps://zanderchang.github.io/2019/04/30/VBA-Stomping%E7%AE%80%E4%BB%8B/%5D(https://zanderchang.github.io/2019/04/30/VBA-Stomping%E7%AE%80%E4%BB%8B/)">VBA Stomping 简介</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.didierstevens.com/programs/oledump-py/">oledump.py</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div id="donation_div"></div>
+
+
+<script src="../../../../js/vdonate.js"></script>
+
+<script>
+var a = new Donate({
+  title: '如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作!', // 可选参数，打赏标题
+  btnText: '打赏支持', // 可选参数，打赏按钮文字
+  el: document.getElementById('donation_div'),
+  wechatImage: 'https://raw.githubusercontent.com/iTimeTraveler/iTimeTraveler.github.io/site/source/about/donate/images/WeChanQR.png',
+  alipayImage: 'https://raw.githubusercontent.com/iTimeTraveler/iTimeTraveler.github.io/site/source/about/donate/images/AliPayQR.jpg'
+});
+</script>
+      
+      
+      <div>
+        <ul class="post-copyright">
+          <li class="post-copyright-author">
+          <strong>本文作者:  </strong>Wayoka</a>
+          </li>
+          <li class="post-copyright-link">
+          <strong>本文链接:  </strong>
+          <a href="/2020/11/12/宏病毒分析技巧整理/" target="_blank" title="宏病毒分析技巧整理">http://wayoka.github.io/2020/11/12/宏病毒分析技巧整理/</a>
+          </li>
+          <li class="post-copyright-license">
+            <strong>版权声明:   </strong>
+            本博客所有文章除特别声明外，均采用 <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">CC BY-NC-ND 4.0</a>
+            许可协议。转载请注明出处
+          </li>
+         
+        </ul>
+<div>
+
+      
+      
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/word/" rel="tag">word</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/%E5%AE%8F/" rel="tag">宏</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/%E5%AE%8F%E7%97%85%E6%AF%92/" rel="tag">宏病毒</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/" rel="tag">知识积累</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/%E9%80%86%E5%90%91/" rel="tag">逆向</a></li></ul>
+
+      
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="../../../../2021/01/03/%E6%B5%B7%E8%8E%B2%E8%8A%B1%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">
+        
+          常用下载命令整理-Linux篇
+        
+      </div>
+    </a>
+  
+  
+    <a href="../../../10/27/%E5%AF%B9%E5%8D%8EAPT%E6%95%B4%E7%90%86/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">对华APT组织整理</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%85%B3%E4%BA%8E%E5%AE%8F"><span class="nav-number">1.</span> <span class="nav-text">1. 关于宏</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E5%AE%8F"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 宏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E5%AE%8F%E7%97%85%E6%AF%92"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 宏病毒</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-office%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">2. office文件格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-OpenXML%E5%8F%8AOLE"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 OpenXML及OLE</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%AE%8F%E7%97%85%E6%AF%92%E6%83%AF%E7%94%A8%E5%AF%B9%E6%8A%97%E6%89%8B%E6%AE%B5"><span class="nav-number">3.</span> <span class="nav-text">3. 宏病毒惯用对抗手段</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E8%87%AA%E5%8A%A8%E6%89%A7%E8%A1%8C"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 自动执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E9%9A%90%E7%A7%98%E6%89%A7%E8%A1%8C"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 隐秘执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-%E8%B0%83%E7%94%A8%E5%A4%96%E9%83%A8%E4%BE%8B%E7%A8%8B%E5%92%8C%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 调用外部例程和命令执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%9A%90%E5%86%99"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 字符串隐写</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-1-Chr-%E5%87%BD%E6%95%B0"><span class="nav-number">3.4.1.</span> <span class="nav-text">3.4.1 Chr()函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-2-Replace-%E5%87%BD%E6%95%B0"><span class="nav-number">3.4.2.</span> <span class="nav-text">3.4.2 Replace()函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-3-CallByname-%E5%87%BD%E6%95%B0"><span class="nav-number">3.4.3.</span> <span class="nav-text">3.4.3 CallByname()函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-4-Alias%E6%9B%BF%E6%8D%A2%E5%87%BD%E6%95%B0%E5%90%8D"><span class="nav-number">3.4.4.</span> <span class="nav-text">3.4.4 Alias替换函数名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-5-%E5%88%A9%E7%94%A8%E7%AA%97%E5%8F%A3%E3%80%81%E6%8E%A7%E4%BB%B6%E9%9A%90%E8%97%8F%E4%BF%A1%E6%81%AF"><span class="nav-number">3.4.5.</span> <span class="nav-text">3.4.5 利用窗口、控件隐藏信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-6-%E5%88%A9%E7%94%A8%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7"><span class="nav-number">3.4.6.</span> <span class="nav-text">3.4.6 利用文件属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-7-%E6%81%B6%E6%84%8F%E8%A1%8C%E4%B8%BA%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">3.4.7.</span> <span class="nav-text">3.4.7 恶意行为字符串</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5-VBA-Stomping"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 VBA Stomping</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-6-%E8%A7%84%E9%81%BF%E6%9D%80%E8%BD%AF"><span class="nav-number">3.6.</span> <span class="nav-text">3.6 规避杀软</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E8%BF%9C%E7%A8%8B%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5"><span class="nav-number">4.</span> <span class="nav-text">4. 远程模板注入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-%E8%BF%9C%E7%A8%8B%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 远程模板注入原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-1-docx%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E8%A7%A3%E6%9E%90"><span class="nav-number">4.1.1.</span> <span class="nav-text">4.1.1 docx文件格式解析</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E5%AE%8F%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7"><span class="nav-number">5.</span> <span class="nav-text">5. 宏分析工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-oletools"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 oletools</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-1-oletools-%E6%A8%A1%E5%9D%97%E5%8F%8A%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">5.1.1.</span> <span class="nav-text">5.1.1 oletools 模块及使用方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-oledump"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 oledump</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-1-oledump%E9%A2%9D%E5%A4%96%E7%9A%84%E6%8F%92%E4%BB%B6"><span class="nav-number">5.2.1.</span> <span class="nav-text">5.2.1 oledump额外的插件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-3-pcodedmp"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 pcodedmp</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">6.</span> <span class="nav-text">6. 参考链接</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2022 Blog All Rights Reserved.</p>
+	      
+	      
+    		<p class="busuanzi_uv">
+				访客数 : <span id="busuanzi_value_site_uv"></span> |  
+				访问量 : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="../../../../index.html" class="mobile-nav-link">Home</a>
+  
+    <a href="../../../../archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="../../../../categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="../../../../tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="../../../../about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  
+<link rel="stylesheet" href="../../../../fancybox/jquery.fancybox.css">
+
+  
+<script src="../../../../fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="../../../../js/scripts.js"></script>
+
+
+
+
+
+  
+<script src="../../../../js/dialog.js"></script>
+
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            Blog
+          </div>
+          <div class="panel-body">
+            Copyright © 2022 Wayoka All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>
